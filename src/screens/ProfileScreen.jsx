@@ -10,6 +10,7 @@ import {
   View,
 } from 'react-native';
 import ProfileForm from '../forms/ProfileForm';
+import styles from '../styles'
 
 function ProfileScreen() {
   return (
@@ -19,24 +20,5 @@ function ProfileScreen() {
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
-  },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
-  },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-  },
-  highlight: {
-    fontWeight: '700',
-  },
-});
 
 export default ProfileScreen;

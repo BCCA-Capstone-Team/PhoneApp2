@@ -1,6 +1,7 @@
 import React from 'react';
 import { Text, View, TextInput, Button, StyleSheet } from 'react-native';
 import { useForm, Controller } from 'react-hook-form';
+import styles from '../styles';
 
 const RemindersForm = () => {
   const {
@@ -35,21 +36,5 @@ const RemindersForm = () => {
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    margin: 20,
-  },
-  input: {
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 4,
-    padding: 10,
-    marginBottom: 10,
-  },
-  error: {
-    color: 'red',
-  },
-});
   
   export default RemindersForm;

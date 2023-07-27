@@ -1,6 +1,7 @@
 import React, {useEffect} from 'react';
 import {StyleSheet, Text, View, TouchableOpacity} from 'react-native';
 import Tts from 'react-native-tts';
+import styles from '../styles'
 
 
 function HomeScreen({navigation}) {
@@ -23,7 +24,7 @@ function HomeScreen({navigation}) {
     };
 
   return (
-    <View style={styles.container}>
+    <View style={styles.homeContainer}>
       <View style={styles.sectionContainer}>
         <Text style={styles.sectionTitle}>We are on the Home Page</Text>
       </View>
@@ -50,32 +51,6 @@ function HomeScreen({navigation}) {
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
-  },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
-  },
-  button: {
-    marginTop: 20,
-    paddingHorizontal: 20,
-    paddingVertical: 10,
-    backgroundColor: '#007BFF',
-    borderRadius: 5,
-  },
-  buttonText: {
-    color: '#FFFFFF',
-    fontSize: 16,
-    fontWeight: '600',
-  },
-});
+
 
 export default HomeScreen;

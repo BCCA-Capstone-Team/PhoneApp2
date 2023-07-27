@@ -2,10 +2,13 @@
 import { StyleSheet } from 'react-native';
 
 export default StyleSheet.create({
-  container: {
+  homeContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  container: {
+    margin: 20,
   },
   headerText: {
     fontSize: 18,
@@ -19,10 +22,28 @@ export default StyleSheet.create({
   },
   input: {
     borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 4,
     padding: 10,
-    width: 200,
+    marginBottom: 10,
   },
   errorText: {
     color: 'red',
+  },
+  sectionContainer: {
+    marginTop: 32,
+    paddingHorizontal: 24,
+  },
+  sectionTitle: {
+    fontSize: 24,
+    fontWeight: '600',
+  },
+  sectionDescription: {
+    marginTop: 8,
+    fontSize: 18,
+    fontWeight: '400',
+  },
+  highlight: {
+    fontWeight: '700',
   },
 });

@@ -11,6 +11,7 @@ import {
 } from 'react-native';
 import AppointmentForm from '../forms/AppointmentForm';
 import Schedule from '../components/Schedule';
+import styles from '../styles'
 
 function CalendarScreen() {
   return (
@@ -21,24 +22,5 @@ function CalendarScreen() {
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
-  },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
-  },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-  },
-  highlight: {
-    fontWeight: '700',
-  },
-});
 
 export default CalendarScreen;
