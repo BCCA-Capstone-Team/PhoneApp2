@@ -11,7 +11,7 @@ const timeToString = time => {
 const Schedule = () => {
   const [items, setItems] = useState({});
   let myItems = {
-    '2023-07-28': [{name: 'item 1 - any js object'}],
+    '2023-07-30': [{name: 'item 1 - any js object'}],
     '2023-08-07': [{name: 'item 1 for day'}, {name: 'item 2 for day'}],
   };
 
@@ -33,7 +33,7 @@ const Schedule = () => {
         }
       }
       Object.keys(items).forEach(key => {
-        newItems[key] = myItems[key];
+        newItems[key] = items[key];
       });
       setItems(newItems);
     }, 1000);

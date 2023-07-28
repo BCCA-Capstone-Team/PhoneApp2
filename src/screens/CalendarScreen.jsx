@@ -16,8 +16,8 @@ import styles from '../styles';
 function CalendarScreen() {
   return (
     <View style={{height: 600}}>
-      {/* <Schedule /> */}
-      <AppointmentForm />
+      <Schedule />
+      {/* <AppointmentForm /> */}
     </View>
   );
 }
