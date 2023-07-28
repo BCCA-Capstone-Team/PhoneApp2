@@ -410,7 +410,7 @@ class DataController {
 
             this.database.transaction((tx) => {
                 tx.executeSql(deletionString, [], (tx, res) => {
-                    if (this.debugMode) { console.log('DELETION RESULTS | ' + "deletionId: " + rowId + ' | ' + "rowsAffected: " + res.rowsAffected) }
+                    if (this.debugMode) { console.log('DELETION RESULTS | ' + "deletionId: " + indexNumber + ' | ' + "rowsAffected: " + res.rowsAffected) }
                     resolve()
                 }, function (tx, error) {
                     console.log('UPDATE error: ' + error.message);
