@@ -3,6 +3,7 @@ import {View, Text, TouchableOpacity} from 'react-native';
 import {startOfWeek, addDays} from 'date-fns';
 import {Calendar, WeekCalendar, Agenda, DateData} from 'react-native-calendars';
 
+let database = new Database('appointmentDatabase');
 const timeToString = time => {
   const date = new Date(time);
   return date.toISOString().split('T')[0];
