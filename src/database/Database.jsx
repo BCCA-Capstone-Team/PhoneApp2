@@ -277,7 +277,7 @@ class DataController {
         })
     }
 
-    relaod() {
+    reload() {
         return new Promise((resolve, reject) => {
             this.database.transaction((tx) => {
                 tx.executeSql(`SELECT * FROM ${this.tableName}`, [], (tx, results) => {
@@ -389,6 +389,30 @@ class DataController {
             })
         })
     }
+
+        // Alyx attempt at getting most recent appointment id:
+
+        async getNewestAppointmentId() {
+            return new Promise((resolve, reject) => {
+              this.database.transaction((tx) => {
+                tx.executeSql(
+                  `SELECT ID FROM ${this.tableName} ORDER BY ID DESC LIMIT 1`,
+                  [],
+                  (tx, results) => {
+                    if (results.rows.length > 0) {
+                      const newestAppointmentId = results.rows.item(0).ID;
+                      resolve(newestAppointmentId);
+                    } else {
+                      resolve(null); // Return null if no appointments found
+                    }
+                  },
+                  (error) => {
+                    reject(error);
+                  }
+                );
+              });
+            });
+          }
 }
 
 module.exports = Database

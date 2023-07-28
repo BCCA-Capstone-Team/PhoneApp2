@@ -16,8 +16,8 @@ import {Agenda} from 'react-native-calendars';
 
 function CalendarScreen() {
   return (
-    <View style={{height: 600}}>
-      {/* <Text style={styles.sectionTitle}>Calendar</Text> */}
+    <View style={styles.sectionContainer}>
+      <Text style={styles.sectionTitle}>Calendar</Text>
       <Schedule />
       {/* <AppointmentForm /> */}
     </View>
