@@ -11,13 +11,13 @@ import {
 } from 'react-native';
 import AppointmentForm from '../forms/AppointmentForm';
 import Schedule from '../components/Schedule';
-import styles from '../styles'
-
+import styles from '../styles';
+// yo
 function CalendarScreen() {
   return (
-    <View style={styles.sectionContainer}>
-      {/* <Schedule /> */}
-      <AppointmentForm />
+    <View style={{height: 600}}>
+      <Schedule />
+      {/* <AppointmentForm /> */}
     </View>
   );
 }

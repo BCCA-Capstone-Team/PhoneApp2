@@ -35,6 +35,7 @@ async function startDatabase() {
 }
 startDatabase();
 
+
 const AppointmentForm = () => {
   const {
     control,
@@ -79,11 +80,22 @@ const AppointmentForm = () => {
       formData.selectedTime
     )
 
-    await appointmentTable.view()
+    const newestAppointmentId = await appointmentTable.getNewestAppointmentId();
+   
+    for (const item of formData.thingsToBring) {
+      await appointmentRemindersTable.add(newestAppointmentId, item.item);
+    }
 
-    await appointmentTable.reload()  
+    console.log('New appointment ID: ', newestAppointmentId)
+
+    await appointmentTable.view()
+    await appointmentTable.reload()
+
+    await appointmentRemindersTable.view()
+    await appointmentRemindersTable.reload()
     
-      
+    let fullTabale = appointmentRemindersTable.data
+    console.log(fullTabale)
   };
 
   const showDatepicker = () => {
