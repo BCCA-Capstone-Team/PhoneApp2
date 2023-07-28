@@ -12,14 +12,12 @@ import {
 import AppointmentForm from '../forms/AppointmentForm';
 import Schedule from '../components/Schedule';
 import styles from '../styles';
-import {Agenda} from 'react-native-calendars';
 
 function CalendarScreen() {
   return (
     <View style={styles.sectionContainer}>
-      <Text style={styles.sectionTitle}>Calendar</Text>
-      <Schedule />
-      {/* <AppointmentForm /> */}
+      {/* <Schedule /> */}
+      <AppointmentForm />
     </View>
   );
 }
