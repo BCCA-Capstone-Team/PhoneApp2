@@ -10,13 +10,19 @@ import {
   View,
 } from 'react-native';
 import ProfileForm from '../forms/ProfileForm';
-import styles from '../styles'
+import styles from '../styles';
 
-function ProfileScreen() {
+function ProfileScreen({navigation, route}) {
+  const {profileData} = route.params;
+
   return (
     <View style={styles.sectionContainer}>
       <Text style={styles.sectionTitle}>Profile</Text>
-      <ProfileForm />
+      <ProfileForm
+        navigation={navigation}
+        route={route}
+        profileData={profileData}
+      />
     </View>
   );
 }
