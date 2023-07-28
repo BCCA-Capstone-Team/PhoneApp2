@@ -1,5 +1,8 @@
 // styles.js
-import { StyleSheet } from 'react-native';
+import {StyleSheet} from 'react-native';
+
+// When styling for the <View /> that contains the <Schedule /> you MUST HAVE a height set for the Schedule to render.
+// Styling the Schedule is also somewhat tricky, I will note out all of that sometime.
 
 export default StyleSheet.create({
   homeContainer: {
