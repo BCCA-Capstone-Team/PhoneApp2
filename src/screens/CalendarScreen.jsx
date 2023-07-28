@@ -16,9 +16,8 @@ import styles from '../styles'
 function CalendarScreen() {
   return (
     <View style={styles.sectionContainer}>
-      <Text style={styles.sectionTitle}>Calendar</Text>
-      <Schedule />
-      {/* <AppointmentForm /> */}
+      {/* <Schedule /> */}
+      <AppointmentForm />
     </View>
   );
 }

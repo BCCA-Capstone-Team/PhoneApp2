@@ -277,7 +277,7 @@ class DataController {
         })
     }
 
-    relaod() {
+    reload() {
         return new Promise((resolve, reject) => {
             this.database.transaction((tx) => {
                 tx.executeSql(`SELECT * FROM ${this.tableName}`, [], (tx, results) => {

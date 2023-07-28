@@ -3,7 +3,37 @@ import { View, Text, Button, TextInput, Platform } from 'react-native';
 import { Controller, useForm, useFieldArray } from 'react-hook-form';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { Picker } from '@react-native-picker/picker';
+import LocationModal from '../components/LocationModal';
 import styles from '../styles'
+
+let Database = require('../database/Database.jsx');
+let database = new Database('appointmentDatabase');
+
+async function startDatabase() {
+  appointmentTable = await database.createTable('appointment', column => {
+    // Auto Clear is forcing a recreation of the table every time.
+    column.autoClear();
+
+    column.create('eventTitle', 'TEXT');
+    column.create('location', 'TEXT');
+    column.create('remindBeforeTime', 'INT');
+    column.create('date', 'TEXT');
+    column.create('time', 'TEXT');
+
+    column.run();
+  });
+
+  appointmentRemindersTable = await database.createTable('appointmentReminders', column => {
+    // Auto Clear is forcing a recreation of the table every time.
+    column.autoClear();
+
+    column.create('appointmentId', 'INT');
+    column.create('reminder', 'TEXT');
+
+    column.run();
+  });
+}
+startDatabase();
 
 const AppointmentForm = () => {
   const {
@@ -18,20 +48,42 @@ const AppointmentForm = () => {
   const [selectedTime, setSelectedTime] = useState(new Date());
   const [reminder, setReminder] = useState('15'); // Default to 15 minutes reminder
   const [showReminderPicker, setShowReminderPicker] = useState(false);
+  const [location, setLocation] = useState({
+    address: '',
+    city: '',
+    state: '',
+    zipCode: '',
+  });
+
+  const [showLocationModal, setShowLocationModal] = useState(false);
 
   const { fields, append, remove } = useFieldArray({
     control,
     name: 'thingsToBring',
   });
 
-  const onSubmit = (data) => {
+  const onSubmit = async data => {
     const formData = {
         ...data,
         selectedDate,
         selectedTime,
         reminder,
-      };
-    console.log('Form data:', formData);
+        location: JSON.stringify(location),
+    };
+      
+    await appointmentTable.add(
+      formData.eventTitle,
+      formData.location,
+      formData.reminder,
+      formData.selectedDate,
+      formData.selectedTime
+    )
+
+    await appointmentTable.view()
+
+    await appointmentTable.reload()  
+    
+      
   };
 
   const showDatepicker = () => {
@@ -62,6 +114,11 @@ const AppointmentForm = () => {
     setValue(`thingsToBring[${index}].item`, text); // Update the form value
   };
 
+  const handleLocationSubmit = (data) => {
+    setLocation(data);
+    setShowLocationModal(false);
+  };
+
   return (
     <View>
       <Text>Make an Appointment</Text>
@@ -80,10 +137,20 @@ const AppointmentForm = () => {
         defaultValue=""
       />
       {errors.eventTitle && <Text style={styles.error}>{errors.eventTitle.message}</Text>}
-
+      
+      <View>
+        <Text>Location:</Text>
+        <Text>Address: {location.address}</Text>
+        <Text>City: {location.city}</Text>
+        <Text>State: {location.state}</Text>
+        <Text>Zip Code: {location.zipCode}</Text>
+        <Button onPress={() => setShowLocationModal(true)} title="Add Location" />
+      </View>
+      
+      <LocationModal visible={showLocationModal} onClose={() => setShowLocationModal(false)}
+      onSubmit={handleLocationSubmit} />
 
       <View>
-        <Text>Select Date:</Text>
         <Button onPress={showDatepicker} title="Select Date" />
         {showDatePicker && (
           <DateTimePicker
@@ -95,7 +162,6 @@ const AppointmentForm = () => {
         )}
       </View>
       <View>
-        <Text>Select Time:</Text>
         <Button onPress={showTimepicker} title="Select Time" />
         {showTimePicker && (
           <DateTimePicker
@@ -107,7 +173,6 @@ const AppointmentForm = () => {
         )}
       </View>
       <View>
-        <Text>Select Reminder:</Text>
         <Text>Selected Reminder: {reminder} minutes before</Text>
         <Button onPress={showReminderPickerModal} title="Open Reminder Picker" />
         {showReminderPicker && (
