@@ -10,7 +10,7 @@ let database = new Database('leavingHomeReminderDatabase');
 async function startDatabase() {
   leavingHomeReminderTable = await database.createTable('leavingHomeReminder', column => {
     // Auto Clear is forcing a recreation of the table every time.
-    // column.autoClear();
+    column.autoClear();
 
     column.create('reminderText', 'TEXT')
 
@@ -19,23 +19,17 @@ async function startDatabase() {
 }
 startDatabase();
 
-const RemindersForm = () => {
+const RemindersForm = ({ onSubmitForm }) => {
   const {
     control,
     handleSubmit,
     formState: { errors },
+    reset,
   } = useForm();
 
-  const onSubmit = async data => {
-    await leavingHomeReminderTable.add(
-      data.leavingHomeReminder
-    )
-    
-    await leavingHomeReminderTable.view()
-
-    await leavingHomeReminderTable.reload()
-
-    console.log('Reminders:', data);
+  const onSubmit = (data) => {
+    onSubmitForm(data.leavingHomeReminder)
+    reset();
   };
 
   return (

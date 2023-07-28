@@ -252,30 +252,60 @@ class DataController {
         this.data = []
     }
 
+    // view() {
+    //     return new Promise((resolve, reject) => {
+    //         this.database.transaction((tx) => {
+    //             tx.executeSql(`SELECT * FROM ${this.tableName}`, [], (tx, results) => {
+    //                 let fullTable = []
+
+    //                 for (let i = 0; i < results.rows.length; i++) {
+    //                     let currentRow = []
+    //                     let rowData = results.rows.item(i)['ID']
+    //                     currentRow.push(['ID', rowData])
+
+    //                     for (let i2 = 0; i2 < this.columnList.length; i2++) {
+    //                         let rowLable = this.columnList[i2]
+    //                         let rowData = results.rows.item(i)[this.columnList[i2]]
+    //                         currentRow.push([rowLable, rowData])
+    //                     }
+    //                     console.log(currentRow)
+    //                 }
+    //                 this.data = fullTable
+    //                 resolve()
+    //             });
+    //         }, function (error) { console.error(error) }, function () { })
+    //     })
+    // }
+
     view() {
         return new Promise((resolve, reject) => {
-            this.database.transaction((tx) => {
-                tx.executeSql(`SELECT * FROM ${this.tableName}`, [], (tx, results) => {
-                    let fullTable = []
-
-                    for (let i = 0; i < results.rows.length; i++) {
-                        let currentRow = []
-                        let rowData = results.rows.item(i)['ID']
-                        currentRow.push(['ID', rowData])
-
-                        for (let i2 = 0; i2 < this.columnList.length; i2++) {
-                            let rowLable = this.columnList[i2]
-                            let rowData = results.rows.item(i)[this.columnList[i2]]
-                            currentRow.push([rowLable, rowData])
-                        }
-                        console.log(currentRow)
-                    }
-                    this.data = fullTable
-                    resolve()
-                });
-            }, function (error) { console.error(error) }, function () { })
-        })
-    }
+          this.database.transaction((tx) => {
+            tx.executeSql(`SELECT * FROM ${this.tableName}`, [], (tx, results) => {
+              let fullTable = [];
+      
+              for (let i = 0; i < results.rows.length; i++) {
+                let currentRow = [];
+                let rowData = results.rows.item(i)['ID'];
+                currentRow.push(['ID', rowData]);
+      
+                for (let i2 = 0; i2 < this.columnList.length; i2++) {
+                  let rowLabel = this.columnList[i2];
+                  let rowData = results.rows.item(i)[this.columnList[i2]];
+                  currentRow.push([rowLabel, rowData]);
+                }
+      
+                fullTable.push(currentRow); 
+              }
+      
+              this.data = fullTable;
+              resolve(this.data); 
+            });
+          }, function (error) {
+            console.error(error);
+            reject(error); 
+          }, function () {});
+        });
+      }
 
     reload() {
         return new Promise((resolve, reject) => {
@@ -390,8 +420,9 @@ class DataController {
         })
     }
 
-        // Alyx attempt at getting most recent appointment id:
+        // DATABASE FEATURES FOR APPOINTMENTS =================
 
+        // getting the most recent appointment created id to add the reminders for the appointment to it's own table.
         async getNewestAppointmentId() {
             return new Promise((resolve, reject) => {
               this.database.transaction((tx) => {
@@ -413,6 +444,10 @@ class DataController {
               });
             });
           }
+
+        // DATABASE FEATURES FOR LEAVING HOME REMINDERS =================
+
+
 }
 
 module.exports = Database
