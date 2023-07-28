@@ -15,7 +15,7 @@ import styles from '../styles';
 // yo
 function CalendarScreen() {
   return (
-    <View style={styles.sectionContainer}>
+    <View style={{height: 600}}>
       {/* <Schedule /> */}
       <AppointmentForm />
     </View>
