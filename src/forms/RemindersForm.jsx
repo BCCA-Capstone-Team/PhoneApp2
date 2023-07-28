@@ -3,6 +3,22 @@ import { Text, View, TextInput, Button, StyleSheet } from 'react-native';
 import { useForm, Controller } from 'react-hook-form';
 import styles from '../styles';
 
+
+let Database = require('../database/Database.jsx');
+let database = new Database('leavingHomeReminderDatabase');
+
+async function startDatabase() {
+  leavingHomeReminderTable = await database.createTable('leavingHomeReminder', column => {
+    // Auto Clear is forcing a recreation of the table every time.
+    // column.autoClear();
+
+    column.create('reminderText', 'TEXT')
+
+    column.run();
+  });
+}
+startDatabase();
+
 const RemindersForm = () => {
   const {
     control,
@@ -10,7 +26,15 @@ const RemindersForm = () => {
     formState: { errors },
   } = useForm();
 
-  const onSubmit = (data) => {
+  const onSubmit = async data => {
+    await leavingHomeReminderTable.add(
+      data.leavingHomeReminder
+    )
+    
+    await leavingHomeReminderTable.view()
+
+    await leavingHomeReminderTable.reload()
+
     console.log('Reminders:', data);
   };
 
