@@ -11,6 +11,8 @@ import CalendarScreen from './src/screens/CalendarScreen';
 import RemindersScreen from './src/screens/RemindersScreen';
 import ProfileScreen from './src/screens/ProfileScreen';
 import ProfileDetailScreen from './src/screens/ProfileDetailScreen';
+import AppointmentDetails from './src/screens/AppointmentDetails';
+import AppointmentFormScreen from './src/screens/AppointmentFormScreen';
 
 const Stack = createStackNavigator();
 
@@ -25,6 +27,14 @@ function App(): JSX.Element {
         <Stack.Screen
           name="ProfileDetailScreen"
           component={ProfileDetailScreen}
+        />
+        <Stack.Screen
+          name="AppointmentDetails"
+          component={AppointmentDetails}
+        />
+        <Stack.Screen
+          name="AppointmentFormScreen"
+          component={AppointmentFormScreen}
         />
       </Stack.Navigator>
     </NavigationContainer>

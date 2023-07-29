@@ -13,10 +13,10 @@ import AppointmentForm from '../forms/AppointmentForm';
 import Schedule from '../components/Schedule';
 import styles from '../styles';
 // yo
-function CalendarScreen() {
+function CalendarScreen({navigation}) {
   return (
     <View style={{height: 600}}>
-      <Schedule />
+      <Schedule navigation={navigation} />
       {/* <AppointmentForm /> */}
     </View>
   );

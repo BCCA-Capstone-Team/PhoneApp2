@@ -38,7 +38,7 @@ async function startDatabase() {
 }
 startDatabase();
 
-const AppointmentForm = () => {
+const AppointmentForm = ({navigation}) => {
   const {
     control,
     handleSubmit,

@@ -425,7 +425,6 @@ class DataController {
     });
   }
 
-
   reload() {
     return new Promise((resolve, reject) => {
       this.database.transaction(
