@@ -1,7 +1,4 @@
 import React, { useEffect, useState } from 'react';
-<<<<<<< HEAD
-import { View, Text, Button } from 'react-native'
-=======
 import { View, Text, Button } from 'react-native';
 import Voice from '@react-native-voice/voice';
 
@@ -69,4 +66,3 @@ useEffect(() => {
 };
 
 export default MicrophoneComponent;
->>>>>>> 8cb96fa2fe5a5dc09aa6a14874607a1fac581005
