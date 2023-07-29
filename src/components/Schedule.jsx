@@ -40,6 +40,8 @@ const Schedule = () => {
   };
 
   const renderItem = item => {
+
+
     return (
       <TouchableOpacity
         style={{
