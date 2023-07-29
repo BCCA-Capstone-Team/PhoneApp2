@@ -9,6 +9,7 @@ import Voice, {
 } from '@react-native-voice/voice';
 import styles from '../styles';
 import MicrophoneComponent from '../components/MicrophoneComponent';
+import TtsButtonComponent from '../components/TtsButtonComponent';
 
 function HomeScreen({navigation}) {
   const [isListening, setIsListening] = useState(false);
@@ -104,7 +105,6 @@ function HomeScreen({navigation}) {
     } else {
       setIsListening(true);
       startListening();
-      Tts.speak("You can say 'Calendar', 'Reminders', or 'Profile'.");
     }
   };
 
@@ -128,10 +128,6 @@ function HomeScreen({navigation}) {
 
   return (
     <View style={styles.homeContainer}>
-      <View style={styles.sectionContainer}>
-        <Text style={styles.sectionTitle}>We are on the Home Page</Text>
-      </View>
-
       {/* Buttons */}
       <TouchableOpacity
         style={styles.button}
@@ -156,9 +152,12 @@ function HomeScreen({navigation}) {
         style={styles.speakButton}
         onPress={isListening ? stopListening : startListening}>
         <Text style={styles.speakButtonText}>
-          {isListening ? 'Stop Listening' : 'Speak'}
+          {isListening ? 'Stop Listening' : 'Listen'}
         </Text>
       </TouchableOpacity>
+
+      {/*TTS Button */}
+      <TtsButtonComponent text="Welcome to the home screen.  Here you can decide where to go such as: Calendar, Reminders, and Profile.  If you need to go by voice please click on the red button and say the name of the page you wish to go." />
 
       <MicrophoneComponent />
     </View>

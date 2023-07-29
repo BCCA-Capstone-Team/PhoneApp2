@@ -19,7 +19,13 @@ export default StyleSheet.create({
     marginBottom: 20,
   },
   buttonText: {
-    fontSize: 16,
+    color: 'black',
+    fontSize: 30,
+    fontWeight: 'bold',
+    padding: 8,
+  },
+  button: {
+    margin: 3,
   },
   input: {
     borderWidth: 1,
@@ -48,14 +54,40 @@ export default StyleSheet.create({
     fontWeight: '700',
   },
   speakButton: {
-    backgroundColor: 'red',
+    backgroundColor: 'blue',
     paddingHorizontal: 20,
     paddingVertical: 10,
     borderRadius: 8,
+    margin: 5,
   },
   speakButtonText: {
-    color: 'black',
+    color: 'white',
     fontWeight: 'bold',
-    fontSize: 16,
+    fontSize: 20,
+  },
+  voiceButton: {
+    backgroundColor: 'F26522',
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    borderRadius: 8,
+    margin: 5,
+  },
+  voiceButtonText: {
+    color: 'white',
+    fontWeight: 'bold',
+    fontSize: 20,
+    textAlign: 'center',
+  },
+  submitButton: {
+    backgroundColor: '0C2340',
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    borderRadius: 10,
+    margin: 3,
+  },
+  submitText: {
+    color: 'white',
+    fontSize: 30,
+    textAlign: 'center',
   },
 });
