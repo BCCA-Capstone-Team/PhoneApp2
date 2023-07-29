@@ -362,30 +362,30 @@ class DataController {
     this.data = [];
   }
 
-  // view() {
-  //     return new Promise((resolve, reject) => {
-  //         this.database.transaction((tx) => {
-  //             tx.executeSql(`SELECT * FROM ${this.tableName}`, [], (tx, results) => {
-  //                 let fullTable = []
+   show() {
+       return new Promise((resolve, reject) => {
+           this.database.transaction((tx) => {
+               tx.executeSql(`SELECT * FROM ${this.tableName}`, [], (tx, results) => {
+                   let fullTable = []
 
-  //                 for (let i = 0; i < results.rows.length; i++) {
-  //                     let currentRow = []
-  //                     let rowData = results.rows.item(i)['ID']
-  //                     currentRow.push(['ID', rowData])
+                   for (let i = 0; i < results.rows.length; i++) {
+                       let currentRow = []
+                       let rowData = results.rows.item(i)['ID']
+                       currentRow.push(['ID', rowData])
 
-  //                     for (let i2 = 0; i2 < this.columnList.length; i2++) {
-  //                         let rowLable = this.columnList[i2]
-  //                         let rowData = results.rows.item(i)[this.columnList[i2]]
-  //                         currentRow.push([rowLable, rowData])
-  //                     }
-  //                     console.log(currentRow)
-  //                 }
-  //                 this.data = fullTable
-  //                 resolve()
-  //             });
-  //         }, function (error) { console.error(error) }, function () { })
-  //     })
-  // }
+                       for (let i2 = 0; i2 < this.columnList.length; i2++) {
+                           let rowLable = this.columnList[i2]
+                           let rowData = results.rows.item(i)[this.columnList[i2]]
+                           currentRow.push([rowLable, rowData])
+                       }
+                       console.log(currentRow)
+                   }
+                   this.data = fullTable
+                   resolve()
+               });
+           }, function (error) { console.error(error) }, function () { })
+       })
+   }
 
   view() {
     return new Promise((resolve, reject) => {
@@ -630,52 +630,3 @@ class DataController {
 }
 
 module.exports = Database;
-
-//database.transaction((tx) => {
-//    tx.executeSql('CREATE TABLE IF NOT EXISTS DemoTable (name, score)');
-//    //tx.executeSql('INSERT INTO DemoTable VALUES (?,?)', ['Alice', 101]);
-//    //tx.executeSql('INSERT INTO DemoTable VALUES (?,?)', ['Betty', 202]);
-//}, function (error) {
-//    console.log('Transaction ERROR: ' + error.message);
-//}, function () {
-//    console.log('Populated database OK');
-//});
-
-//database.transaction(function (tx) {
-//    tx.executeSql("SELECT * FROM DemoTable", [], function (tx, results) {
-//        if (tx.error) { return console.error(tx.error) }
-//        console.log(results.rows.length)
-
-//        for (let i = 0; i < results.rows.length; i++) {
-//            console.log(`${results.rows.item(i).name} | ${results.rows.item(i).score}`)
-//        }
-//    });
-//});
-
-//database.transaction(function (tx) {
-//    tx.executeSql("DELETE FROM DemoTable WHERE name = ?", ['Betty'], function (tx, res) {
-//        console.log("removeId: " + res.insertId);
-//        console.log("rowsAffected: " + res.rowsAffected);
-//    },
-//        function (tx, error) {
-//            console.log('DELETE error: ' + error.message);
-//        });
-//}, function (error) {
-//    console.log('transaction error: ' + error.message);
-//}, function () {
-//    console.log('transaction ok');
-//});
-
-//database.transaction(function (tx) {
-//    tx.executeSql("UPDATE DemoTable SET score = ? WHERE name = ?", [500, 'Alice'], function (tx, res) {
-//        console.log("insertId: " + res.insertId);
-//        console.log("rowsAffected: " + res.rowsAffected);
-//    },
-//        function (tx, error) {
-//            console.log('UPDATE error: ' + error.message);
-//        });
-//}, function (error) {
-//    console.log('transaction error: ' + error.message);
-//}, function () {
-//    console.log('transaction ok');
-//});

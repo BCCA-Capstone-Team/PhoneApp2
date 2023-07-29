@@ -1,16 +1,9 @@
 import React from 'react';
-
-import {
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  useColorScheme,
-  View,
-} from 'react-native';
+import {Text, View, TouchableOpacity} from 'react-native';
 import ProfileForm from '../forms/ProfileForm';
 import styles from '../styles';
+import Tts from 'react-native-tts';
+import TtsButtonComponent from '../components/TtsButtonComponent';
 
 function ProfileScreen({navigation, route}) {
   const {profileData} = route.params;
@@ -23,6 +16,8 @@ function ProfileScreen({navigation, route}) {
         route={route}
         profileData={profileData}
       />
+      {/*TTS Button */}
+      <TtsButtonComponent text="This is the profile screen.  Please enter the following information:first name, last name, street address, city, state, and your zipcode.  " />
     </View>
   );
 }

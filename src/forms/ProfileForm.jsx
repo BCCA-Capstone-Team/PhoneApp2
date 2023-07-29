@@ -13,21 +13,34 @@ import styles from '../styles';
 let Database = require('../database/Database.jsx');
 let database = new Database('profileDatabase');
 
-async function startDatabase() {
-  profileTable = await database.createTable('profile', column => {
-    column.autoClear();
+//async function startDatabase() {
+//  profileTable = await database.createTable('profile', column => {
+//    column.autoClear();
 
-    column.create('firstName', 'TEXT');
-    column.create('lastName', 'TEXT');
-    column.create('street', 'TEXT');
-    column.create('city', 'TEXT');
-    column.create('state', 'TEXT');
-    column.create('zipCode', 'INT');
+//    column.create('firstName', 'TEXT');
+//    column.create('lastName', 'TEXT');
+//    column.create('street', 'TEXT');
+//    column.create('city', 'TEXT');
+//    column.create('state', 'TEXT');
+//    column.create('zipCode', 'INT');
 
-    column.run();
-  });
-}
-startDatabase();
+//    column.run();
+//  });
+//}
+//startDatabase();
+
+async function testDatabase() {
+    let pDatabase = require('../database/ProfileDatabase.jsx');
+    let profileDatabase = new pDatabase()
+    let additionState = await profileDatabase.addProfile('Joseph', 'Last', 'Street', 'City', 'State', 38901)
+    console.log(`Add Profile State ${additionState}`)
+    let profileCreated = await profileDatabase.checkForProfile()
+    console.log(`Profile Created ${profileCreated}`)
+    profileDatabase.table.show()
+    let editStatus = await profileDatabase.editProfile('firstName', ' ')
+    console.log(`Update status ${editStatus} `)
+    profileDatabase.table.show()
+}; testDatabase()
 
 const ProfileForm = ({navigation, route}) => {
   const {
@@ -63,16 +76,16 @@ const ProfileForm = ({navigation, route}) => {
     console.log(data.firstName);
     console.log(data.zipCode);
 
-    await profileTable.add(
-      data.firstName,
-      data.lastName,
-      data.street,
-      data.city,
-      data.state,
-      data.zipCode,
-    );
+    //await profileTable.add(
+    //  data.firstName,
+    //  data.lastName,
+    //  data.street,
+    //  data.city,
+    //  data.state,
+    //  data.zipCode,
+    //);
 
-    profileTable.view();
+    //profileTable.view();
 
     await navigation.navigate('ProfileDetailScreen', {profileData: data});
   };
@@ -175,8 +188,10 @@ const ProfileForm = ({navigation, route}) => {
         <Text style={styles.error}>{errors.zipCode.message}</Text>
       )}
 
-      <TouchableOpacity style={styles.button} onPress={handleSubmit(onSubmit)}>
-        <Text style={styles.buttonText}>Submit</Text>
+      <TouchableOpacity
+        style={styles.submitButton}
+        onPress={handleSubmit(onSubmit)}>
+        <Text style={styles.submitText}>Submit</Text>
       </TouchableOpacity>
     </View>
   );

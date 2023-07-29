@@ -1,54 +1,165 @@
-import React, {useEffect} from 'react';
-import {StyleSheet, Text, View, TouchableOpacity} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {Text, View, TouchableOpacity} from 'react-native';
+import {check, PERMISSIONS, request} from 'react-native-permissions';
 import Tts from 'react-native-tts';
+import Voice, {
+  SpeechRecognizedEvent,
+  SpeechResultsEvent,
+  SpeechErrorEvent,
+} from '@react-native-voice/voice';
 import styles from '../styles';
+import MicrophoneComponent from '../components/MicrophoneComponent';
+import TtsButtonComponent from '../components/TtsButtonComponent';
 
 function HomeScreen({navigation}) {
-  // event handler for buttons
-  // const handleButtonPress = (screenName, buttonText) => {
-  const handleButtonPress = (screenName, data) => {
-    // navigation.navigate(screenName);
-    navigation.navigate(screenName, {profileData: data});
-    // handleTouchableOpacityPress(screenName, buttonText); //fixed a typo here
-    handleTouchableOpacityPress(screenName, data);
-  };
+  const [isListening, setIsListening] = useState(false);
 
   useEffect(() => {
-    Tts.speak('We are on the Home Page');
+    check(PERMISSIONS.ANDROID.RECORD_AUDIO).then(result => {
+      if (result === 'denied') {
+        request(PERMISSIONS.ANDROID.RECORD_AUDIO).then(newResult => {
+          // Handle the permission result
+        });
+      }
+    });
+
+    check(PERMISSIONS.IOS.MICROPHONE).then(result => {
+      if (result === 'denied') {
+        request(PERMISSIONS.IOS.MICROPHONE).then(newResult => {
+          // Handle the permission result
+        });
+      }
+    });
+
+    // Request permissions and initialize voice recognition
+    Voice.onSpeechStart = onSpeechStart;
+    Voice.onSpeechEnd = onSpeechEnd;
+    Voice.onSpeechResults = onSpeechResults;
+    Voice.onSpeechError = onSpeechError;
 
     return () => {
-      Tts.stop();
+      // Clean up voice recognition events when the component unmounts
+      Voice.onSpeechStart = undefined;
+      Voice.onSpeechEnd = undefined;
+      Voice.onSpeechResults = undefined;
+      Voice.onSpeechError = undefined;
+      Voice.destroy().then(Voice.removeAllListeners);
     };
   }, []);
 
-  const handleTouchableOpacityPress = (screenName, buttonText) => {
-    Tts.speak(screenName + ', ' + buttonText);
+  const handleVoiceResults = e => {
+    // Handle voice results
+    const spokenWords = e.value;
+    const command = spokenWords[0].toLowerCase();
+    switch (command) {
+      case 'calendar':
+        handleButtonPress('CalendarScreen');
+        break;
+      case 'reminders':
+        handleButtonPress('RemindersScreen');
+        break;
+      case 'profile':
+        handleButtonPress('ProfileScreen');
+        break;
+      default:
+        Tts.speak('Sorry, I did not understand.'); //message for unknown commands
+        break;
+    }
+  };
+
+  // Event handlers for voice recognition
+  const onSpeechStart = e => {
+    // Handle speech start event
+    console.log('Speech started');
+  };
+
+  const onSpeechRecognized = e => {
+    // Handle recognized speech event
+    console.log('Speech recognized:', e);
+  };
+
+  const onSpeechResults = e => {
+    // Handle speech results event
+    handleVoiceResults(e); // Call the existing voice results handler
+    console.log(e.value[0]);
+  };
+
+  const onSpeechError = e => {
+    // Handle speech error event
+    console.error('Speech recognition error:', e);
+  };
+
+  const onSpeechEnd = e => {
+    setIsListening(false);
+  };
+
+  // event handler for buttonss
+  const handleButtonPress = (screenName, data) => {
+    navigation.navigate(screenName, {profileData: data});
+  };
+
+  const handleSpeakButtonPress = () => {
+    if (isListening) {
+      setIsListening(false);
+      stopListening();
+    } else {
+      setIsListening(true);
+      startListening();
+    }
+  };
+
+  const startListening = async () => {
+    try {
+      await Voice.start('en-US');
+      setIsListening(true);
+    } catch (error) {
+      console.error('Error starting voice recognition:', error);
+    }
+  };
+
+  const stopListening = async () => {
+    try {
+      await Voice.stop('en-US');
+      setIsListening(false);
+    } catch (error) {
+      console.error('Error starting voice recognition:', error);
+    }
   };
 
   return (
     <View style={styles.homeContainer}>
-      <View style={styles.sectionContainer}>
-        <Text style={styles.sectionTitle}>We are on the Home Page</Text>
-      </View>
-
       {/* Buttons */}
       <TouchableOpacity
         style={styles.button}
-        onPress={() => handleButtonPress('CalendarScreen', 'Calendar')}>
+        onPress={() => handleButtonPress('CalendarScreen')}>
         <Text style={styles.buttonText}>Calendar</Text>
       </TouchableOpacity>
 
       <TouchableOpacity
         style={styles.button}
-        onPress={() => handleButtonPress('RemindersScreen', 'Reminders')}>
+        onPress={() => handleButtonPress('RemindersScreen')}>
         <Text style={styles.buttonText}>Reminders</Text>
       </TouchableOpacity>
 
       <TouchableOpacity
         style={styles.button}
-        onPress={() => handleButtonPress('ProfileScreen', 'Profile')}>
+        onPress={() => handleButtonPress('ProfileScreen')}>
         <Text style={styles.buttonText}>Profile</Text>
       </TouchableOpacity>
+
+      {/* Speak Button */}
+      <TouchableOpacity
+        style={styles.speakButton}
+        onPress={isListening ? stopListening : startListening}>
+        <Text style={styles.speakButtonText}>
+          {isListening ? 'Stop Listening' : 'Listen'}
+        </Text>
+      </TouchableOpacity>
+
+      {/*TTS Button */}
+      <TtsButtonComponent text="Welcome to the home screen.  Here you can decide where to go such as: Calendar, Reminders, and Profile.  If you need to go by voice please click on the red button and say the name of the page you wish to go." />
+
+      <MicrophoneComponent />
     </View>
   );
 }
