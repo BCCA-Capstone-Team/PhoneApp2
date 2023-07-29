@@ -47,10 +47,6 @@ export default StyleSheet.create({
   highlight: {
     fontWeight: '700',
   },
-<<<<<<< Updated upstream
-});
-=======
-
   speakButton:{
     backgroundColor: 'red',
     paddingHorizontal: 20,
@@ -63,4 +59,3 @@ export default StyleSheet.create({
    fontSize: 16,
    },
 });
->>>>>>> Stashed changes
