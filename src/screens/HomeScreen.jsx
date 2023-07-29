@@ -73,8 +73,9 @@ function HomeScreen({navigation}) {
   };
 
   // event handler for buttonss
-  const handleButtonPress = screenName => {
-    navigation.navigate(screenName);
+  const handleButtonPress = (screenName, data) => {
+    navigation.navigate(screenName, {profileData: data});
+
   };
 
   const handleSpeakButtonPress = () => {
