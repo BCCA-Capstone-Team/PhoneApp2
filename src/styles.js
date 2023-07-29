@@ -47,15 +47,15 @@ export default StyleSheet.create({
   highlight: {
     fontWeight: '700',
   },
-  speakButton:{
+  speakButton: {
     backgroundColor: 'red',
     paddingHorizontal: 20,
     paddingVertical: 10,
     borderRadius: 8,
-    },
-   speakButtonText: {
-   color: 'black',
-   fontWeight: 'bold',
-   fontSize: 16,
-   },
+  },
+  speakButtonText: {
+    color: 'black',
+    fontWeight: 'bold',
+    fontSize: 16,
+  },
 });
