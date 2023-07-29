@@ -18,7 +18,7 @@ function App(): JSX.Element {
   return (
     <NavigationContainer>
       <Stack.Navigator>
-        <Stack.Screen name="HomeScreen" component={HomeScreen} />
+        <Stack.Screen name="Home Screen" component={HomeScreen} />
         <Stack.Screen name="CalendarScreen" component={CalendarScreen} />
         <Stack.Screen name="RemindersScreen" component={RemindersScreen} />
         <Stack.Screen name="ProfileScreen" component={ProfileScreen} />

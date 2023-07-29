@@ -31,7 +31,7 @@ function HomeScreen({navigation}) {
     };
   }, []);
 
-  const handleVoiceResults = (e: SpeechResultsEvent) => {
+  const handleVoiceResults = (e) => {
     // Handle voice results
     const spokenWords = e.value;
     const command = spokenWords[0].toLowerCase();
@@ -57,17 +57,17 @@ function HomeScreen({navigation}) {
     console.log('Speech started');
   };
 
-  const onSpeechRecognized = (e: SpeechRecognizedEvent) => {
+  const onSpeechRecognized = (e) => {
     // Handle recognized speech event
     console.log('Speech recognized:', e);
   };
 
-  const onSpeechResults = (e: SpeechResultsEvent) => {
+  const onSpeechResults = (e) => {
     // Handle speech results event
     handleVoiceResults(e); // Call the existing voice results handler
   };
 
-  const onSpeechError = (e: SpeechErrorEvent) => {
+  const onSpeechError = (e) => {
     // Handle speech error event
     console.error('Speech recognition error:', e);
   };
