@@ -53,16 +53,16 @@ const MicrophoneComponent = () => {
     }
   };
 
-//   return (
-//     <View>
-//       <Button
-//         title={isListening ? 'Listening...' : 'Start Listening'}
-//         onPress={isListening ? stopListening : startListening}
-//         disabled={isListening}
-//       />
-//       <Text>Recognized Text: {recognizedText}</Text>
-//     </View>
-//   );
+  return (
+    <View>
+      <Button
+        title={isListening ? 'Listening...' : 'Start Listening'}
+        onPress={isListening ? stopListening : startListening}
+        disabled={isListening}
+      />
+      <Text>Recognized Text: {recognizedText}</Text>
+    </View>
+  );
 };
 
 export default MicrophoneComponent;
