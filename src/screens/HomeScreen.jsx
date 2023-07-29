@@ -8,15 +8,23 @@ import Voice, {
   SpeechErrorEvent,
 } from '@react-native-voice/voice';
 import styles from '../styles';
+import MicrophoneComponent from '../components/MicrophoneComponent';
 
 function HomeScreen({navigation}) {
-    const[isListening, setIsListening] = useState(false);
-
+  const [isListening, setIsListening] = useState(false);
 
   useEffect(() => {
     check(PERMISSIONS.ANDROID.RECORD_AUDIO).then(result => {
       if (result === 'denied') {
         request(PERMISSIONS.ANDROID.RECORD_AUDIO).then(newResult => {
+          // Handle the permission result
+        });
+      }
+    });
+
+    check(PERMISSIONS.IOS.MICROPHONE).then(result => {
+      if (result === 'denied') {
+        request(PERMISSIONS.IOS.MICROPHONE).then(newResult => {
           // Handle the permission result
         });
       }
@@ -38,7 +46,7 @@ function HomeScreen({navigation}) {
     };
   }, []);
 
-  const handleVoiceResults = (e: SpeechResultsEvent) => {
+  const handleVoiceResults = e => {
     // Handle voice results
     const spokenWords = e.value;
     const command = spokenWords[0].toLowerCase();
@@ -64,58 +72,59 @@ function HomeScreen({navigation}) {
     console.log('Speech started');
   };
 
+  const onSpeechRecognized = e => {
+    // Handle recognized speech event
+    console.log('Speech recognized:', e);
+  };
 
-  const onSpeechResults = (e: SpeechResultsEvent) => {
+  const onSpeechResults = e => {
     // Handle speech results event
     handleVoiceResults(e); // Call the existing voice results handler
     console.log(e.value[0]);
   };
 
-  const onSpeechError = (e: SpeechErrorEvent) => {
+  const onSpeechError = e => {
     // Handle speech error event
     console.error('Speech recognition error:', e);
   };
 
-  const onSpeechEnd = (e) => {
+  const onSpeechEnd = e => {
     setIsListening(false);
-  }
+  };
 
   // event handler for buttonss
-  const handleButtonPress = screenName => {
-    navigation.navigate(screenName);
+  const handleButtonPress = (screenName, data) => {
+    navigation.navigate(screenName, {profileData: data});
   };
 
   const handleSpeakButtonPress = () => {
-    if(isListening){
-        setIsListening(false);
-        stopListening();
-    } else{
-        setIsListening(true);
-        startListening();
-        Tts.speak("You can say 'Calendar', 'Reminders', or 'Profile'.");
+    if (isListening) {
+      setIsListening(false);
+      stopListening();
+    } else {
+      setIsListening(true);
+      startListening();
+      Tts.speak("You can say 'Calendar', 'Reminders', or 'Profile'.");
     }
   };
 
   const startListening = async () => {
-    try{
-        await Voice.start('en-US');
-        setIsListening(true);
-
-    }catch(error){
-    console.error('Error starting voice recognition:', error);
-    }
-  }
-
-
-   const stopListening = async () => {
-      try{
-          await Voice.stop('en-US');
-          setIsListening(false);
-
-      }catch(error){
+    try {
+      await Voice.start('en-US');
+      setIsListening(true);
+    } catch (error) {
       console.error('Error starting voice recognition:', error);
-      }
     }
+  };
+
+  const stopListening = async () => {
+    try {
+      await Voice.stop('en-US');
+      setIsListening(false);
+    } catch (error) {
+      console.error('Error starting voice recognition:', error);
+    }
+  };
 
   return (
     <View style={styles.homeContainer}>
@@ -145,12 +154,13 @@ function HomeScreen({navigation}) {
       {/* Speak Button */}
       <TouchableOpacity
         style={styles.speakButton}
-        onPress={isListening ? stopListening : startListening }
-      >
+        onPress={isListening ? stopListening : startListening}>
         <Text style={styles.speakButtonText}>
           {isListening ? 'Stop Listening' : 'Speak'}
         </Text>
       </TouchableOpacity>
+
+      <MicrophoneComponent />
     </View>
   );
 }

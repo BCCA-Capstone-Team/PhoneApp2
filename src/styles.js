@@ -47,7 +47,6 @@ export default StyleSheet.create({
   highlight: {
     fontWeight: '700',
   },
-
   speakButton: {
     backgroundColor: 'red',
     paddingHorizontal: 20,
