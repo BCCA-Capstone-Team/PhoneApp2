@@ -2,8 +2,10 @@ import React, {useState} from 'react';
 import {View, Text, TouchableOpacity} from 'react-native';
 import {startOfWeek, addDays} from 'date-fns';
 import {Calendar, WeekCalendar, Agenda, DateData} from 'react-native-calendars';
+import AppointmentForm from '../forms/AppointmentForm';
+import styles from '../styles';
 
-let database = new Database('appointmentDatabase');
+// let database = new Database('appointmentDatabase');
 const timeToString = time => {
   const date = new Date(time);
   return date.toISOString().split('T')[0];
@@ -60,12 +62,26 @@ const Schedule = () => {
     );
   };
 
+  const renderEmptyDay = day => {
+    return (
+      <TouchableOpacity
+        style={{margin: 5}}
+        onPress={() => {
+          console.log(timeToString(day));
+          // <AppointmentForm />;
+        }}>
+        <Text>Empty Day</Text>
+      </TouchableOpacity>
+    );
+  };
+
   return (
     <View style={{flex: 1}}>
       <Agenda
         items={items}
         loadItemsForMonth={loadItems}
         renderItem={renderItem}
+        renderEmptyDate={renderEmptyDay}
       />
     </View>
   );

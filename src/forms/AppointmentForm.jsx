@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
-import { View, Text, Button, TextInput, Platform } from 'react-native';
-import { Controller, useForm, useFieldArray } from 'react-hook-form';
+import React, {useState} from 'react';
+import {View, Text, Button, TextInput, Platform} from 'react-native';
+import {Controller, useForm, useFieldArray} from 'react-hook-form';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import { Picker } from '@react-native-picker/picker';
+import {Picker} from '@react-native-picker/picker';
 import LocationModal from '../components/LocationModal';
-import styles from '../styles'
+import styles from '../styles';
 
 let Database = require('../database/Database.jsx');
 let database = new Database('appointmentDatabase');
@@ -12,7 +12,7 @@ let database = new Database('appointmentDatabase');
 async function startDatabase() {
   appointmentTable = await database.createTable('appointment', column => {
     // Auto Clear is forcing a recreation of the table every time.
-    column.autoClear();
+    // column.autoClear();
 
     column.create('eventTitle', 'TEXT');
     column.create('location', 'TEXT');
@@ -23,24 +23,26 @@ async function startDatabase() {
     column.run();
   });
 
-  appointmentRemindersTable = await database.createTable('appointmentReminders', column => {
-    // Auto Clear is forcing a recreation of the table every time.
-    column.autoClear();
+  appointmentRemindersTable = await database.createTable(
+    'appointmentReminders',
+    column => {
+      // Auto Clear is forcing a recreation of the table every time.
+      column.autoClear();
 
-    column.create('appointmentId', 'INT');
-    column.create('reminder', 'TEXT');
+      column.create('appointmentId', 'INT');
+      column.create('reminder', 'TEXT');
 
-    column.run();
-  });
+      column.run();
+    },
+  );
 }
 startDatabase();
-
 
 const AppointmentForm = () => {
   const {
     control,
     handleSubmit,
-    formState: { errors },
+    formState: {errors},
     setValue,
   } = useForm();
   const [showDatePicker, setShowDatePicker] = useState(false);
@@ -58,44 +60,44 @@ const AppointmentForm = () => {
 
   const [showLocationModal, setShowLocationModal] = useState(false);
 
-  const { fields, append, remove } = useFieldArray({
+  const {fields, append, remove} = useFieldArray({
     control,
     name: 'thingsToBring',
   });
 
   const onSubmit = async data => {
     const formData = {
-        ...data,
-        selectedDate,
-        selectedTime,
-        reminder,
-        location: JSON.stringify(location),
+      ...data,
+      selectedDate,
+      selectedTime,
+      reminder,
+      location: JSON.stringify(location),
     };
-      
+
     await appointmentTable.add(
       formData.eventTitle,
       formData.location,
       formData.reminder,
       formData.selectedDate,
-      formData.selectedTime
-    )
+      formData.selectedTime,
+    );
 
     const newestAppointmentId = await appointmentTable.getNewestAppointmentId();
-   
+
     for (const item of formData.thingsToBring) {
       await appointmentRemindersTable.add(newestAppointmentId, item.item);
     }
 
-    console.log('New appointment ID: ', newestAppointmentId)
+    console.log('New appointment ID: ', newestAppointmentId);
 
-    await appointmentTable.view()
-    await appointmentTable.reload()
+    await appointmentTable.view();
+    await appointmentTable.reload();
 
-    await appointmentRemindersTable.view()
-    await appointmentRemindersTable.reload()
-    
-    let fullTabale = appointmentRemindersTable.data
-    console.log(fullTabale)
+    await appointmentRemindersTable.view();
+    await appointmentRemindersTable.reload();
+
+    let fullTabale = appointmentRemindersTable.data;
+    console.log(fullTabale);
   };
 
   const showDatepicker = () => {
@@ -126,7 +128,7 @@ const AppointmentForm = () => {
     setValue(`thingsToBring[${index}].item`, text); // Update the form value
   };
 
-  const handleLocationSubmit = (data) => {
+  const handleLocationSubmit = data => {
     setLocation(data);
     setShowLocationModal(false);
   };
@@ -137,30 +139,38 @@ const AppointmentForm = () => {
 
       <Controller
         control={control}
-        render={({ field: { onChange, value } }) => (
+        render={({field: {onChange, value}}) => (
           <TextInput
             placeholder="Event Title"
             value={value}
-            onChangeText={(text) => onChange(text)}
+            onChangeText={text => onChange(text)}
           />
         )}
         name="eventTitle"
-        rules={{ required: 'Text is required.' }}
+        rules={{required: 'Text is required.'}}
         defaultValue=""
       />
-      {errors.eventTitle && <Text style={styles.error}>{errors.eventTitle.message}</Text>}
-      
+      {errors.eventTitle && (
+        <Text style={styles.error}>{errors.eventTitle.message}</Text>
+      )}
+
       <View>
         <Text>Location:</Text>
         <Text>Address: {location.address}</Text>
         <Text>City: {location.city}</Text>
         <Text>State: {location.state}</Text>
         <Text>Zip Code: {location.zipCode}</Text>
-        <Button onPress={() => setShowLocationModal(true)} title="Add Location" />
+        <Button
+          onPress={() => setShowLocationModal(true)}
+          title="Add Location"
+        />
       </View>
-      
-      <LocationModal visible={showLocationModal} onClose={() => setShowLocationModal(false)}
-      onSubmit={handleLocationSubmit} />
+
+      <LocationModal
+        visible={showLocationModal}
+        onClose={() => setShowLocationModal(false)}
+        onSubmit={handleLocationSubmit}
+      />
 
       <View>
         <Button onPress={showDatepicker} title="Select Date" />
@@ -186,12 +196,14 @@ const AppointmentForm = () => {
       </View>
       <View>
         <Text>Selected Reminder: {reminder} minutes before</Text>
-        <Button onPress={showReminderPickerModal} title="Open Reminder Picker" />
+        <Button
+          onPress={showReminderPickerModal}
+          title="Open Reminder Picker"
+        />
         {showReminderPicker && (
           <Picker
             selectedValue={reminder}
-            onValueChange={(itemValue) => setReminder(itemValue)}
-          >
+            onValueChange={itemValue => setReminder(itemValue)}>
             <Picker.Item label="15 minutes before" value="15" />
             <Picker.Item label="30 minutes before" value="30" />
             <Picker.Item label="1 hour before" value="60" />
@@ -200,8 +212,7 @@ const AppointmentForm = () => {
         )}
       </View>
 
-        {/* Things to Bring as Reminders with Appointment: */}
-
+      {/* Things to Bring as Reminders with Appointment: */}
 
       <View>
         <Text>Things to Bring:</Text>
@@ -209,11 +220,11 @@ const AppointmentForm = () => {
           <View key={field.id}>
             <Controller
               control={control}
-              render={({ field }) => (
+              render={({field}) => (
                 <TextInput
                   {...field}
                   placeholder={`Item ${index + 1}`}
-                  onChangeText={(text) => handleThingToBringChange(text, index)} // New line
+                  onChangeText={text => handleThingToBringChange(text, index)} // New line
                 />
               )}
               name={`thingsToBring[${index}].item`}
@@ -222,9 +233,9 @@ const AppointmentForm = () => {
             <Button onPress={() => remove(index)} title="Remove" />
           </View>
         ))}
-        <Button onPress={() => append({ item: '' })} title="Add Item" />
+        <Button onPress={() => append({item: ''})} title="Add Item" />
       </View>
-      
+
       <Button onPress={handleSubmit(onSubmit)} title="Submit" />
     </View>
   );
