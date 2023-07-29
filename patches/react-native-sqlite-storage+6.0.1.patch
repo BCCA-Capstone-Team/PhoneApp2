@@ -1,0 +1,16 @@
+diff --git a/node_modules/react-native-sqlite-storage/lib/.sqlite.core.js.swp b/node_modules/react-native-sqlite-storage/lib/.sqlite.core.js.swp
+new file mode 100644
+index 0000000..5860d65
+Binary files /dev/null and b/node_modules/react-native-sqlite-storage/lib/.sqlite.core.js.swp differ
+diff --git a/node_modules/react-native-sqlite-storage/react-native.config.js b/node_modules/react-native-sqlite-storage/react-native.config.js
+index dc150a9..6afcf1d 100644
+--- a/node_modules/react-native-sqlite-storage/react-native.config.js
++++ b/node_modules/react-native-sqlite-storage/react-native.config.js
+@@ -2,7 +2,6 @@ module.exports = {
+ 	dependency: {
+ 		platforms: {
+ 			ios: {
+-				project: './platforms/ios/SQLite.xcodeproj'
+ 			},
+ 			android: {
+ 				sourceDir: './platforms/android'

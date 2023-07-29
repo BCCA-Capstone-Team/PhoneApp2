@@ -9,6 +9,27 @@
     "start": "react-native start",
     "test": "jest"
   },
+  "reactNativePermissionsIOS": [
+    "AppTrackingTransparency",
+    "BluetoothPeripheral",
+    "Calendars",
+    "Camera",
+    "Contacts",
+    "FaceID",
+    "LocationAccuracy",
+    "LocationAlways",
+    "LocationWhenInUse",
+    "MediaLibrary",
+    "Microphone",
+    "Motion",
+    "Notifications",
+    "PhotoLibrary",
+    "PhotoLibraryAddOnly",
+    "Reminders",
+    "Siri",
+    "SpeechRecognition",
+    "StoreKit"
+  ],
   "dependencies": {
     "@react-native-community/datetimepicker": "^7.4.1",
     "@react-native-picker/picker": "^2.4.10",
@@ -42,7 +63,8 @@
     "metro-react-native-babel-preset": "0.76.7",
     "prettier": "^2.4.1",
     "react-test-renderer": "18.2.0",
-    "typescript": "4.8.4"
+    "typescript": "4.8.4",
+    "pod-install": "0.1.38"
   },
   "engines": {
     "node": ">=16"

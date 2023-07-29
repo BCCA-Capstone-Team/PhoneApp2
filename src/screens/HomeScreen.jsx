@@ -8,12 +8,21 @@ import Voice, {
   SpeechErrorEvent,
 } from '@react-native-voice/voice';
 import styles from '../styles';
+import MicrophoneComponent from '../components/MicrophoneComponent';
 
 function HomeScreen({navigation}) {
   useEffect(() => {
     check(PERMISSIONS.ANDROID.RECORD_AUDIO).then(result => {
       if (result === 'denied') {
         request(PERMISSIONS.ANDROID.RECORD_AUDIO).then(newResult => {
+          // Handle the permission result
+        });
+      }
+    });
+
+    check(PERMISSIONS.IOS.MICROPHONE).then(result => {
+      if (result === 'denied') {
+        request(PERMISSIONS.IOS.MICROPHONE).then(newResult => {
           // Handle the permission result
         });
       }
@@ -113,6 +122,8 @@ function HomeScreen({navigation}) {
         onPress={handleSpeakButtonPress}>
         <Text style={styles.speakButtonText}>Speak</Text>
       </TouchableOpacity>
+
+      <MicrophoneComponent />
     </View>
   );
 }
