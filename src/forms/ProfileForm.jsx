@@ -1,7 +1,15 @@
-import React from 'react';
-import {Text, View, TextInput, Button, StyleSheet,TouchableOpacity} from 'react-native';
+/* eslint-disable no-undef */
+import React, {useEffect} from 'react';
+import {
+  Text,
+  View,
+  TextInput,
+  Button,
+  StyleSheet,
+  TouchableOpacity,
+} from 'react-native';
 import {useForm, Controller} from 'react-hook-form';
-import styles from '../styles'
+import styles from '../styles';
 let Database = require('../database/Database.jsx');
 let database = new Database('profileDatabase');
 
@@ -21,18 +29,39 @@ async function startDatabase() {
 }
 startDatabase();
 
-const ProfileForm = () => {
+const ProfileForm = ({navigation, route}) => {
   const {
     control,
     handleSubmit,
+    setValue,
     formState: {errors},
   } = useForm();
 
+  // Check if there's pre-existing profile data
+  const {profileData} = route.params;
+  console.log('Profile Data:', profileData);
+
+  useEffect(() => {
+    if (profileData) {
+      // Populate the form fields with the pre-existing data
+      setValue('firstName', profileData.firstName || '');
+      setValue('lastName', profileData.lastName || '');
+      setValue('street', profileData.street || '');
+      setValue('city', profileData.city || '');
+      setValue('state', profileData.state || '');
+      setValue(
+        'zipCode',
+        profileData.zipCode ? profileData.zipCode.toString() : '',
+      );
+    }
+  }, [profileData, setValue]);
+
   const onSubmit = async data => {
-    //console.log('Address Data:', data);
-    //console.log('Run Values')
-    //console.log(data.firstName)
-    //console.log(data.zipCode)
+    //console logs for confirmation
+    console.log('Address Data:', data);
+    console.log('Run Values');
+    console.log(data.firstName);
+    console.log(data.zipCode);
 
     await profileTable.add(
       data.firstName,
@@ -44,6 +73,8 @@ const ProfileForm = () => {
     );
 
     profileTable.view();
+
+    await navigation.navigate('ProfileDetailScreen', {profileData: data});
   };
 
   return (

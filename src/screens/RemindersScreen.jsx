@@ -8,6 +8,7 @@ import EditButtonModal from '../components/EditButtonModal';
 
 function RemindersScreen() {
   const [reminders, setReminders] = useState([]);
+  console.log(reminders)
 
   const fetchRemindersFromDatabase = async () => {
     try {
@@ -64,7 +65,9 @@ function RemindersScreen() {
 
 
       <ScrollView style={{ flex: 1 }}>
-        {reminders.length > 0 ? (
+        {reminders === null ? (
+          <Text>Loading...</Text>
+        ) : reminders.length > 0 ? (
           reminders.map((reminder, index) => (
             <View key={index} style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
               <Text>{reminder[1][1]}</Text>
