@@ -10,6 +10,20 @@ import Voice, {
 import styles from '../styles';
 import MicrophoneComponent from '../components/MicrophoneComponent';
 
+async function testDatabase() {
+    let cDatabase = require('../database/CalendarDatabase.jsx');
+    let calendarDatabase = new cDatabase()
+    calendarDatabase.getAll()
+    //let additionState = await profileDatabase.addProfile('Joseph', 'Last', 'Street', 'City', 'State', 38901)
+    //console.log(`Add Profile State ${additionState}`)
+    //let profileCreated = await profileDatabase.checkForProfile()
+    //console.log(`Profile Created ${profileCreated}`)
+    //profileDatabase.table.show()
+    //let editStatus = await profileDatabase.editProfile('firstName', ' ')
+    //console.log(`Update status ${editStatus} `)
+    //profileDatabase.table.show()
+}; testDatabase()
+
 function HomeScreen({navigation}) {
   const [isListening, setIsListening] = useState(false);
 
