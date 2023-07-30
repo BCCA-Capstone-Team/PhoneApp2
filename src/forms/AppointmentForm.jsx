@@ -6,37 +6,44 @@ import {Picker} from '@react-native-picker/picker';
 import LocationModal from '../components/LocationModal';
 import styles from '../styles';
 
-let Database = require('../database/Database.jsx');
+//let Database = require('../database/Database.jsx');
+let Database = require('../database/CalendarDatabase.jsx');
 let database = new Database('appointmentDatabase');
 
-//async function startDatabase() {
-//  appointmentTable = await database.createTable('appointment', column => {
-//    // Auto Clear is forcing a recreation of the table every time.
-//    // column.autoClear();
+async function startDatabase() {
+    await database.onAppReady()
+    appointmentTable = database.appTable
+    appointmentRemindersTable = database.appReminderTable
 
-//    column.create('eventTitle', 'TEXT');
-//    column.create('location', 'TEXT');
-//    column.create('remindBeforeTime', 'INT');
-//    column.create('date', 'TEXT');
-//    column.create('time', 'TEXT');
+    //appointmentTable.show()
 
-//    column.run();
-//  });
+  //appointmentTable = await database.createTable('appointment', column => {
+  //  // Auto Clear is forcing a recreation of the table every time.
+  //  // column.autoClear();
 
-//  appointmentRemindersTable = await database.createTable(
-//    'appointmentReminders',
-//    column => {
-//      // Auto Clear is forcing a recreation of the table every time.
-//      column.autoClear();
+  //  column.create('eventTitle', 'TEXT');
+  //  column.create('location', 'TEXT');
+  //  column.create('remindBeforeTime', 'INT');
+  //  column.create('date', 'TEXT');
+  //  column.create('time', 'TEXT');
 
-//      column.create('appointmentId', 'INT');
-//      column.create('reminder', 'TEXT');
+  //  column.run();
+  //});
 
-//      column.run();
-//    },
-//  );
-//}
-//startDatabase();
+  //appointmentRemindersTable = await database.createTable(
+  //  'appointmentReminders',
+  //  column => {
+  //    // Auto Clear is forcing a recreation of the table every time.
+  //    column.autoClear();
+
+  //    column.create('appointmentId', 'INT');
+  //    column.create('reminder', 'TEXT');
+
+  //    column.run();
+  //  },
+  //);
+}
+startDatabase();
 
 const AppointmentForm = ({navigation}) => {
   const {
@@ -80,7 +87,9 @@ const AppointmentForm = ({navigation}) => {
       formData.reminder,
       formData.selectedDate,
       formData.selectedTime,
-    );
+      );
+
+      appointmentTable.show()
 
     const newestAppointmentId = await appointmentTable.getNewestAppointmentId();
 

@@ -25,7 +25,7 @@ class CalendarDatabase extends Database {
 
         this.appReminderTable = await this.createTable('appointmentReminders', (column) => {
             // Auto Clear is forcing a recreation of the table every time.
-            column.autoClear();
+            //column.autoClear();
 
             column.create('appointmentId', 'INT');
             column.create('reminder', 'TEXT');
@@ -33,25 +33,23 @@ class CalendarDatabase extends Database {
             column.run();
         })
 
-        console.log('Set Ready')
         this.appDatabaseReady = true
     }
 
     onAppReady() {
         return new Promise((resolve, reject) => {
             let appInterval = setInterval(() => {
-                console.log('Test')
-                if (this.appDatabaseReady == true)
+                if (this.appDatabaseReady == true) {
                     clearInterval(appInterval)
                     resolve()
+                }
             }, 1)
         })
     }
 
     async getAll() {
         await this.onAppReady()
-        console.log('Call')
-        console.log(this.appTable)
+        this.appTable.show()
     }
 
 }   

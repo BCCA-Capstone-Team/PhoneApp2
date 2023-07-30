@@ -12,9 +12,9 @@ import MicrophoneComponent from '../components/MicrophoneComponent';
 import TtsButtonComponent from '../components/TtsButtonComponent';
 
 async function testDatabase() {
-    let cDatabase = require('../database/CalendarDatabase.jsx');
-    let calendarDatabase = new cDatabase()
-    calendarDatabase.getAll()
+    let Database = require('../database/CalendarDatabase.jsx');
+    let database = new Database()
+    database.getAll()
     //let additionState = await profileDatabase.addProfile('Joseph', 'Last', 'Street', 'City', 'State', 38901)
     //console.log(`Add Profile State ${additionState}`)
     //let profileCreated = await profileDatabase.checkForProfile()
