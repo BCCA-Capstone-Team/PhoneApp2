@@ -80,7 +80,7 @@ export default StyleSheet.create({
     textAlign: 'center',
   },
   submitButton: {
-    backgroundColor: '0C2340',
+    backgroundColor: '#0C2340',
     paddingHorizontal: 20,
     paddingVertical: 10,
     borderRadius: 10,
