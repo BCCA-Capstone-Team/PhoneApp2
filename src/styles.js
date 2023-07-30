@@ -64,9 +64,10 @@ export default StyleSheet.create({
     color: 'white',
     fontWeight: 'bold',
     fontSize: 20,
+    textAlign: 'center',
   },
   voiceButton: {
-    backgroundColor: 'F26522',
+    backgroundColor: '#F26522',
     paddingHorizontal: 20,
     paddingVertical: 10,
     borderRadius: 8,

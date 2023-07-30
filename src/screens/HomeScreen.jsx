@@ -12,18 +12,19 @@ import MicrophoneComponent from '../components/MicrophoneComponent';
 import TtsButtonComponent from '../components/TtsButtonComponent';
 
 async function testDatabase() {
-    let cDatabase = require('../database/CalendarDatabase.jsx');
-    let calendarDatabase = new cDatabase()
-    calendarDatabase.getAll()
-    //let additionState = await profileDatabase.addProfile('Joseph', 'Last', 'Street', 'City', 'State', 38901)
-    //console.log(`Add Profile State ${additionState}`)
-    //let profileCreated = await profileDatabase.checkForProfile()
-    //console.log(`Profile Created ${profileCreated}`)
-    //profileDatabase.table.show()
-    //let editStatus = await profileDatabase.editProfile('firstName', ' ')
-    //console.log(`Update status ${editStatus} `)
-    //profileDatabase.table.show()
-}; testDatabase()
+  let cDatabase = require('../database/CalendarDatabase.jsx');
+  let calendarDatabase = new cDatabase();
+  calendarDatabase.getAll();
+  //let additionState = await profileDatabase.addProfile('Joseph', 'Last', 'Street', 'City', 'State', 38901)
+  //console.log(`Add Profile State ${additionState}`)
+  //let profileCreated = await profileDatabase.checkForProfile()
+  //console.log(`Profile Created ${profileCreated}`)
+  //profileDatabase.table.show()
+  //let editStatus = await profileDatabase.editProfile('firstName', ' ')
+  //console.log(`Update status ${editStatus} `)
+  //profileDatabase.table.show()
+}
+testDatabase();
 
 function HomeScreen({navigation}) {
   const [isListening, setIsListening] = useState(false);
@@ -142,19 +143,21 @@ function HomeScreen({navigation}) {
 
   return (
     <View style={styles.homeContainer}>
-      {/* Buttons */}
+      {/* Calendar Button */}
       <TouchableOpacity
         style={styles.button}
         onPress={() => handleButtonPress('CalendarScreen')}>
         <Text style={styles.buttonText}>Calendar</Text>
       </TouchableOpacity>
 
+      {/* Reminders Button */}
       <TouchableOpacity
         style={styles.button}
         onPress={() => handleButtonPress('RemindersScreen')}>
         <Text style={styles.buttonText}>Reminders</Text>
       </TouchableOpacity>
 
+      {/* Profile Button */}
       <TouchableOpacity
         style={styles.button}
         onPress={() => handleButtonPress('ProfileScreen')}>
@@ -173,7 +176,7 @@ function HomeScreen({navigation}) {
       {/*TTS Button */}
       <TtsButtonComponent text="Welcome to the home screen.  Here you can decide where to go such as: Calendar, Reminders, and Profile.  If you need to go by voice please click on the red button and say the name of the page you wish to go." />
 
-      <MicrophoneComponent />
+      {/* <MicrophoneComponent /> */}
     </View>
   );
 }
