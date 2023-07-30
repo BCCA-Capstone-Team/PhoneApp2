@@ -1,6 +1,6 @@
-import React, {useEffect, useState} from 'react';
-import {Text, View, TouchableOpacity} from 'react-native';
-import {check, PERMISSIONS, request} from 'react-native-permissions';
+import React, { useEffect, useState } from 'react';
+import { Text, View, TouchableOpacity } from 'react-native';
+import { check, PERMISSIONS, request } from 'react-native-permissions';
 import Tts from 'react-native-tts';
 import Voice, {
   SpeechRecognizedEvent,
@@ -12,52 +12,52 @@ import MicrophoneComponent from '../components/MicrophoneComponent';
 import TtsButtonComponent from '../components/TtsButtonComponent';
 
 async function testDatabase() {
-    let Database = require('../database/CalendarDatabase.jsx');
-    let database = new Database()
-    await database.onAppReady()
+  let Database = require('../database/CalendarDatabase.jsx');
+  let database = new Database()
+  await database.onAppReady()
 
-    //ADD NEW
-    var addDt = new Date();
-    addDt.setDate(addDt.getDate() + 1);
-    let giveDate = new Date(addDt)
-    let givenDate = `${giveDate.getFullYear()}-${giveDate.getMonth()}-${giveDate.getDate()}`
-    //database.appTable.add('New Event', JSON.stringify({ address: "60", city: "Grenada", state: "MS", zipCode: "38901" }), 15, givenDate, giveDate.getTime())
-
-
-    //SELECT ALL
-    let allData = await database.getAll()
-    console.log(allData)
+  //ADD NEW
+  var addDt = new Date();
+  addDt.setDate(addDt.getDate() + 1);
+  let giveDate = new Date(addDt)
+  let givenDate = `${giveDate.getFullYear()}-${giveDate.getMonth()}-${giveDate.getDate()}`
+  //database.appTable.add('New Event', JSON.stringify({ address: "60", city: "Grenada", state: "MS", zipCode: "38901" }), 15, givenDate, giveDate.getTime())
 
 
-     //SELECT SOLO
-    var soloDt = new Date();
-    soloDt.setDate(soloDt.getDate() + 1);
+  //SELECT ALL
+  let allData = await database.getAll()
+  console.log(allData)
 
-    let soloData = await database.selectSingle(soloDt)
 
-    //UPDATE
+  //SELECT SOLO
+  var soloDt = new Date();
+  soloDt.setDate(soloDt.getDate() + 1);
 
-    await database.edit('2023-7-4', 'eventTitle', 'Single Date update')
+  let soloData = await database.selectSingle(soloDt)
 
-    let allData2 = await database.getAll()
-    for (const property in allData2) {
-        console.log(`${property}: ${JSON.stringify(allData2[property])}`);
-    }
+  //UPDATE
 
-    //DELETION
+  await database.edit('2023-7-4', 'eventTitle', 'Single Date update')
 
-    var dt = new Date();
-    dt.setDate(dt.getDate() - 1);
-    await database.remove(dt)
+  let allData2 = await database.getAll()
+  for (const property in allData2) {
+    console.log(`${property}: ${JSON.stringify(allData2[property])}`);
+  }
 
-    //let allData3 = await database.getAll()
-    //for (const property in allData3) {
-    //    console.log(`${property}: ${JSON.stringify(allData3[property])}`);
-    //}
+  //DELETION
+
+  var dt = new Date();
+  dt.setDate(dt.getDate() - 1);
+  await database.remove(dt)
+
+  //let allData3 = await database.getAll()
+  //for (const property in allData3) {
+  //    console.log(`${property}: ${JSON.stringify(allData3[property])}`);
+  //}
 
 }; testDatabase()
 
-function HomeScreen({navigation}) {
+function HomeScreen({ navigation }) {
   const [isListening, setIsListening] = useState(false);
 
   useEffect(() => {
@@ -141,7 +141,7 @@ function HomeScreen({navigation}) {
 
   // event handler for buttonss
   const handleButtonPress = (screenName, data) => {
-    navigation.navigate(screenName, {profileData: data});
+    navigation.navigate(screenName, { profileData: data });
   };
 
   const handleSpeakButtonPress = () => {
@@ -174,19 +174,21 @@ function HomeScreen({navigation}) {
 
   return (
     <View style={styles.homeContainer}>
-      {/* Buttons */}
+      {/* Calendar Button */}
       <TouchableOpacity
         style={styles.button}
         onPress={() => handleButtonPress('CalendarScreen')}>
         <Text style={styles.buttonText}>Calendar</Text>
       </TouchableOpacity>
 
+      {/* Reminders Button */}
       <TouchableOpacity
         style={styles.button}
         onPress={() => handleButtonPress('RemindersScreen')}>
         <Text style={styles.buttonText}>Reminders</Text>
       </TouchableOpacity>
 
+      {/* Profile Button */}
       <TouchableOpacity
         style={styles.button}
         onPress={() => handleButtonPress('ProfileScreen')}>
@@ -205,7 +207,7 @@ function HomeScreen({navigation}) {
       {/*TTS Button */}
       <TtsButtonComponent text="Welcome to the home screen.  Here you can decide where to go such as: Calendar, Reminders, and Profile.  If you need to go by voice please click on the red button and say the name of the page you wish to go." />
 
-      <MicrophoneComponent />
+      {/* <MicrophoneComponent /> */}
     </View>
   );
 }

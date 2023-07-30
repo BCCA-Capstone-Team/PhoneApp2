@@ -77,8 +77,6 @@ const Schedule = ({navigation}) => {
   };
 
   const renderItem = item => {
-
-
     return (
       <TouchableOpacity
         style={{

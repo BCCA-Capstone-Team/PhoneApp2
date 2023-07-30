@@ -54,7 +54,7 @@ export default StyleSheet.create({
     fontWeight: '700',
   },
   speakButton: {
-    backgroundColor: 'blue',
+    backgroundColor: '#0C2340',
     paddingHorizontal: 20,
     paddingVertical: 10,
     borderRadius: 8,
@@ -64,9 +64,10 @@ export default StyleSheet.create({
     color: 'white',
     fontWeight: 'bold',
     fontSize: 20,
+    textAlign: 'center',
   },
   voiceButton: {
-    backgroundColor: 'F26522',
+    backgroundColor: '#F26522',
     paddingHorizontal: 20,
     paddingVertical: 10,
     borderRadius: 8,
@@ -79,7 +80,7 @@ export default StyleSheet.create({
     textAlign: 'center',
   },
   submitButton: {
-    backgroundColor: '0C2340',
+    backgroundColor: '#0C2340',
     paddingHorizontal: 20,
     paddingVertical: 10,
     borderRadius: 10,
