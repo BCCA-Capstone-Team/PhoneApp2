@@ -3,8 +3,8 @@ import React from 'react';
 // import Tts from 'react-native-tts';   this doesn't appear to be being used at the moment
 
 //navigation imports
-import {NavigationContainer} from '@react-navigation/native';
-import {createStackNavigator} from '@react-navigation/stack';
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
 
 import HomeScreen from './src/screens/HomeScreen';
 import CalendarScreen from './src/screens/CalendarScreen';
@@ -17,6 +17,7 @@ import AppointmentFormScreen from './src/screens/AppointmentFormScreen';
 const Stack = createStackNavigator();
 
 function App(): JSX.Element {
+
   return (
     <NavigationContainer>
       <Stack.Navigator>

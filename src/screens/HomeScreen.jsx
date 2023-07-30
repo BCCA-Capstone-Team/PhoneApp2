@@ -14,15 +14,47 @@ import TtsButtonComponent from '../components/TtsButtonComponent';
 async function testDatabase() {
     let Database = require('../database/CalendarDatabase.jsx');
     let database = new Database()
-    database.getAll()
-    //let additionState = await profileDatabase.addProfile('Joseph', 'Last', 'Street', 'City', 'State', 38901)
-    //console.log(`Add Profile State ${additionState}`)
-    //let profileCreated = await profileDatabase.checkForProfile()
-    //console.log(`Profile Created ${profileCreated}`)
-    //profileDatabase.table.show()
-    //let editStatus = await profileDatabase.editProfile('firstName', ' ')
-    //console.log(`Update status ${editStatus} `)
-    //profileDatabase.table.show()
+    await database.onAppReady()
+
+    //ADD NEW
+    var addDt = new Date();
+    addDt.setDate(addDt.getDate() + 1);
+    let giveDate = new Date(addDt)
+    let givenDate = `${giveDate.getFullYear()}-${giveDate.getMonth()}-${giveDate.getDate()}`
+    //database.appTable.add('New Event', JSON.stringify({ address: "60", city: "Grenada", state: "MS", zipCode: "38901" }), 15, givenDate, giveDate.getTime())
+
+
+    //SELECT ALL
+    let allData = await database.getAll()
+    console.log(allData)
+
+
+     //SELECT SOLO
+    var soloDt = new Date();
+    soloDt.setDate(soloDt.getDate() + 1);
+
+    let soloData = await database.selectSingle(soloDt)
+
+    //UPDATE
+
+    await database.edit('2023-7-4', 'eventTitle', 'Single Date update')
+
+    let allData2 = await database.getAll()
+    for (const property in allData2) {
+        console.log(`${property}: ${JSON.stringify(allData2[property])}`);
+    }
+
+    //DELETION
+
+    var dt = new Date();
+    dt.setDate(dt.getDate() - 1);
+    await database.remove(dt)
+
+    //let allData3 = await database.getAll()
+    //for (const property in allData3) {
+    //    console.log(`${property}: ${JSON.stringify(allData3[property])}`);
+    //}
+
 }; testDatabase()
 
 function HomeScreen({navigation}) {
