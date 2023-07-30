@@ -54,7 +54,7 @@ export default StyleSheet.create({
     fontWeight: '700',
   },
   speakButton: {
-    backgroundColor: 'blue',
+    backgroundColor: '#0C2340',
     paddingHorizontal: 20,
     paddingVertical: 10,
     borderRadius: 8,
