@@ -5,33 +5,16 @@ import {Calendar, WeekCalendar, Agenda, DateData} from 'react-native-calendars';
 import AppointmentForm from '../forms/AppointmentForm';
 import styles from '../styles';
 
-let Database = require('../database/Database.jsx');
-let database = new Database('appointmentDatabase');
-
 async function getAppointments() {
-  return new Promise((resolve, reject) => {
-    database.database.transaction(tx => {
-      tx.executeSql(
-        `SELECT * FROM appointment ORDER BY DATE DESC`,
-        [],
-        (tx, results) => {
-          if (results.rows.length > 0) {
-            const allAppointments = JSON.parse(results.rows.item(0));
-            resolve(allAppointments);
-          } else {
-            resolve(null);
-          }
-        },
-        error => {
-          reject(error);
-        },
-      );
-    });
-  });
+  let Database = require('../database/CalendarDatabase.jsx');
+  let database = new Database();
+  await database.onAppReady();
+
+  let allData = await database.getAll();
+  // console.log(allData['2023-6-29']);
+  return allData;
 }
-getAppointments()
-  .then(results => console.log(results))
-  .catch(err => console.log(err));
+getAppointments();
 
 const timeToString = time => {
   const date = new Date(time);
@@ -40,12 +23,20 @@ const timeToString = time => {
 
 const Schedule = ({navigation}) => {
   const [items, setItems] = useState({});
-  let myItems = {
-    '2023-07-30': [{name: 'item 1 - any js object', date: '2023-07-30'}],
-    '2023-08-07': [{name: 'item 1 for day'}, {name: 'item 2 for day'}],
-  };
+  const [allAppointmentData, setAllAppointmentData] = useState({});
+  // let allAppointmentData = {
+  //   '2023-07-30': [{name: 'item 1 - any js object', date: '2023-07-30'}],
+  //   '2023-08-07': [{name: 'item 1 for day'}, {name: 'item 2 for day'}],
+  // };
+
+  async function loadAllAppointmentData() {
+    let data = await getAppointments();
+    console.log(data['2023-6-29']);
+  }
+  // getAppointments();
 
   const loadItems = day => {
+    loadAllAppointmentData();
     setTimeout(() => {
       const newItems = {};
       for (let i = -15; i < 85; i++) {
@@ -56,10 +47,10 @@ const Schedule = ({navigation}) => {
         // myItems.push({ name: 'Event 1', height: 50 });
         // myItems.push({ name: 'Event 2', height: 80 });
         // ...
-        if (!myItems[strTime]) {
+        if (!allAppointmentData[strTime]) {
           items[strTime] = [];
         } else {
-          items[strTime] = myItems[strTime];
+          items[strTime] = allAppointmentData[strTime];
         }
       }
       Object.keys(items).forEach(key => {
