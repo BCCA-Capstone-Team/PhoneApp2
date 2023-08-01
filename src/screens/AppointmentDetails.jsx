@@ -10,7 +10,7 @@ const AppointmentDetails = ({navigation, route}) => {
     navigation.navigate('AppointmentFormScreen', dayData);
   };
 
-  if (data.date || data.name) {
+  if (data.date || data.eventTitle) {
     // console.log(data.date);
     return (
       <View>
