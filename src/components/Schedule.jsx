@@ -122,7 +122,7 @@ const Schedule = ({navigation}) => {
   };
 
   const renderItem = item => {
-    console.log('yo');
+    // console.log('yo');
     return (
       <TouchableOpacity
         style={{

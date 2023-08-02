@@ -1,167 +1,149 @@
-const { StrictMode } = require('react');
+const {StrictMode} = require('react');
 let Database = require('../database/Database.jsx');
 
-
 class CalendarDatabase extends Database {
-    constructor() {
-        super('appointmentDatabase')
-        this.appDatabaseReady = false
-        this.createCalendar()
-    }
+  constructor() {
+    super('appointmentDatabase');
+    this.appDatabaseReady = false;
+    this.createCalendar();
+  }
 
-    async createCalendar() {
-        this.appTable = await this.createTable('appointment', (column) => {
-            // Auto Clear is forcing a recreation of the table every time.
-             //column.autoClear();
+  async createCalendar() {
+    this.appTable = await this.createTable('appointment', column => {
+      // Auto Clear is forcing a recreation of the table every time.
+      //column.autoClear();
 
-            column.create('eventTitle', 'TEXT');
-            column.create('location', 'TEXT');
-            column.create('remindBeforeTime', 'INT');
-            column.create('date', 'TEXT');
-            column.create('time', 'TEXT');
+      column.create('eventTitle', 'TEXT');
+      column.create('location', 'TEXT');
+      column.create('remindBeforeTime', 'INT');
+      column.create('date', 'TEXT');
+      column.create('time', 'TEXT');
 
-            column.run();
+      column.run();
+    });
+
+    this.appReminderTable = await this.createTable(
+      'appointmentReminders',
+      column => {
+        // Auto Clear is forcing a recreation of the table every time.
+        //column.autoClear();
+
+        column.create('appointmentId', 'INT');
+        column.create('reminder', 'TEXT');
+
+        column.run();
+      },
+    );
+
+    this.appDatabaseReady = true;
+  }
+
+  onAppReady() {
+    return new Promise((resolve, reject) => {
+      let appInterval = setInterval(() => {
+        if (this.appDatabaseReady == true) {
+          clearInterval(appInterval);
+          resolve();
+        }
+      }, 1);
+    });
+  }
+
+  async getAll() {
+    await this.onAppReady();
+    return new Promise(async (resolve, reject) => {
+      await this.appTable.reload();
+      await this.appReminderTable.reload();
+
+      let createdTable = {};
+
+      this.appTable.data.forEach(element => {
+        let reminderArray = [];
+
+        this.appReminderTable.data.forEach(reminder => {
+          if (reminder[1][1] == element[0][1]) {
+            reminderArray.push(reminder[2][1]);
+          }
         });
 
-        this.appReminderTable = await this.createTable('appointmentReminders', (column) => {
-            // Auto Clear is forcing a recreation of the table every time.
-            //column.autoClear();
+        let newDate = new Date(element[4][1]);
+        let dateParse = `${newDate.getFullYear()}-${newDate.getMonth()}-${newDate.getDate()}`;
 
-            column.create('appointmentId', 'INT');
-            column.create('reminder', 'TEXT');
+        createdTable[dateParse] = [];
 
-            column.run();
-        })
+        try {
+          createdTable[dateParse].push({
+            eventTitle: element[1][1],
+            location: JSON.parse(element[2][1]),
+            remindBeforeTime: element[3][1],
+            date: dateParse,
+            time: element[5][1],
+            reminder: reminderArray,
+          });
+        } catch {
+          console.error('Unable to parse data');
+        }
+      });
 
-        this.appDatabaseReady = true
-    }
+      resolve(createdTable);
+    });
+  }
 
-    onAppReady() {
-        return new Promise((resolve, reject) => {
-            let appInterval = setInterval(() => {
-                if (this.appDatabaseReady == true) {
-                    clearInterval(appInterval)
-                    resolve()
-                }
-            }, 1)
-        })
-    }
+  async edit(changeDate, key, value) {
+    let giveDate = new Date(changeDate);
+    let givenDate = `${giveDate.getFullYear()}-${giveDate.getMonth()}-${giveDate.getDate()}`;
 
-    async getAll() {
-        await this.onAppReady()
-        return new Promise(async (resolve, reject) => {
-            await this.appTable.reload()
+    await this.onAppReady();
+    return new Promise(async (resolve, reject) => {
+      await this.appTable.reload();
 
-            let createdTable = {}
+      let allKeys = [];
+      let tempItem = this.appTable.data[0];
+      let editReady = false;
+      if (tempItem) {
+        editReady = true;
+        for (let i = 0; i < tempItem.length; i++) {
+          allKeys.push(tempItem[i][0]);
+        }
+      }
 
-            this.appTable.data.forEach((element) => {
-                let newDate = new Date(element[4][1])
-                let dateParse = `${newDate.getFullYear()}-${newDate.getMonth()}-${newDate.getDate()}`
+      if (allKeys.includes(key) && editReady == true) {
+        for (let i = 0; i < this.appTable.data.length; i++) {
+          let selectedItem = this.appTable.data[i];
+          let newDate = new Date(selectedItem[4][1]);
+          let dateParse = `${newDate.getFullYear()}-${newDate.getMonth()}-${newDate.getDate()}`;
 
-                createdTable[dateParse] = []
+          if (givenDate == dateParse) {
+            await this.appTable.update(selectedItem[0][1], key, value);
+          }
+        }
+      }
 
-                try {
-                    createdTable[dateParse].push({
-                        eventTitle: element[1][1],
-                        location: JSON.parse(element[2][1]),
-                        remindBeforeTime: element[3][1],
-                        date: dateParse,
-                        time: element[5][1]
-                    })
-                } catch {
-                    console.error('Unable to parse data')
-                }
-            })
+      resolve();
+    });
+  }
 
-            resolve(createdTable)
-        })
-    }
+  async remove(changeDate) {
+    await this.onAppReady();
+    return new Promise(async (resolve, reject) => {
+      await this.appTable.reload();
 
-    async selectSingle(changeDate) {
-        let giveDate = new Date(changeDate)
-        let givenDate = `${giveDate.getFullYear()}-${giveDate.getMonth()}-${giveDate.getDate()}`
+      let giveDate = new Date(changeDate);
+      let givenDate = `${giveDate.getFullYear()}-${giveDate.getMonth()}-${giveDate.getDate()}`;
 
-        await this.onAppReady()
-        return new Promise(async (resolve, reject) => {
-            await this.appTable.reload()
+      for (let i = 0; i < this.appTable.data.length; i++) {
+        let selectedItem = this.appTable.data[i];
+        let newDate = new Date(selectedItem[4][1]);
+        let dateParse = `${newDate.getFullYear()}-${newDate.getMonth()}-${newDate.getDate()}`;
 
-            for (let i = 0; i < this.appTable.data.length; i++) {
-                let selectedItem = this.appTable.data[i]
-                let newDate = new Date(selectedItem[4][1])
-                let dateParse = `${newDate.getFullYear()}-${newDate.getMonth()}-${newDate.getDate()}`
+        if (givenDate == dateParse) {
+          await this.appTable.removeIndex(selectedItem[0][1]);
+        }
+      }
 
-                if (givenDate == dateParse) {
-                    resolve({
-                        eventTitle: selectedItem[1][1],
-                        location: JSON.parse(selectedItem[2][1]),
-                        remindBeforeTime: selectedItem[3][1],
-                        date: dateParse,
-                        time: selectedItem[5][1]
-                    })
-                }
-            }
-            resolve(false)
-        })
-    }
+      resolve();
+    });
+  }
+}
 
-    async edit(changeDate, key, value) {
-        let giveDate = new Date(changeDate)
-        let givenDate = `${giveDate.getFullYear()}-${giveDate.getMonth()}-${giveDate.getDate()}`
-
-        await this.onAppReady()
-        return new Promise(async (resolve, reject) => {
-            await this.appTable.reload()
-
-            let allKeys = []
-            let tempItem = this.appTable.data[0]
-            let editReady = false
-            if (tempItem) {
-                editReady = true
-                for (let i = 0; i < tempItem.length; i++) {
-                    allKeys.push(tempItem[i][0])
-                }
-            }
-       
-
-            if (allKeys.includes(key) && editReady == true) {
-
-                for (let i = 0; i < this.appTable.data.length; i++) {
-                    let selectedItem = this.appTable.data[i]
-                    let newDate = new Date(selectedItem[4][1])
-                    let dateParse = `${newDate.getFullYear()}-${newDate.getMonth()}-${newDate.getDate()}`
-
-                    if (givenDate == dateParse) {
-                        await this.appTable.update(selectedItem[0][1], key, value)
-                    }
-                }
-            }
-
-            resolve()
-        })
-    }
-
-    async remove(changeDate) {
-        await this.onAppReady()
-        return new Promise(async (resolve, reject) => {
-            await this.appTable.reload()
-
-            let giveDate = new Date(changeDate)
-            let givenDate = `${giveDate.getFullYear()}-${giveDate.getMonth()}-${giveDate.getDate()}`
-
-            for (let i = 0; i < this.appTable.data.length; i++) {
-                let selectedItem = this.appTable.data[i]
-                let newDate = new Date(selectedItem[4][1])
-                let dateParse = `${newDate.getFullYear()}-${newDate.getMonth()}-${newDate.getDate()}`
-
-                if (givenDate == dateParse) {
-                    await this.appTable.removeIndex(selectedItem[0][1])
-                }
-            }
-  
-
-            resolve()
-        })
-    }
-}   
-
-module.exports = CalendarDatabase
+module.exports = CalendarDatabase;
