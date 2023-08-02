@@ -10,6 +10,8 @@ import Voice, {
 import styles from '../styles';
 import MicrophoneComponent from '../components/MicrophoneComponent';
 import TtsButtonComponent from '../components/TtsButtonComponent';
+import { useFocusEffect } from '@react-navigation/native';
+
 
 async function testDatabase() {
   let Database = require('../database/CalendarDatabase.jsx');
@@ -85,6 +87,7 @@ function HomeScreen({ navigation }) {
 
     return () => {
       // Clean up voice recognition events when the component unmounts
+      stopListening();
       Voice.onSpeechStart = undefined;
       Voice.onSpeechEnd = undefined;
       Voice.onSpeechResults = undefined;
@@ -92,6 +95,24 @@ function HomeScreen({ navigation }) {
       Voice.destroy().then(Voice.removeAllListeners);
     };
   }, []);
+
+  // Alyx trying some thing
+  useFocusEffect(
+    React.useCallback(() => {
+      const unsubscribe = () => {
+        stopListening();
+        Voice.destroy().then(Voice.removeAllListeners);
+      };
+  
+      Voice.onSpeechStart = onSpeechStart;
+      Voice.onSpeechEnd = onSpeechEnd;
+      Voice.onSpeechResults = onSpeechResults;
+      Voice.onSpeechError = onSpeechError;
+    
+      return () => unsubscribe();
+    }, [])
+  );
+  
 
   const handleVoiceResults = e => {
     // Handle voice results
