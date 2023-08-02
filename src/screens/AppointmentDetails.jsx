@@ -14,7 +14,15 @@ const AppointmentDetails = ({navigation, route}) => {
     // console.log(data.date);
     return (
       <View>
-        <Text>{data.name}</Text>
+        <Text>{data.eventTitle}</Text>
+        <Text>
+          {data.location.address} {data.location.city}, {data.location.state}
+        </Text>
+        <View>
+          {data.reminder.map(reminder => (
+            <Text>{reminder}</Text>
+          ))}
+        </View>
         <View>
           <TouchableOpacity
             style={{marginBottom: 10}}
