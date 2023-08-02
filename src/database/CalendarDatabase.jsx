@@ -67,7 +67,9 @@ class CalendarDatabase extends Database {
         });
 
         let newDate = new Date(element[4][1]);
-        let dateParse = `${newDate.getFullYear()}-${newDate.getMonth()}-${newDate.getDate()}`;
+        let dateParse = `${newDate.getFullYear()}-${
+          newDate.getMonth() + 1
+        }-${newDate.getDate()}`;
 
         createdTable[dateParse] = [];
 
@@ -111,7 +113,9 @@ class CalendarDatabase extends Database {
         for (let i = 0; i < this.appTable.data.length; i++) {
           let selectedItem = this.appTable.data[i];
           let newDate = new Date(selectedItem[4][1]);
-          let dateParse = `${newDate.getFullYear()}-${newDate.getMonth()}-${newDate.getDate()}`;
+          let dateParse = `${newDate.getFullYear()}-${
+            newDate.getMonth() + 1
+          }-${newDate.getDate()}`;
 
           if (givenDate == dateParse) {
             await this.appTable.update(selectedItem[0][1], key, value);

@@ -80,15 +80,6 @@ const AppointmentForm = ({navigation}) => {
       reminder,
       location: JSON.stringify(location),
     };
-    // console.log('===RUN HERE===');
-    // console.log(formData.selectedDate);
-
-    // let formatDate = `${formData.selectedDate}`;
-    // console.log(formatDate);
-
-    let newDate = new Date('2023-08-15');
-    let dateParse = `${newDate.getFullYear()}-${newDate.getMonth()}-${newDate.getDate()}`;
-    console.log(dateParse);
 
     await appointmentTable.add(
       formData.eventTitle,
