@@ -10,37 +10,8 @@ import {
 } from 'react-native';
 import {useForm, Controller} from 'react-hook-form';
 import styles from '../styles';
-let Database = require('../database/Database.jsx');
-let database = new Database('profileDatabase');
-
-//async function startDatabase() {
-//  profileTable = await database.createTable('profile', column => {
-//    column.autoClear();
-
-//    column.create('firstName', 'TEXT');
-//    column.create('lastName', 'TEXT');
-//    column.create('street', 'TEXT');
-//    column.create('city', 'TEXT');
-//    column.create('state', 'TEXT');
-//    column.create('zipCode', 'INT');
-
-//    column.run();
-//  });
-//}
-//startDatabase();
-
-//async function testDatabase() {
-//    let pDatabase = require('../database/ProfileDatabase.jsx');
-//    let profileDatabase = new pDatabase()
-//    let additionState = await profileDatabase.addProfile('Joseph', 'Last', 'Street', 'City', 'State', 38901)
-//    console.log(`Add Profile State ${additionState}`)
-//    let profileCreated = await profileDatabase.checkForProfile()
-//    console.log(`Profile Created ${profileCreated}`)
-//    profileDatabase.table.show()
-//    let editStatus = await profileDatabase.editProfile('firstName', ' ')
-//    console.log(`Update status ${editStatus} `)
-//    profileDatabase.table.show()
-//}; testDatabase()
+let Database = require('../database/ProfileDatabase.jsx');
+let database = new Database();
 
 const ProfileForm = ({navigation, route}) => {
   const {
@@ -70,24 +41,20 @@ const ProfileForm = ({navigation, route}) => {
   }, [profileData, setValue]);
 
   const onSubmit = async data => {
-    //console logs for confirmation
-    console.log('Address Data:', data);
-    console.log('Run Values');
-    console.log(data.firstName);
-    console.log(data.zipCode);
-
-    //await profileTable.add(
-    //  data.firstName,
-    //  data.lastName,
-    //  data.street,
-    //  data.city,
-    //  data.state,
-    //  data.zipCode,
-    //);
-
-    //profileTable.view();
-
-    await navigation.navigate('ProfileDetailScreen', {profileData: data});
+    // const profileDatabase = new ProfileDatabase();
+    try {
+      await database.addProfile(
+        data.firstName,
+        data.lastName,
+        data.street,
+        data.city,
+        data.state,
+        parseInt(data.zipCode, 10), // Convert zipCode to an integer (since it was stored as INT in the database)
+      );
+      await navigation.navigate('ProfileDetailScreen', {profileData: data});
+    } catch (error) {
+      console.error('Error adding profile:', error);
+    }
   };
 
   return (

@@ -4,6 +4,7 @@ import ProfileForm from '../forms/ProfileForm';
 import styles from '../styles';
 import Tts from 'react-native-tts';
 import TtsButtonComponent from '../components/TtsButtonComponent';
+import ProfileDatabase from '../database/ProfileDatabase';
 
 function ProfileScreen({navigation, route}) {
   const {profileData} = route.params;
