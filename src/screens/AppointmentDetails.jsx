@@ -18,11 +18,15 @@ const AppointmentDetails = ({navigation, route}) => {
         <Text>
           {data.location.address} {data.location.city}, {data.location.state}
         </Text>
-        <View>
-          {data.reminder.map(reminder => (
-            <Text>{reminder}</Text>
-          ))}
-        </View>
+        {data.reminder[0] != null ? (
+          <View>
+            {data.reminder.map(reminder => (
+              <Text>{reminder}</Text>
+            ))}
+          </View>
+        ) : (
+          <Text>No reminders to bring along!</Text>
+        )}
         <View>
           <TouchableOpacity
             style={{marginBottom: 10}}
