@@ -18,37 +18,41 @@ async function testDatabase() {
   let database = new Database();
   await database.onAppReady();
 
+  // database.appReminderTable.show();
+
   //ADD NEW
-  var addDt = new Date();
-  addDt.setDate(addDt.getDate() + 1);
-  let giveDate = new Date(addDt);
-  let givenDate = `${giveDate.getFullYear()}-${giveDate.getMonth()}-${giveDate.getDate()}`;
+  // var addDt = new Date();
+  // addDt.setDate(addDt.getDate() + 1);
+  // let giveDate = new Date(addDt)
+  // let givenDate = `${giveDate.getFullYear()}-${giveDate.getMonth()}-${giveDate.getDate()}`
   //database.appTable.add('New Event', JSON.stringify({ address: "60", city: "Grenada", state: "MS", zipCode: "38901" }), 15, givenDate, giveDate.getTime())
 
   //SELECT ALL
   let allData = await database.getAll();
-  console.log(allData);
+  for (const property in allData) {
+    console.log(`${property}: ${JSON.stringify(allData[property])}`);
+  }
 
   //SELECT SOLO
-  var soloDt = new Date();
-  soloDt.setDate(soloDt.getDate() + 1);
+  // var soloDt = new Date();
+  // soloDt.setDate(soloDt.getDate() + 1);
 
-  let soloData = await database.selectSingle(soloDt);
+  // let soloData = await database.selectSingle(soloDt)
 
   //UPDATE
 
-  await database.edit('2023-7-4', 'eventTitle', 'Single Date update');
+  // await database.edit('2023-7-4', 'eventTitle', 'Single Date update')
 
-  let allData2 = await database.getAll();
-  for (const property in allData2) {
-    console.log(`${property}: ${JSON.stringify(allData2[property])}`);
-  }
+  // let allData2 = await database.getAll()
+  // for (const property in allData2) {
+  //   console.log(`${property}: ${JSON.stringify(allData2[property])}`);
+  // }
 
   //DELETION
 
-  var dt = new Date();
-  dt.setDate(dt.getDate() - 1);
-  await database.remove(dt);
+  // var dt = new Date();
+  // dt.setDate(dt.getDate() - 1);
+  // await database.remove(dt)
 
   //let allData3 = await database.getAll()
   //for (const property in allData3) {
@@ -210,7 +214,7 @@ function HomeScreen({navigation}) {
       {/* Profile Button */}
       <TouchableOpacity
         style={styles.button}
-        onPress={() => handleButtonPress('ProfileDetailScreen')}>
+        onPress={() => handleButtonPress('ProfileScreen')}>
         <Text style={styles.buttonText}>Profile</Text>
       </TouchableOpacity>
 
