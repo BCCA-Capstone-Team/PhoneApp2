@@ -5,6 +5,11 @@ const ProfileDetailScreen = ({navigation, route}) => {
   const {profileData} = route.params;
   console.log('Profile Data:', profileData);
 
+  if (!profileData) {
+    // Handle the case when profileData is not available
+    return <Text>No profile data available.</Text>;
+  }
+
   const handleEditProfile = () => {
     navigation.navigate('ProfileScreen', {profileData});
   };

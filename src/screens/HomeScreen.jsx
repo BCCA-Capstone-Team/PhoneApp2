@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
-import { Text, View, TouchableOpacity } from 'react-native';
-import { check, PERMISSIONS, request } from 'react-native-permissions';
+import React, {useEffect, useState} from 'react';
+import {Text, View, TouchableOpacity} from 'react-native';
+import {check, PERMISSIONS, request} from 'react-native-permissions';
 import Tts from 'react-native-tts';
 import Voice, {
   SpeechRecognizedEvent,
@@ -15,33 +15,31 @@ import { useFocusEffect } from '@react-navigation/native';
 
 async function testDatabase() {
   let Database = require('../database/CalendarDatabase.jsx');
-  let database = new Database()
-  await database.onAppReady()
+  let database = new Database();
+  await database.onAppReady();
 
   //ADD NEW
   var addDt = new Date();
   addDt.setDate(addDt.getDate() + 1);
-  let giveDate = new Date(addDt)
-  let givenDate = `${giveDate.getFullYear()}-${giveDate.getMonth()}-${giveDate.getDate()}`
+  let giveDate = new Date(addDt);
+  let givenDate = `${giveDate.getFullYear()}-${giveDate.getMonth()}-${giveDate.getDate()}`;
   //database.appTable.add('New Event', JSON.stringify({ address: "60", city: "Grenada", state: "MS", zipCode: "38901" }), 15, givenDate, giveDate.getTime())
 
-
   //SELECT ALL
-  let allData = await database.getAll()
-  console.log(allData)
-
+  let allData = await database.getAll();
+  console.log(allData);
 
   //SELECT SOLO
   var soloDt = new Date();
   soloDt.setDate(soloDt.getDate() + 1);
 
-  let soloData = await database.selectSingle(soloDt)
+  let soloData = await database.selectSingle(soloDt);
 
   //UPDATE
 
-  await database.edit('2023-7-4', 'eventTitle', 'Single Date update')
+  await database.edit('2023-7-4', 'eventTitle', 'Single Date update');
 
-  let allData2 = await database.getAll()
+  let allData2 = await database.getAll();
   for (const property in allData2) {
     console.log(`${property}: ${JSON.stringify(allData2[property])}`);
   }
@@ -50,16 +48,16 @@ async function testDatabase() {
 
   var dt = new Date();
   dt.setDate(dt.getDate() - 1);
-  await database.remove(dt)
+  await database.remove(dt);
 
   //let allData3 = await database.getAll()
   //for (const property in allData3) {
   //    console.log(`${property}: ${JSON.stringify(allData3[property])}`);
   //}
+}
+testDatabase();
 
-}; testDatabase()
-
-function HomeScreen({ navigation }) {
+function HomeScreen({navigation}) {
   const [isListening, setIsListening] = useState(false);
 
   useEffect(() => {
@@ -162,7 +160,7 @@ function HomeScreen({ navigation }) {
 
   // event handler for buttonss
   const handleButtonPress = (screenName, data) => {
-    navigation.navigate(screenName, { profileData: data });
+    navigation.navigate(screenName, {profileData: data});
   };
 
   const handleSpeakButtonPress = () => {
@@ -212,7 +210,7 @@ function HomeScreen({ navigation }) {
       {/* Profile Button */}
       <TouchableOpacity
         style={styles.button}
-        onPress={() => handleButtonPress('ProfileScreen')}>
+        onPress={() => handleButtonPress('ProfileDetailScreen')}>
         <Text style={styles.buttonText}>Profile</Text>
       </TouchableOpacity>
 
