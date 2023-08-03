@@ -23,7 +23,7 @@ const ProfileForm = ({navigation, route}) => {
 
   // Check if there's pre-existing profile data
   const {profileData} = route.params;
-  console.log('Profile Data:', profileData);
+  //console.log('Profile Data:', profileData);
 
   useEffect(() => {
     if (profileData) {
