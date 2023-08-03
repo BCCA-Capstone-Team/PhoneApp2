@@ -11,55 +11,8 @@ import styles from '../styles';
 import MicrophoneComponent from '../components/MicrophoneComponent';
 import TtsButtonComponent from '../components/TtsButtonComponent';
 import { useFocusEffect } from '@react-navigation/native';
-
-
-async function testDatabase() {
-  let Database = require('../database/CalendarDatabase.jsx');
-  let database = new Database();
-  await database.onAppReady();
-
-  // database.appReminderTable.show();
-
-  //ADD NEW
-  // var addDt = new Date();
-  // addDt.setDate(addDt.getDate() + 1);
-  // let giveDate = new Date(addDt)
-  // let givenDate = `${giveDate.getFullYear()}-${giveDate.getMonth()}-${giveDate.getDate()}`
-  //database.appTable.add('New Event', JSON.stringify({ address: "60", city: "Grenada", state: "MS", zipCode: "38901" }), 15, givenDate, giveDate.getTime())
-
-  //SELECT ALL
-  let allData = await database.getAll();
-  for (const property in allData) {
-    console.log(`${property}: ${JSON.stringify(allData[property])}`);
-  }
-
-  //SELECT SOLO
-  // var soloDt = new Date();
-  // soloDt.setDate(soloDt.getDate() + 1);
-
-  // let soloData = await database.selectSingle(soloDt)
-
-  //UPDATE
-
-  // await database.edit('2023-7-4', 'eventTitle', 'Single Date update')
-
-  // let allData2 = await database.getAll()
-  // for (const property in allData2) {
-  //   console.log(`${property}: ${JSON.stringify(allData2[property])}`);
-  // }
-
-  //DELETION
-
-  // var dt = new Date();
-  // dt.setDate(dt.getDate() - 1);
-  // await database.remove(dt)
-
-  //let allData3 = await database.getAll()
-  //for (const property in allData3) {
-  //    console.log(`${property}: ${JSON.stringify(allData3[property])}`);
-  //}
-}
-testDatabase();
+let Database = require('../database/ProfileDatabase.jsx');
+let database = new Database();
 
 function HomeScreen({navigation}) {
   const [isListening, setIsListening] = useState(false);
@@ -163,9 +116,10 @@ function HomeScreen({navigation}) {
   };
 
   // event handler for buttons
-  const handleButtonPress = (screenName, data) => {
-    navigation.navigate(screenName, {profileData: data});
-  };
+    const handleButtonPress = async (screenName, data) => {
+        let newProfileData = await database.getProfile()
+        navigation.navigate(screenName, { profileData: newProfileData });       
+    };
 
   const handleSpeakButtonPress = () => {
     if (isListening) {
@@ -214,7 +168,7 @@ function HomeScreen({navigation}) {
       {/* Profile Button */}
       <TouchableOpacity
         style={styles.button}
-        onPress={() => handleButtonPress('ProfileScreen')}>
+        onPress={() => handleButtonPress('ProfileDetailScreen')}>
         <Text style={styles.buttonText}>Profile</Text>
       </TouchableOpacity>
 

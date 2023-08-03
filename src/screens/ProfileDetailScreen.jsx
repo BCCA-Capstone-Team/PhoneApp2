@@ -1,9 +1,10 @@
 import React from 'react';
-import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+
 
 const ProfileDetailScreen = ({navigation, route}) => {
   const {profileData} = route.params;
-  console.log('Profile Data:', profileData);
+  //console.log('Profile Data:', profileData);
 
   if (!profileData) {
     // Handle the case when profileData is not available
