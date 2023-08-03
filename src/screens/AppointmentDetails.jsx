@@ -7,21 +7,32 @@ const AppointmentDetails = ({navigation, route}) => {
 
   const handleAddItem = dayData => {
     // console.log('hello');
-    navigation.navigate('AppointmentFormScreen', dayData);
+    if (dayData.date) {
+      navigation.navigate('AppointmentFormScreen', dayData.date);
+    } else {
+      navigation.navigate('AppointmentFormScreen', dayData);
+    }
   };
-
   if (data.date || data.eventTitle) {
     // console.log(data.date);
     return (
       <View>
-        <Text>{data.eventTitle}</Text>
-        <Text>
-          {data.location.address} {data.location.city}, {data.location.state}
-        </Text>
+        <Text>Event: {data.eventTitle}</Text>
+        {data.location.address &&
+        data.location.city &&
+        data.location.state != null ? (
+          <Text>
+            Location: {data.location.address} {data.location.city},{' '}
+            {data.location.state}
+          </Text>
+        ) : (
+          <Text>No location info saved!</Text>
+        )}
+
         {data.reminder[0] != null ? (
           <View>
             {data.reminder.map(reminder => (
-              <Text>{reminder}</Text>
+              <Text>Bring: {reminder}</Text>
             ))}
           </View>
         ) : (
