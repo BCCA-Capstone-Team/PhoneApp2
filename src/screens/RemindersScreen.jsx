@@ -1,5 +1,5 @@
-import React, {useState, useEffect} from 'react';
-import {Text, View, FlatList, ScrollView, Button} from 'react-native';
+import React, {useState, useEffect, useRef} from 'react';
+import {Text, View, TouchableOpacity, ScrollView, Button} from 'react-native';
 import RemindersForm from '../forms/RemindersForm';
 import EditReminderForm from '../forms/EditReminderForm';
 import styles from '../styles';
@@ -12,13 +12,19 @@ import Voice, {
   SpeechResultsEvent,
   SpeechErrorEvent,
 } from '@react-native-voice/voice';
+import { wordsToNumbers } from 'words-to-numbers';
 
 function RemindersScreen() {
   const [reminders, setReminders] = useState([]);
+  const [voiceInput, setVoiceInput] = useState('');
   const [isListening, setIsListening] = useState(false);
-  const [voiceCommand, setVoiceCommand] = useState('');
+
+
   const [reminderIndexToEdit, setReminderIndexToEdit] = useState(null);
+  const voiceInputRef = useRef('');
   console.log(reminders);
+
+  // DATABASE REMINDERS FETCH ===========================
 
   const fetchRemindersFromDatabase = async () => {
     try {
@@ -29,6 +35,8 @@ function RemindersScreen() {
       console.error('Error fetching reminders:', error);
     }
   };
+
+  // CRUD REMINDERS ================================
 
   const onSubmit = async data => {
     await leavingHomeReminderTable.add(data);
@@ -56,6 +64,8 @@ function RemindersScreen() {
     }
   };
 
+  // USE EFFECT  ======================
+
   useEffect(() => {
     // Fetch reminders data
     const fetchData = async () => {
@@ -72,10 +82,6 @@ function RemindersScreen() {
     // Cleanup on component unmount
     return () => {
       Tts.stop();
-      Voice.onSpeechStart = undefined;
-      Voice.onSpeechEnd = undefined;
-      Voice.onSpeechResults = undefined;
-      Voice.onSpeechError = undefined;
       Voice.destroy().then(Voice.removeAllListeners);
     };
   }, []);
@@ -84,98 +90,116 @@ function RemindersScreen() {
     if (reminders.length > 0) {
       reminders.forEach(reminder => {
         Tts.speak(reminder[1][1]);
+        // DEBUG PURPOSES ========================
+        console.log(reminder[1][1])
       });
     } else {
       Tts.speak('No reminders found.');
     }
   };
 
-  const startListening = async () => {
-    try {
-      await Voice.start('en-US');
-      setIsListening(true);
-    } catch (error) {
-      console.error('Error starting voice recognition:', error);
+  const toggleListening = () => {
+    if (isListening) {
+      Voice.stop();
+    } else {
+      Voice.start('en-US');
     }
+    setIsListening(!isListening);
   };
+  
 
-  const stopListening = async () => {
-    try {
-      await Voice.stop();
-      setIsListening(false);
-    } catch (error) {
-      console.error('Error stopping voice recognition:', error);
-    }
-  };
+
 
   // Event handlers for voice recognition
   const onSpeechStart = e => {
     console.log('Speech started');
   };
+  const addReminderByVoice = async (spokenWords) => {
+    // Remove the 'add' command word from the input
+    spokenWords.shift();
+    // Join the remaining words to form the reminder
+    const data = spokenWords.join(' ');
+  
+    // Add reminder to the database
+    await onSubmit(data);
+  
+    // Fetch new list of reminders
+    fetchRemindersFromDatabase();
+  }
+  
+  const deleteReminderByVoice = async (spokenWords) => {
+    const numberString = spokenWords[1];
+    const index = wordsToNumbers(numberString);
+    if (index > 0 && index <= reminders.length) {
+      await deleteReminder(reminders[index - 1][0][1]);
+      console.log("DELETE HERE")
+      // Fetch new list of reminders
+      fetchRemindersFromDatabase();
+    }
+  }
 
-  const onSpeechEnd = e => {
-    setIsListening(false);
+  const editReminderByVoice = async (spokenWords) => {
+    const numberString = spokenWords[1];
+    const index = wordsToNumbers(numberString);
+    
+    if (!isNaN(index) && index > 0 && index <= reminders.length) {
+      const newData = spokenWords[2];
+      await updateReminder(reminders[index - 1][0][1], newData);
+      fetchRemindersFromDatabase();
+    }
   };
+  
+  const onSpeechEnd = (e) => {
+    console.log('onSpeechEnd:', e);
+    console.log('Final voice input:', voiceInputRef.current); // We use the ref here
+    
+    const spokenWords = voiceInputRef.current.split(" ");
+    const command = spokenWords[0].toLowerCase();
+  
+    if (command === 'delete') {
+      deleteReminderByVoice(spokenWords);
+      return; // Skip the rest of the function
+    }
+    else if (command === 'add') {
+      addReminderByVoice(spokenWords);
+      return; // Skip the rest of the function
+    } else if (command === 'edit') {
+      editReminderByVoice(spokenWords);
+    }
+  
+    // If command is not recognized, do nothing
+    console.log('Command not recognized:', command);
+  };
+  
 
-  const onSpeechResults = e => {
+
+  const onSpeechResults = async (e) => {
     console.log('onSpeechResults:', e);
-    handleVoiceResults(e);
+    console.log(e.value[e.value.length - 1]);
+    const lastResult = e.value[e.value.length - 1];
+    voiceInputRef.current = lastResult; // We update the ref here
+
+
+    // delete reminder code that works:
+
+    // const words = lastResult.split(' '); // Split the spoken words into an array
+    // if (words[0].toLowerCase() === 'delete') {
+    //   // User wants to delete a reminder
+    //   const idWord = words[1]; // Assume the id of the reminder follows after 'delete'
+    //   const id = wordsToNumbers(idWord); // Convert the word to a number
+    //   if (!isNaN(id)) {
+    //     await deleteReminder(id); // Call your delete function
+    //     fetchRemindersFromDatabase(); // Update reminders from the database
+    //   } else {
+    //     console.log('Invalid reminder ID');
+    //   }
+    // }
   };
 
   const onSpeechError = e => {
     console.error('Speech recognition error:', e);
   };
 
-  // Handling voice results
-  const handleVoiceResults = async e => {
-    let spokenWords = e.value;
-    const command = spokenWords[0].toLowerCase();
-
-    if (voiceCommand === 'add') {
-
-      await leavingHomeReminderTable.add(command);
-      await fetchRemindersFromDatabase();
-      setVoiceCommand('');
-    } else if (voiceCommand === 'delete') {
-      Tts.speak("What would you like to delete?")
-      const index = parseInt(command, 10);
-      if (index > 0 && index <= reminders.length) {
-        await deleteReminder(reminders[index - 1][0][1]);
-      }
-      setVoiceCommand('');
-    } else if (voiceCommand === 'edit') {
-      Tts.speak("What would you like to edit?")
-      if (reminderIndexToEdit === null) {
-        const index = parseInt(command, 10);
-        if (index > 0 && index <= reminders.length) {
-          setReminderIndexToEdit(index - 1);
-          setVoiceCommand('edit reminder content');
-          startListening();
-        }
-      } else {
-        await updateReminder(
-          reminders[reminderIndexToEdit][0][1],
-          command
-        );
-        setReminderIndexToEdit(null);
-        setVoiceCommand('');
-      }
-    } else {
-      switch (command) {
-        case 'add':
-        case 'delete':
-        case 'edit':
-          setVoiceCommand(command);
-          startListening();
-          break;
-        case 'Sorry, I did not understand.':
-          break;
-        default:
-          Tts.speak('Sorry, I did not understand.'); // message for unknown commands
-          break;
-      }
-    }
-  };
 
 
   return (
@@ -213,10 +237,11 @@ function RemindersScreen() {
         )}
       </ScrollView>
       <Button title="Read Reminders" onPress={readReminders} />
-      <Button
-        title={isListening ? 'Stop Listening' : 'Start Listening'}
-        onPress={isListening ? stopListening : startListening}
-      />
+      <TouchableOpacity style={styles.voiceButton} onPress={toggleListening}>
+    <Text style={styles.voiceButtonText}>
+      {isListening ? 'Stop Listening' : 'Listen'}
+    </Text>
+  </TouchableOpacity>
     </View>
   );
 }
