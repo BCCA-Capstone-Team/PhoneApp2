@@ -162,7 +162,7 @@ function HomeScreen({navigation}) {
     setIsListening(false);
   };
 
-  // event handler for buttonss
+  // event handler for buttons
   const handleButtonPress = (screenName, data) => {
     navigation.navigate(screenName, {profileData: data});
   };
