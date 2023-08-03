@@ -71,7 +71,9 @@ class CalendarDatabase extends Database {
           newDate.getMonth() + 1
         }-${newDate.getDate()}`;
 
-        createdTable[dateParse] = [];
+          if (!createdTable[dateParse]) {
+              createdTable[dateParse] = [];
+          }
 
         try {
           createdTable[dateParse].push({

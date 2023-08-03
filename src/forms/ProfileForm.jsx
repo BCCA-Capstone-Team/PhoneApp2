@@ -50,7 +50,8 @@ const ProfileForm = ({navigation, route}) => {
         data.city,
         data.state,
         parseInt(data.zipCode, 10), // Convert zipCode to an integer (since it was stored as INT in the database)
-      );
+        );
+        database.table.show();
       await navigation.navigate('ProfileDetailScreen', {profileData: data});
     } catch (error) {
       console.error('Error adding profile:', error);
