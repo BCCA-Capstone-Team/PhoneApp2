@@ -23,7 +23,7 @@ const ProfileForm = ({navigation, route}) => {
 
   // Check if there's pre-existing profile data
   const {profileData} = route.params;
-  console.log('Profile Data:', profileData);
+  //console.log('Profile Data:', profileData);
 
   useEffect(() => {
     if (profileData) {
@@ -50,8 +50,7 @@ const ProfileForm = ({navigation, route}) => {
         data.city,
         data.state,
         parseInt(data.zipCode, 10), // Convert zipCode to an integer (since it was stored as INT in the database)
-        );
-        database.table.show();
+      );
       await navigation.navigate('ProfileDetailScreen', {profileData: data});
     } catch (error) {
       console.error('Error adding profile:', error);

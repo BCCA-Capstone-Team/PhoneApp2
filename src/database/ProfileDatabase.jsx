@@ -36,6 +36,23 @@ class ProfileDatabase extends Database {
         })
     }
 
+    async getProfile() {
+        await this.onProfileReady()
+        return new Promise(async (resolve, reject) => {
+            await this.table.reload()
+            let returnTable = {}
+            if (this.table.data[0]) {
+                returnTable['firstName'] = this.table.data[0][1][1]
+                returnTable['lastName'] = this.table.data[0][2][1]
+                returnTable['street'] = this.table.data[0][3][1]
+                returnTable['city'] = this.table.data[0][4][1]
+                returnTable['state'] = this.table.data[0][5][1]
+                returnTable['zipCode'] = this.table.data[0][6][1]
+            }
+            resolve(returnTable)
+        })
+    }
+
     async checkForProfile() {
         await this.onProfileReady()
         return new Promise(async (resolve, reject) => {
