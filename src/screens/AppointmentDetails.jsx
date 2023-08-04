@@ -2,12 +2,16 @@ import {View, Text, TouchableOpacity} from 'react-native';
 import React from 'react';
 import AppointmentFormScreen from './AppointmentFormScreen';
 
+let Database = require('../database/CalendarDatabase.jsx');
+let database = new Database('appointmentDatabase');
+
 const AppointmentDetails = ({navigation, route}) => {
   let data = route.params;
-  console.log(data);
+  // console.log(data);
   let editing;
   let listOfData = [data, editing];
 
+  // Add Appointment
   const handleAddItem = () => {
     listOfData[1] = false;
     // console.log('hello');
@@ -19,11 +23,20 @@ const AppointmentDetails = ({navigation, route}) => {
     navigation.navigate('AppointmentFormScreen', listOfData);
   };
 
+  // Edit Appointment
   const handleEditItem = dayData => {
     listOfData[1] = true;
     navigation.navigate('AppointmentFormScreen', listOfData);
   };
 
+  // Delete Appointment
+  const handleDeleteItem = () => {
+    database.appTable.removeIndex(listOfData[0].id);
+    let allReminders = listOfData[0].detailReminder;
+    for (let i = 0; i < allReminders.length; i++) {
+      database.appReminderTable.removeIndex(allReminders[i].id);
+    }
+  };
   if (data.date || data.eventTitle) {
     // console.log(data.date);
     return (
@@ -63,7 +76,7 @@ const AppointmentDetails = ({navigation, route}) => {
             }}>
             <Text>Edit</Text>
           </TouchableOpacity>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={handleDeleteItem}>
             <Text>Delete Item</Text>
           </TouchableOpacity>
         </View>

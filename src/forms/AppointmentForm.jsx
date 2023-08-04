@@ -69,11 +69,32 @@ const AppointmentForm = ({navigation, route}) => {
     };
 
     if (appointmentData[1] == true) {
-      appointmentTable.appTable.update(
+      appointmentTable.update(
         appointmentData[0].id,
         'eventTitle',
         formData.eventTitle,
       );
+      appointmentTable.update(
+        appointmentData[0].id,
+        'location',
+        formData.location,
+      );
+      appointmentTable.update(
+        appointmentData[0].id,
+        'reminder',
+        formData.reminder,
+      );
+      appointmentTable.update(
+        appointmentData[0].id,
+        'selectedDate',
+        formData.selectedDate,
+      );
+      appointmentTable.update(
+        appointmentData[0].id,
+        'selectedTime',
+        formData.selectedTime,
+      );
+      appointmentTable.reload();
     } else {
       await appointmentTable.add(
         formData.eventTitle,
@@ -83,14 +104,14 @@ const AppointmentForm = ({navigation, route}) => {
         formData.selectedTime,
       );
 
-      //appointmentTable.show();
-
       const newestAppointmentId =
         await appointmentTable.getNewestAppointmentId();
 
       for (const item of formData.thingsToBring) {
         await appointmentRemindersTable.add(newestAppointmentId, item.item);
       }
+
+      appointmentTable.reload();
     }
   };
 

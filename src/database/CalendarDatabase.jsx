@@ -59,11 +59,21 @@ class CalendarDatabase extends Database {
 
       this.appTable.data.forEach(element => {
         let reminderArray = [];
+        let detailReminderArray = [];
         // console.log(element[0]);
 
         this.appReminderTable.data.forEach(reminder => {
           if (reminder[1][1] == element[0][1]) {
             reminderArray.push(reminder[2][1]);
+          }
+        });
+
+        this.appReminderTable.data.forEach(reminder => {
+          if (reminder[1][1] == element[0][1]) {
+            detailReminderArray.push({
+              id: reminder[0][1],
+              label: reminder[2][1],
+            });
           }
         });
 
@@ -85,6 +95,7 @@ class CalendarDatabase extends Database {
             date: dateParse,
             time: element[5][1],
             reminder: reminderArray,
+            detailReminder: detailReminderArray,
           });
         } catch {
           console.error('Unable to parse data');
