@@ -2,15 +2,11 @@ import React, {useEffect, useState} from 'react';
 import {Text, View, TouchableOpacity} from 'react-native';
 import {check, PERMISSIONS, request} from 'react-native-permissions';
 import Tts from 'react-native-tts';
-import Voice, {
-  SpeechRecognizedEvent,
-  SpeechResultsEvent,
-  SpeechErrorEvent,
-} from '@react-native-voice/voice';
+import Voice from '@react-native-voice/voice';
 import styles from '../styles';
-import MicrophoneComponent from '../components/MicrophoneComponent';
 import TtsButtonComponent from '../components/TtsButtonComponent';
 import { useFocusEffect } from '@react-navigation/native';
+import SpeechButton from '../components/SpeechButton';
 let Database = require('../database/ProfileDatabase.jsx');
 let database = new Database();
 
@@ -122,24 +118,6 @@ function HomeScreen({navigation}) {
         navigation.navigate(screenName, { profileData: newProfileData });       
     };
 
-  const handleSpeakButtonPress = () => {
-    if (isListening) {
-      setIsListening(false);
-      stopListening();
-    } else {
-      setIsListening(true);
-      startListening();
-    }
-  };
-
-  const startListening = async () => {
-    try {
-      await Voice.start('en-US');
-      setIsListening(true);
-    } catch (error) {
-      console.error('Error starting voice recognition:', error);
-    }
-  };
 
   const stopListening = async () => {
     try {
@@ -148,6 +126,15 @@ function HomeScreen({navigation}) {
     } catch (error) {
       console.error('Error starting voice recognition:', error);
     }
+  };
+
+  const toggleListening = () => {
+    if (isListening) {
+      Voice.stop();
+    } else {
+      Voice.start('en-US');
+    }
+    setIsListening(!isListening);
   };
 
   return (
@@ -174,16 +161,12 @@ function HomeScreen({navigation}) {
       </TouchableOpacity>
 
       {/* Speak Button */}
-      <TouchableOpacity
-        style={styles.speakButton}
-        onPress={isListening ? stopListening : startListening}>
-        <Text style={styles.speakButtonText}>
-          {isListening ? 'Stop Listening' : 'Listen'}
-        </Text>
-      </TouchableOpacity>
+
+      <SpeechButton isListening={isListening} onPress={toggleListening} />
+      
 
       {/*TTS Button */}
-      <TtsButtonComponent text="Welcome to the home screen.  Here you can decide where to go such as: Calendar, Reminders, and Profile.  If you need to go by voice please click on the red button and say the name of the page you wish to go." />
+      <TtsButtonComponent text="Hello user, press on the listen button to state where you would like to go: Calendar, Profile, or Reminders." />
 
       {/* <MicrophoneComponent /> */}
     </View>
