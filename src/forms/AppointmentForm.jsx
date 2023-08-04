@@ -79,34 +79,28 @@ const AppointmentForm = ({navigation}) => {
       selectedTime,
       reminder,
       location: JSON.stringify(location),
-    };
+      };
 
-    await appointmentTable.add(
-      formData.eventTitle,
-      formData.location,
-      formData.reminder,
-      formData.selectedDate,
-      formData.selectedTime,
-    );
+      let dataExists = false    
+      if (dataExists == true) {
+          //EDIT
+      } else {
+          await appointmentTable.add(
+              formData.eventTitle,
+              formData.location,
+              formData.reminder,
+              formData.selectedDate,
+              formData.selectedTime,
+          );
 
-    appointmentTable.show();
+          //appointmentTable.show();
 
-    const newestAppointmentId = await appointmentTable.getNewestAppointmentId();
+          const newestAppointmentId = await appointmentTable.getNewestAppointmentId();
 
-    for (const item of formData.thingsToBring) {
-      await appointmentRemindersTable.add(newestAppointmentId, item.item);
-    }
-
-    console.log('New appointment ID: ', newestAppointmentId);
-
-    await appointmentTable.view();
-    await appointmentTable.reload();
-
-    await appointmentRemindersTable.view();
-    await appointmentRemindersTable.reload();
-
-    let fullTabale = appointmentRemindersTable.data;
-    console.log(fullTabale);
+          for (const item of formData.thingsToBring) {
+              await appointmentRemindersTable.add(newestAppointmentId, item.item);
+          }
+      }
   };
 
   const showDatepicker = () => {
