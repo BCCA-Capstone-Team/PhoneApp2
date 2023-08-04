@@ -39,8 +39,8 @@ async function getAppointments() {
   let database = new Database();
   await database.onAppReady();
 
-    let allData = await database.getAll();
-    console.log(allData)
+  let allData = await database.getAll();
+  console.log(allData);
   // console.log(allData['2023-6-29']);
   return allData;
 }
@@ -81,8 +81,6 @@ const Schedule = ({navigation}) => {
     return data;
   }
 
-  // Split all keys at their '-' and make sure that the month and day is 2 digits.
-  // If it isn't, make it.
   const loadItems = async day => {
     let allAppointmentData = await loadAllAppointmentData();
     // console.log(allAppointmentData);

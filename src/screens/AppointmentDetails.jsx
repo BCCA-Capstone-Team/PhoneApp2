@@ -4,15 +4,26 @@ import AppointmentFormScreen from './AppointmentFormScreen';
 
 const AppointmentDetails = ({navigation, route}) => {
   let data = route.params;
+  console.log(data);
+  let editing;
+  let listOfData = [data, editing];
 
-  const handleAddItem = dayData => {
+  const handleAddItem = () => {
+    listOfData[1] = false;
     // console.log('hello');
-    if (dayData.date) {
-      navigation.navigate('AppointmentFormScreen', dayData.date);
-    } else {
-      navigation.navigate('AppointmentFormScreen', dayData);
-    }
+    // if (dayData.date) {
+    //   navigation.navigate('AppointmentFormScreen', dayData);
+    // } else {
+    //   navigation.navigate('AppointmentFormScreen', dayData);
+    // }
+    navigation.navigate('AppointmentFormScreen', listOfData);
   };
+
+  const handleEditItem = dayData => {
+    listOfData[1] = true;
+    navigation.navigate('AppointmentFormScreen', listOfData);
+  };
+
   if (data.date || data.eventTitle) {
     // console.log(data.date);
     return (
@@ -42,11 +53,14 @@ const AppointmentDetails = ({navigation, route}) => {
           <TouchableOpacity
             style={{marginBottom: 10}}
             onPress={() => {
-              handleAddItem(data);
+              handleAddItem();
             }}>
             <Text>Add Item</Text>
           </TouchableOpacity>
-          <TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => {
+              handleEditItem();
+            }}>
             <Text>Edit</Text>
           </TouchableOpacity>
           <TouchableOpacity>
@@ -63,8 +77,8 @@ const AppointmentDetails = ({navigation, route}) => {
         <View>
           <TouchableOpacity
             onPress={() => {
-              console.log(data);
-              handleAddItem(data);
+              //   console.log(data);
+              handleAddItem();
             }}>
             <Text>Add Item</Text>
           </TouchableOpacity>

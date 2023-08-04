@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import {React, useState, useEffect} from 'react';
 import {View, Text, Button, TextInput, Platform} from 'react-native';
 import {Controller, useForm, useFieldArray} from 'react-hook-form';
 import DateTimePicker from '@react-native-community/datetimepicker';
@@ -45,7 +45,9 @@ async function startDatabase() {
 }
 startDatabase();
 
-const AppointmentForm = ({navigation}) => {
+const AppointmentForm = ({navigation, route}) => {
+  const appointmentData = route.params;
+  console.log(appointmentData[0].eventTitle);
   const {
     control,
     handleSubmit,
@@ -72,6 +74,19 @@ const AppointmentForm = ({navigation}) => {
     name: 'thingsToBring',
   });
 
+  // Prefilling form data //
+
+  if (appointmentData[1]) {
+    let convertedDate = new Date(appointmentData[0].date);
+    useEffect(() => {
+      setValue('eventTitle', appointmentData[0].eventTitle || '');
+      setValue('address', appointmentData[0].location.address);
+      setSelectedDate(convertedDate);
+    }, [appointmentData, setValue]);
+  }
+
+  // Prefilling form data //
+
   const onSubmit = async data => {
     const formData = {
       ...data,
@@ -79,28 +94,29 @@ const AppointmentForm = ({navigation}) => {
       selectedTime,
       reminder,
       location: JSON.stringify(location),
-      };
+    };
 
-      let dataExists = false    
-      if (dataExists == true) {
-          //EDIT
-      } else {
-          await appointmentTable.add(
-              formData.eventTitle,
-              formData.location,
-              formData.reminder,
-              formData.selectedDate,
-              formData.selectedTime,
-          );
+    let dataExists = false;
+    if (dataExists == true) {
+      //EDIT
+    } else {
+      await appointmentTable.add(
+        formData.eventTitle,
+        formData.location,
+        formData.reminder,
+        formData.selectedDate,
+        formData.selectedTime,
+      );
 
-          //appointmentTable.show();
+      //appointmentTable.show();
 
-          const newestAppointmentId = await appointmentTable.getNewestAppointmentId();
+      const newestAppointmentId =
+        await appointmentTable.getNewestAppointmentId();
 
-          for (const item of formData.thingsToBring) {
-              await appointmentRemindersTable.add(newestAppointmentId, item.item);
-          }
+      for (const item of formData.thingsToBring) {
+        await appointmentRemindersTable.add(newestAppointmentId, item.item);
       }
+    }
   };
 
   const showDatepicker = () => {
@@ -159,10 +175,22 @@ const AppointmentForm = ({navigation}) => {
 
       <View>
         <Text>Location:</Text>
-        <Text>Address: {location.address}</Text>
-        <Text>City: {location.city}</Text>
-        <Text>State: {location.state}</Text>
-        <Text>Zip Code: {location.zipCode}</Text>
+        {appointmentData[1] ? (
+          <>
+            <Text>Address: {appointmentData[0].location.address}</Text>
+            <Text>City: {appointmentData[0].location.city}</Text>
+            <Text>State: {appointmentData[0].location.state}</Text>
+            <Text>Zip Code: {appointmentData[0].location.zipCode}</Text>
+          </>
+        ) : (
+          <>
+            <Text>Address: {location.address}</Text>
+            <Text>City: {location.city}</Text>
+            <Text>State: {location.state}</Text>
+            <Text>Zip Code: {location.zipCode}</Text>
+          </>
+        )}
+
         <Button
           onPress={() => setShowLocationModal(true)}
           title="Add Location"
@@ -173,6 +201,7 @@ const AppointmentForm = ({navigation}) => {
         visible={showLocationModal}
         onClose={() => setShowLocationModal(false)}
         onSubmit={handleLocationSubmit}
+        locationData={appointmentData[0].location}
       />
 
       <View>

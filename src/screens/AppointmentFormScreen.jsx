@@ -2,10 +2,10 @@ import {View, Text} from 'react-native';
 import React from 'react';
 import AppointmentForm from '../forms/AppointmentForm';
 
-const AppointmentFormScreen = ({navigation}) => {
+const AppointmentFormScreen = ({navigation, route}) => {
   return (
     <View>
-      <AppointmentForm />
+      <AppointmentForm navigation={navigation} route={route} />
     </View>
   );
 };
