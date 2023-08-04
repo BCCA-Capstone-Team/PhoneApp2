@@ -76,14 +76,15 @@ class CalendarDatabase extends Database {
           }
 
         try {
-          createdTable[dateParse].push({
-            eventTitle: element[1][1],
-            location: JSON.parse(element[2][1]),
-            remindBeforeTime: element[3][1],
-            date: dateParse,
-            time: element[5][1],
-            reminder: reminderArray,
-          });
+            createdTable[dateParse].push({
+                id: element[0][1],
+                eventTitle: element[1][1],
+                location: JSON.parse(element[2][1]),
+                remindBeforeTime: element[3][1],
+                date: dateParse,
+                time: element[5][1],
+                reminder: reminderArray,
+              });
         } catch {
           console.error('Unable to parse data');
         }

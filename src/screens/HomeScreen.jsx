@@ -117,6 +117,7 @@ function HomeScreen({navigation}) {
 
   // event handler for buttons
     const handleButtonPress = async (screenName, data) => {
+        await database.table.reload()
         let newProfileData = await database.getProfile()
         navigation.navigate(screenName, { profileData: newProfileData });       
     };

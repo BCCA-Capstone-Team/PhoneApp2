@@ -39,7 +39,8 @@ async function getAppointments() {
   let database = new Database();
   await database.onAppReady();
 
-  let allData = await database.getAll();
+    let allData = await database.getAll();
+    console.log(allData)
   // console.log(allData['2023-6-29']);
   return allData;
 }
