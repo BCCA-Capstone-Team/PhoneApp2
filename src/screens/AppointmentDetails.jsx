@@ -47,6 +47,9 @@ const AppointmentDetails = ({navigation, route}) => {
             <Text>Add Item</Text>
           </TouchableOpacity>
           <TouchableOpacity>
+            <Text>Edit</Text>
+          </TouchableOpacity>
+          <TouchableOpacity>
             <Text>Delete Item</Text>
           </TouchableOpacity>
         </View>
