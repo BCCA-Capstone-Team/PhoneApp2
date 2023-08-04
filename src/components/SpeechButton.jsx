@@ -4,8 +4,8 @@ import styles from '../styles';
 
 export default function SpeechButton({ isListening, onPress }) {
   return (
-    <TouchableOpacity style={styles.voiceButton} onPress={onPress}>
-      <Text style={styles.voiceButtonText}>
+    <TouchableOpacity style={styles.speakButton} onPress={onPress}>
+      <Text style={styles.speakButtonText}>
         {isListening ? 'Stop Listening' : 'Listen'}
       </Text>
     </TouchableOpacity>
