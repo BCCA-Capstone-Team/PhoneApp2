@@ -32,7 +32,7 @@ function monthAndDayFormatter(dateString) {
   // console.log(combinedDateString);
   return combinedDateString;
 }
-monthAndDayFormatter('2023-08-07');
+// monthAndDayFormatter('2023-08-07');
 
 async function getAppointments() {
   let Database = require('../database/CalendarDatabase.jsx');

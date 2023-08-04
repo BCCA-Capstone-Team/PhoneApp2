@@ -29,7 +29,7 @@ const AppointmentDetails = ({navigation, route}) => {
           <Text>No location info saved!</Text>
         )}
 
-        {data.reminder[0] != null ? (
+        {data.reminder[0] ? (
           <View>
             {data.reminder.map(reminder => (
               <Text>Bring: {reminder}</Text>
