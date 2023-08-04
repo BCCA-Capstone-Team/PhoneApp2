@@ -59,6 +59,7 @@ class CalendarDatabase extends Database {
 
       this.appTable.data.forEach(element => {
         let reminderArray = [];
+        // console.log(element[0]);
 
         this.appReminderTable.data.forEach(reminder => {
           if (reminder[1][1] == element[0][1]) {
@@ -71,20 +72,20 @@ class CalendarDatabase extends Database {
           newDate.getMonth() + 1
         }-${newDate.getDate()}`;
 
-          if (!createdTable[dateParse]) {
-              createdTable[dateParse] = [];
-          }
+        if (!createdTable[dateParse]) {
+          createdTable[dateParse] = [];
+        }
 
         try {
-            createdTable[dateParse].push({
-                id: element[0][1],
-                eventTitle: element[1][1],
-                location: JSON.parse(element[2][1]),
-                remindBeforeTime: element[3][1],
-                date: dateParse,
-                time: element[5][1],
-                reminder: reminderArray,
-              });
+          createdTable[dateParse].push({
+            id: element[0][1],
+            eventTitle: element[1][1],
+            location: JSON.parse(element[2][1]),
+            remindBeforeTime: element[3][1],
+            date: dateParse,
+            time: element[5][1],
+            reminder: reminderArray,
+          });
         } catch {
           console.error('Unable to parse data');
         }
@@ -93,6 +94,26 @@ class CalendarDatabase extends Database {
       resolve(createdTable);
     });
   }
+
+  // TESTING HOW TO CHECK FOR ROW //
+  async checkForAppointment(appointmentId) {
+    await this.onAppReady();
+    return new Promise(async (resolve, reject) => {
+      await this.appTable.reload();
+      await this.appReminderTable.reload();
+      // console.log(this.appTable.data[0][0]);
+
+      for (let i = 0; i < this.appTable.data.length; i++) {
+        // console.log(i);
+        if (this.appTable.data[i][0][1] == appointmentId) {
+          resolve(true);
+        } else if (i == this.appTable.length - 1) {
+          resolve(false);
+        }
+      }
+    });
+  }
+  // TESTING HOW TO CHECK FOR ROW //
 
   async edit(changeDate, key, value) {
     let giveDate = new Date(changeDate);

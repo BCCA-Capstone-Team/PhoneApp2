@@ -14,34 +14,6 @@ async function startDatabase() {
   await database.onAppReady();
   appointmentTable = database.appTable;
   appointmentRemindersTable = database.appReminderTable;
-
-  //appointmentTable.show()
-
-  //appointmentTable = await database.createTable('appointment', column => {
-  //  // Auto Clear is forcing a recreation of the table every time.
-  //  // column.autoClear();
-
-  //  column.create('eventTitle', 'TEXT');
-  //  column.create('location', 'TEXT');
-  //  column.create('remindBeforeTime', 'INT');
-  //  column.create('date', 'TEXT');
-  //  column.create('time', 'TEXT');
-
-  //  column.run();
-  //});
-
-  //appointmentRemindersTable = await database.createTable(
-  //  'appointmentReminders',
-  //  column => {
-  //    // Auto Clear is forcing a recreation of the table every time.
-  //    column.autoClear();
-
-  //    column.create('appointmentId', 'INT');
-  //    column.create('reminder', 'TEXT');
-
-  //    column.run();
-  //  },
-  //);
 }
 startDatabase();
 
@@ -96,9 +68,12 @@ const AppointmentForm = ({navigation, route}) => {
       location: JSON.stringify(location),
     };
 
-    let dataExists = false;
-    if (dataExists == true) {
-      //EDIT
+    if (appointmentData[1] == true) {
+      appointmentTable.appTable.update(
+        appointmentData[0].id,
+        'eventTitle',
+        formData.eventTitle,
+      );
     } else {
       await appointmentTable.add(
         formData.eventTitle,

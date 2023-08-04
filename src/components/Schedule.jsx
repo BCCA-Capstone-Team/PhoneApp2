@@ -40,8 +40,10 @@ async function getAppointments() {
   await database.onAppReady();
 
   let allData = await database.getAll();
-  console.log(allData);
+  // console.log(allData);
   // console.log(allData['2023-6-29']);
+  let test = database.checkForAppointment(2);
+  test.then(resp => console.log(resp));
   return allData;
 }
 // getAppointments();
