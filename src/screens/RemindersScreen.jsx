@@ -1,29 +1,18 @@
 import React, {useState, useEffect, useRef} from 'react';
-import {Text, View, TouchableOpacity, ScrollView, Button} from 'react-native';
+import {Text, View, ScrollView, Button} from 'react-native';
 import RemindersForm from '../forms/RemindersForm';
 import EditReminderForm from '../forms/EditReminderForm';
-import styles from '../styles';
 import AddButtonModal from '../components/AddButtonModal';
 import EditButtonModal from '../components/EditButtonModal';
-import TtsButtonComponent from '../components/TtsButtonComponent';
 import Tts from 'react-native-tts';
-import Voice, {
-  SpeechRecognizedEvent,
-  SpeechResultsEvent,
-  SpeechErrorEvent,
-} from '@react-native-voice/voice';
-import { wordsToNumbers } from 'words-to-numbers';
+import Voice from '@react-native-voice/voice';
 import SpeechButton from '../components/SpeechButton';
+import styles from '../styles';
 
 function RemindersScreen() {
   const [reminders, setReminders] = useState([]);
-  const [voiceInput, setVoiceInput] = useState('');
   const [isListening, setIsListening] = useState(false);
-
-
-  const [reminderIndexToEdit, setReminderIndexToEdit] = useState(null);
   const voiceInputRef = useRef('');
-  console.log(reminders);
 
   // DATABASE REMINDERS FETCH ===========================
 
