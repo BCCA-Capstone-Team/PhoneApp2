@@ -11,7 +11,7 @@ async function startDatabase() {
     'leavingHomeReminder',
     column => {
       // Auto Clear is forcing a recreation of the table every time.
-      column.autoClear();
+      // column.autoClear();
 
       column.create('reminderText', 'TEXT');
 

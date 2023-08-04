@@ -13,6 +13,7 @@ import Voice, {
   SpeechErrorEvent,
 } from '@react-native-voice/voice';
 import { wordsToNumbers } from 'words-to-numbers';
+import SpeechButton from '../components/SpeechButton';
 
 function RemindersScreen() {
   const [reminders, setReminders] = useState([]);
@@ -128,26 +129,39 @@ function RemindersScreen() {
   }
   
   const deleteReminderByVoice = async (spokenWords) => {
-    const numberString = spokenWords[1];
-    const index = wordsToNumbers(numberString);
-    if (index > 0 && index <= reminders.length) {
-      await deleteReminder(reminders[index - 1][0][1]);
-      console.log("DELETE HERE")
-      // Fetch new list of reminders
-      fetchRemindersFromDatabase();
+    try {
+    // Remove the 'delete' command word from the input
+    spokenWords.shift();
+
+    // Join the remaining words to form the reminder content
+    const reminderContent = spokenWords.join(' ');
+
+    // Find the reminder to be deleted
+    const reminderToDelete = reminders.find(reminder => reminder[1][1] === reminderContent);
+
+      if (reminderToDelete) {
+        await deleteReminder(reminderToDelete[0][1]);
+        console.log('Deleted reminder:', reminderToDelete);
+      } else {
+        console.log(reminderToDelete);
+        console.log('Reminder not found:', spokenWords);
+      }
+    } catch (error) {
+      console.error('Error deleting reminder:', error);
     }
+    fetchRemindersFromDatabase();
   }
 
-  const editReminderByVoice = async (spokenWords) => {
-    const numberString = spokenWords[1];
-    const index = wordsToNumbers(numberString);
+  // const editReminderByVoice = async (spokenWords) => {
+  //   const numberString = spokenWords[1];
+  //   const index = wordsToNumbers(numberString);
     
-    if (!isNaN(index) && index > 0 && index <= reminders.length) {
-      const newData = spokenWords[2];
-      await updateReminder(reminders[index - 1][0][1], newData);
-      fetchRemindersFromDatabase();
-    }
-  };
+  //   if (!isNaN(index) && index > 0 && index <= reminders.length) {
+  //     const newData = spokenWords[2];
+  //     await updateReminder(reminders[index - 1][0][1], newData);
+  //     fetchRemindersFromDatabase();
+  //   }
+  // };
   
   const onSpeechEnd = (e) => {
     console.log('onSpeechEnd:', e);
@@ -157,14 +171,17 @@ function RemindersScreen() {
     const command = spokenWords[0].toLowerCase();
   
     if (command === 'delete') {
+      console.log("HERE TO DELETE =================")
       deleteReminderByVoice(spokenWords);
       return; // Skip the rest of the function
     }
     else if (command === 'add') {
       addReminderByVoice(spokenWords);
       return; // Skip the rest of the function
-    } else if (command === 'edit') {
-      editReminderByVoice(spokenWords);
+    } else if (command === 'read') {
+      console.log("HERE TO READ ====================")
+      readReminders();
+      return;
     }
   
     // If command is not recognized, do nothing
@@ -178,22 +195,6 @@ function RemindersScreen() {
     console.log(e.value[e.value.length - 1]);
     const lastResult = e.value[e.value.length - 1];
     voiceInputRef.current = lastResult; // We update the ref here
-
-
-    // delete reminder code that works:
-
-    // const words = lastResult.split(' '); // Split the spoken words into an array
-    // if (words[0].toLowerCase() === 'delete') {
-    //   // User wants to delete a reminder
-    //   const idWord = words[1]; // Assume the id of the reminder follows after 'delete'
-    //   const id = wordsToNumbers(idWord); // Convert the word to a number
-    //   if (!isNaN(id)) {
-    //     await deleteReminder(id); // Call your delete function
-    //     fetchRemindersFromDatabase(); // Update reminders from the database
-    //   } else {
-    //     console.log('Invalid reminder ID');
-    //   }
-    // }
   };
 
   const onSpeechError = e => {
@@ -236,12 +237,8 @@ function RemindersScreen() {
           <Text>No reminders found.</Text>
         )}
       </ScrollView>
-      <Button title="Read Reminders" onPress={readReminders} />
-      <TouchableOpacity style={styles.voiceButton} onPress={toggleListening}>
-    <Text style={styles.voiceButtonText}>
-      {isListening ? 'Stop Listening' : 'Listen'}
-    </Text>
-  </TouchableOpacity>
+      {/* <Button title="Read Reminders" onPress={readReminders} /> */}
+      <SpeechButton isListening={isListening} onPress={toggleListening} />
     </View>
   );
 }
