@@ -5,7 +5,7 @@ import Tts from 'react-native-tts';
 import Voice from '@react-native-voice/voice';
 import styles from '../styles';
 import TtsButtonComponent from '../components/TtsButtonComponent';
-import { useFocusEffect } from '@react-navigation/native';
+import {useFocusEffect} from '@react-navigation/native';
 import SpeechButton from '../components/SpeechButton';
 let Database = require('../database/ProfileDatabase.jsx');
 let database = new Database();
@@ -54,16 +54,15 @@ function HomeScreen({navigation}) {
         stopListening();
         Voice.destroy().then(Voice.removeAllListeners);
       };
-  
+
       Voice.onSpeechStart = onSpeechStart;
       Voice.onSpeechEnd = onSpeechEnd;
       Voice.onSpeechResults = onSpeechResults;
       Voice.onSpeechError = onSpeechError;
-    
+
       return () => unsubscribe();
-    }, [])
+    }, []),
   );
-  
 
   const handleVoiceResults = e => {
     // Handle voice results
@@ -71,13 +70,13 @@ function HomeScreen({navigation}) {
     const command = spokenWords[0].toLowerCase();
     switch (command) {
       case 'calendar':
-        handleButtonPress('CalendarScreen');
+        handleButtonPress('Calendar');
         break;
       case 'reminders':
-        handleButtonPress('RemindersScreen');
+        handleButtonPress('Reminders');
         break;
       case 'profile':
-        handleButtonPress('ProfileScreen');
+        handleButtonPress('Profile Details');
         break;
       default:
         Tts.speak('Sorry, I did not understand.'); //message for unknown commands
@@ -112,12 +111,12 @@ function HomeScreen({navigation}) {
   };
 
   // event handler for buttons
-    const handleButtonPress = async (screenName, data) => {
-        await database.table.reload()
-        let newProfileData = await database.getProfile()
-        navigation.navigate(screenName, { profileData: newProfileData });       
-    };
-
+  const handleButtonPress = async screenName => {
+    await database.onProfileReady();
+    await database.table.reload();
+    let newProfileData = await database.getProfile();
+    navigation.navigate(screenName, {profileData: newProfileData});
+  };
 
   const stopListening = async () => {
     try {
@@ -142,28 +141,27 @@ function HomeScreen({navigation}) {
       {/* Calendar Button */}
       <TouchableOpacity
         style={styles.button}
-        onPress={() => handleButtonPress('CalendarScreen')}>
+        onPress={() => handleButtonPress('Calendar')}>
         <Text style={styles.buttonText}>Calendar</Text>
       </TouchableOpacity>
 
       {/* Reminders Button */}
       <TouchableOpacity
         style={styles.button}
-        onPress={() => handleButtonPress('RemindersScreen')}>
+        onPress={() => handleButtonPress('Reminders')}>
         <Text style={styles.buttonText}>Reminders</Text>
       </TouchableOpacity>
 
       {/* Profile Button */}
       <TouchableOpacity
         style={styles.button}
-        onPress={() => handleButtonPress('ProfileDetailScreen')}>
+        onPress={() => handleButtonPress('Profile Details')}>
         <Text style={styles.buttonText}>Profile</Text>
       </TouchableOpacity>
 
       {/* Speak Button */}
 
       <SpeechButton isListening={isListening} onPress={toggleListening} />
-      
 
       {/*TTS Button */}
       <TtsButtonComponent text="Hello user, press on the listen button to state where you would like to go: Calendar, Profile, or Reminders." />
