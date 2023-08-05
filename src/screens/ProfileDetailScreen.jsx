@@ -1,6 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-
+import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
 
 const ProfileDetailScreen = ({navigation, route}) => {
   const {profileData} = route.params;
@@ -12,7 +11,7 @@ const ProfileDetailScreen = ({navigation, route}) => {
   }
 
   const handleEditProfile = () => {
-    navigation.navigate('ProfileScreen', {profileData});
+    navigation.navigate('Create/Edit Profile', {profileData});
   };
 
   return (
