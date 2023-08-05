@@ -43,7 +43,6 @@ const ProfileForm = ({navigation, route}) => {
   const onSubmit = async data => {
     // const profileDatabase = new ProfileDatabase();
       try {
-            await database.table.reload()
             let profileExists = await database.checkForProfile()
             if (profileExists) {
                 database.editProfile('firstName', data.firstName)
