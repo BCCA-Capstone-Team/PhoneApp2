@@ -10,14 +10,14 @@ class ProfileDatabase extends Database {
 
   async startProfileSystem() {
     this.table = await this.createTable('profileDatabase', column => {
-      column.autoClear();
+      // column.autoClear();
 
       column.create('firstName', 'TEXT');
       column.create('lastName', 'TEXT');
       column.create('street', 'TEXT');
       column.create('city', 'TEXT');
       column.create('state', 'TEXT');
-      column.create('zipCode', 'TEXT');
+      column.create('zipCode', 'INT');
 
       column.run();
     });

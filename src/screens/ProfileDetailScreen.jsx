@@ -1,5 +1,6 @@
 import React from 'react';
 import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
+import {HeaderBackButton} from '@react-navigation/stack';
 
 const ProfileDetailScreen = ({navigation, route}) => {
   const {profileData} = route.params;
@@ -11,7 +12,7 @@ const ProfileDetailScreen = ({navigation, route}) => {
   }
 
   const handleEditProfile = () => {
-    navigation.navigate('Create/Edit Profile', {profileData});
+    navigation.navigate('ProfileScreen', {profileData});
   };
 
   return (

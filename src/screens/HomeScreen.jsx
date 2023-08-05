@@ -70,13 +70,13 @@ function HomeScreen({navigation}) {
     const command = spokenWords[0].toLowerCase();
     switch (command) {
       case 'calendar':
-        handleButtonPress('Calendar');
+        handleButtonPress('CalendarScreen');
         break;
       case 'reminders':
-        handleButtonPress('Reminders');
+        handleButtonPress('RemindersScreen');
         break;
       case 'profile':
-        handleButtonPress('Profile Details');
+        handleButtonPress('ProfileDetailScreen');
         break;
       default:
         Tts.speak('Sorry, I did not understand.'); //message for unknown commands
@@ -140,22 +140,29 @@ function HomeScreen({navigation}) {
       {/* Calendar Button */}
       <TouchableOpacity
         style={styles.button}
-        onPress={() => handleButtonPress('Calendar')}>
+        onPress={() => handleButtonPress('CalendarScreen')}>
         <Text style={styles.buttonText}>Calendar</Text>
       </TouchableOpacity>
 
       {/* Reminders Button */}
       <TouchableOpacity
         style={styles.button}
-        onPress={() => handleButtonPress('Reminders')}>
+        onPress={() => handleButtonPress('RemindersScreen')}>
         <Text style={styles.buttonText}>Reminders</Text>
       </TouchableOpacity>
 
       {/* Profile Button */}
       <TouchableOpacity
         style={styles.button}
-        onPress={() => handleButtonPress('Profile Details')}>
+        onPress={() => handleButtonPress('ProfileDetailScreen')}>
         <Text style={styles.buttonText}>Profile</Text>
+      </TouchableOpacity>
+
+      {/* Test Button */}
+      <TouchableOpacity
+        style={styles.button}
+        onPress={() => handleButtonPress('TestScreen')}>
+        <Text style={styles.buttonText}>Test</Text>
       </TouchableOpacity>
 
       {/* Speak Button */}

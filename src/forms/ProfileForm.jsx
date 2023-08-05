@@ -1,4 +1,5 @@
 import React, {useEffect} from 'react';
+
 import {
   Text,
   View,
@@ -12,7 +13,7 @@ import styles from '../styles';
 let Database = require('../database/ProfileDatabase.jsx');
 let database = new Database();
 
-const ProfileForm = ({navigation, route}) => {
+const ProfileForm = ({navigation, route, onProfileCreated}) => {
   const {
     control,
     handleSubmit,
@@ -32,7 +33,10 @@ const ProfileForm = ({navigation, route}) => {
       setValue('street', profileData.street || '');
       setValue('city', profileData.city || '');
       setValue('state', profileData.state || '');
-      setValue('zipCode', profileData.zipCode || '');
+      setValue(
+        'zipCode',
+        profileData.zipCode ? profileData.zipCode.toString() : '',
+      );
     }
   }, [profileData, setValue]);
 
@@ -55,10 +59,11 @@ const ProfileForm = ({navigation, route}) => {
           data.street,
           data.city,
           data.state,
-          data.zipCode, // zipCode now stored as STR in database
+          parseInt(data.zipCode, 10), // Convert zipCode to an integer (since it was stored as INT in the database)
         );
+        onProfileCreated();
       }
-      await navigation.navigate('Profile Details', {profileData: data});
+      await navigation.navigate('HomeScreen', {profileData: data});
     } catch (error) {
       console.error('Error adding profile:', error);
     }
