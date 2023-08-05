@@ -16,6 +16,7 @@ import ProfileScreen from './src/screens/ProfileScreen';
 import ProfileDetailScreen from './src/screens/ProfileDetailScreen';
 import AppointmentDetails from './src/screens/AppointmentDetails';
 import AppointmentFormScreen from './src/screens/AppointmentFormScreen';
+import TestScreen from './src/screens/TestScreen';
 
 import ProfileDatabase from './src/database/ProfileDatabase';
 
@@ -51,7 +52,7 @@ function App(): JSX.Element {
         const profileExists = await profileDatabase.checkForProfile();
         if (!profileExists) {
           // Profile does not exist, navigate to the ProfileScreen
-          (navigationRef.current as any)?.navigate('Create/Edit Profile', {
+          (navigationRef.current as any)?.navigate('ProfileScreen', {
             profileData: null,
           });
         }
@@ -64,11 +65,14 @@ function App(): JSX.Element {
   return (
     <NavigationContainer ref={navigationRef}>
       <Stack.Navigator>
-        <Stack.Screen name="Home" component={HomeScreen} />
-        <Stack.Screen name="Calendar" component={CalendarScreen} />
-        <Stack.Screen name="Reminders" component={RemindersScreen} />
-        <Stack.Screen name="Create/Edit Profile" component={ProfileScreen} />
-        <Stack.Screen name="Profile Details" component={ProfileDetailScreen} />
+        <Stack.Screen name="HomeScreen" component={HomeScreen} />
+        <Stack.Screen name="CalendarScreen" component={CalendarScreen} />
+        <Stack.Screen name="RemindersScreen" component={RemindersScreen} />
+        <Stack.Screen name="ProfileScreen" component={ProfileScreen} />
+        <Stack.Screen
+          name="ProfileDetailScreen"
+          component={ProfileDetailScreen}
+        />
         <Stack.Screen
           name="AppointmentDetails"
           component={AppointmentDetails}
@@ -77,6 +81,7 @@ function App(): JSX.Element {
           name="AppointmentFormScreen"
           component={AppointmentFormScreen}
         />
+        <Stack.Screen name="TestScreen" component={TestScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

@@ -1,7 +1,7 @@
 let Database = require('../database/Database.jsx');
 
 class ProfileDatabase extends Database {
-  constructor() {
+  constructor () {
     super('ProfileDatabaseTable');
     this.debug = true;
     this.ready = false;
@@ -17,7 +17,7 @@ class ProfileDatabase extends Database {
       column.create('street', 'TEXT');
       column.create('city', 'TEXT');
       column.create('state', 'TEXT');
-      column.create('zipCode', 'TEXT');
+      column.create('zipCode', 'INT');
 
       column.run();
     });
