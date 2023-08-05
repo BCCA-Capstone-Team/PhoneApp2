@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useRef} from 'react';
+import React, {useState, useEffect, useRef, useCallback} from 'react';
 import {Text, View, ScrollView, Button} from 'react-native';
 import RemindersForm from '../forms/RemindersForm';
 import EditReminderForm from '../forms/EditReminderForm';
@@ -14,6 +14,7 @@ function RemindersScreen() {
   const [isListening, setIsListening] = useState(false);
   const voiceInputRef = useRef('');
 
+
   // DATABASE REMINDERS FETCH ===========================
 
   const fetchRemindersFromDatabase = async () => {
@@ -21,6 +22,7 @@ function RemindersScreen() {
       const remindersData = await leavingHomeReminderTable.view();
       setReminders(remindersData);
       console.log('Updated reminders:', remindersData);
+      return remindersData;
     } catch (error) {
       console.error('Error fetching reminders:', error);
     }
@@ -74,11 +76,13 @@ function RemindersScreen() {
       Tts.stop();
       Voice.destroy().then(Voice.removeAllListeners);
     };
-  }, []);
+  }, [toggleListening]);
 
-  const readReminders = () => {
-    if (reminders.length > 0) {
-      reminders.forEach(reminder => {
+  const readReminders = async () => {
+    const remindersData = await fetchRemindersFromDatabase();
+    console.log(remindersData);
+    if (remindersData.length > 0) {
+      remindersData.forEach(reminder => {
         Tts.speak(reminder[1][1]);
         // DEBUG PURPOSES ========================
         console.log(reminder[1][1])
@@ -88,14 +92,23 @@ function RemindersScreen() {
     }
   };
 
-  const toggleListening = () => {
+  const toggleListening = useCallback(() => {
     if (isListening) {
+      console.log("STOP PLEASE");
       Voice.stop();
     } else {
+      Tts.speak("Say add to add a reminder, delete to delete a reminder, or read to read your reminders aloud.");
       Voice.start('en-US');
+      // Tts.addEventListener('tts-finish', event => {
+      //   if (!isListening) {
+      //     console.log("HELP")
+      //     Voice.start('en-US');
+      //   }
+      // });
+      // Removed Voice.start('en-US') from here
     }
     setIsListening(!isListening);
-  };
+  }, [isListening]);
   
 
 
@@ -126,7 +139,7 @@ function RemindersScreen() {
     const reminderContent = spokenWords.join(' ');
 
     // Find the reminder to be deleted
-    const reminderToDelete = reminders.find(reminder => reminder[1][1] === reminderContent);
+    const reminderToDelete = reminders.find(reminder => reminder[1][1].toLowerCase() === reminderContent.toLowerCase());
 
       if (reminderToDelete) {
         await deleteReminder(reminderToDelete[0][1]);
@@ -141,16 +154,7 @@ function RemindersScreen() {
     fetchRemindersFromDatabase();
   }
 
-  // const editReminderByVoice = async (spokenWords) => {
-  //   const numberString = spokenWords[1];
-  //   const index = wordsToNumbers(numberString);
-    
-  //   if (!isNaN(index) && index > 0 && index <= reminders.length) {
-  //     const newData = spokenWords[2];
-  //     await updateReminder(reminders[index - 1][0][1], newData);
-  //     fetchRemindersFromDatabase();
-  //   }
-  // };
+
   
   const onSpeechEnd = (e) => {
     console.log('onSpeechEnd:', e);

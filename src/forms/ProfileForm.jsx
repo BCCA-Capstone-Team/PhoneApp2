@@ -1,4 +1,3 @@
-/* eslint-disable no-undef */
 import React, {useEffect} from 'react';
 import {
   Text,
@@ -33,36 +32,33 @@ const ProfileForm = ({navigation, route}) => {
       setValue('street', profileData.street || '');
       setValue('city', profileData.city || '');
       setValue('state', profileData.state || '');
-      setValue(
-        'zipCode',
-        profileData.zipCode ? profileData.zipCode.toString() : '',
-      );
+      setValue('zipCode', profileData.zipCode || '');
     }
   }, [profileData, setValue]);
 
   const onSubmit = async data => {
     // const profileDatabase = new ProfileDatabase();
-      try {
-            await database.table.reload()
-            let profileExists = await database.checkForProfile()
-            if (profileExists) {
-                database.editProfile('firstName', data.firstName)
-                database.editProfile('lastName', data.lastName)
-                database.editProfile('street', data.street)
-                database.editProfile('city', data.city)
-                database.editProfile('state', data.state)
-                database.editProfile('zipCode', data.zipCode)
-            } else {
-                await database.addProfile(
-                    data.firstName,
-                    data.lastName,
-                    data.street,
-                    data.city,
-                    data.state,
-                    parseInt(data.zipCode, 10), // Convert zipCode to an integer (since it was stored as INT in the database)
-                );
-            }
-            await navigation.navigate('ProfileDetailScreen', {profileData: data});
+    try {
+      await database.table.reload();
+      let profileExists = await database.checkForProfile();
+      if (profileExists) {
+        database.editProfile('firstName', data.firstName);
+        database.editProfile('lastName', data.lastName);
+        database.editProfile('street', data.street);
+        database.editProfile('city', data.city);
+        database.editProfile('state', data.state);
+        database.editProfile('zipCode', data.zipCode);
+      } else {
+        await database.addProfile(
+          data.firstName,
+          data.lastName,
+          data.street,
+          data.city,
+          data.state,
+          data.zipCode, // zipCode now stored as STR in database
+        );
+      }
+      await navigation.navigate('Profile Details', {profileData: data});
     } catch (error) {
       console.error('Error adding profile:', error);
     }
