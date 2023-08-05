@@ -10,6 +10,34 @@ import SpeechButton from '../components/SpeechButton';
 let Database = require('../database/ProfileDatabase.jsx');
 let database = new Database();
 
+let LocationServices = require('../location/Location.jsx')
+let locationServices = new LocationServices()
+
+async function testLocation() {
+
+    locationServices.onHomeJoin(() => {
+        console.log("I am home!")
+    })
+
+    locationServices.onHomeLeave(() => {
+        console.log("I am leave!")
+    })
+
+    locationServices.setHomeLocation('60 Mimosa Dr, Grenada MS', 30.0)
+
+    //locationServices.setHomeLocation('802 Central St, Water Valley MS', 30.0)
+
+    //let baseCampLocation = await locationServices.getGeoLocOfAddress('802 Central St, Water Valley MS')
+    //let baseCampCoords = { x: baseCampLocation.addresses[0].latitude, y: baseCampLocation.addresses[0].longitude }
+
+    //let myHomeLocation = await locationServices.getGeoLocOfAddress('120 Fairground Circle, New Albany MS')
+    //let myCoords = { x: myHomeLocation.addresses[0].latitude, y: myHomeLocation.addresses[0].longitude }
+
+    //let fullDistance = await locationServices.getGeoDistance(baseCampCoords, myCoords)
+    //console.log(fullDistance.routes.car.distance.text)
+    //console.log(fullDistance.routes.car.duration.text)
+}; testLocation()
+
 function HomeScreen({navigation}) {
   const [isListening, setIsListening] = useState(false);
 

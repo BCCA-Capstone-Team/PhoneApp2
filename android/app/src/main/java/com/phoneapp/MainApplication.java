@@ -9,6 +9,7 @@ import com.facebook.react.defaults.DefaultNewArchitectureEntryPoint;
 import com.facebook.react.defaults.DefaultReactNativeHost;
 import com.facebook.soloader.SoLoader;
 import java.util.List;
+import io.radar.sdk.Radar;
 
 public class MainApplication extends Application implements ReactApplication {
 
@@ -58,5 +59,6 @@ public class MainApplication extends Application implements ReactApplication {
       DefaultNewArchitectureEntryPoint.load();
     }
     ReactNativeFlipper.initializeFlipper(this, getReactNativeHost().getReactInstanceManager());
+    Radar.initialize(this, "prj_test_pk_2aa353aba74916c7f8c717e47c142613c66c6c31");
   }
 }
