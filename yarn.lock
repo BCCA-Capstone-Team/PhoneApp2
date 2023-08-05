@@ -5726,6 +5726,11 @@ react-native-gesture-handler@^2.12.0, "react-native-gesture-handler@>= 1.0.0":
     lodash "^4.17.21"
     prop-types "^15.7.2"
 
+react-native-location@^2.5.0:
+  version "2.5.0"
+  resolved "https://registry.npmjs.org/react-native-location/-/react-native-location-2.5.0.tgz"
+  integrity sha512-myT54tZuFmN6d5RruMVfoa8eY+voJWkSd73xUVhjzJDnQr5uu5MFoH7hMg3trHF1CAkaY/2gIneOspUdGxv59Q==
+
 react-native-permissions@^3.8.4:
   version "3.8.4"
   resolved "https://registry.npmjs.org/react-native-permissions/-/react-native-permissions-3.8.4.tgz"
@@ -5762,7 +5767,7 @@ react-native-tts@^4.1.0:
   resolved "https://registry.npmjs.org/react-native-tts/-/react-native-tts-4.1.0.tgz"
   integrity sha512-tvf3lQ6u9MqztUie37qoPw5YQPqi0ql1lPhDsBBs/RRA6A/H1J9X9H/qb1A0Hx0ZpjavrEdtVSqQQ2JDZvZCTQ==
 
-react-native@*, "react-native@>= 0.30.0", "react-native@>= 0.60.2", react-native@>=0.14.0, react-native@>=0.57, react-native@>=0.63.3, react-native@0.72.3:
+react-native@*, "react-native@>= 0.30.0", "react-native@>= 0.46", "react-native@>= 0.60.2", react-native@>=0.14.0, react-native@>=0.57, react-native@>=0.63.3, react-native@0.72.3:
   version "0.72.3"
   resolved "https://registry.npmjs.org/react-native/-/react-native-0.72.3.tgz"
   integrity sha512-QqISi+JVmCssNP2FlQ4MWhlc4O/I00MRE1/GClvyZ8h/6kdsyk/sOirkYdZqX3+DrJfI3q+OnyMnsyaXIQ/5tQ==
