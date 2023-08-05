@@ -58,7 +58,6 @@ const timeToString = time => {
 
 const Schedule = ({navigation}) => {
   const [items, setItems] = useState({});
-<<<<<<< HEAD
   const [isListening, setIsListening] = useState(false);
   const voiceInputRef = useRef('');
 
@@ -84,8 +83,6 @@ const Schedule = ({navigation}) => {
   //   '2023-07-30': [{name: 'item 1 - any js object', date: '2023-07-30'}],
   //   '2023-08-07': [{name: 'item 1 for day'}, {name: 'item 2 for day'}],
   // };
-=======
->>>>>>> 4c3ca7b5923b006ed530fadfeeb1efc50b3aa680
 
   // Load appointments from database.
   async function loadAllAppointmentData() {
