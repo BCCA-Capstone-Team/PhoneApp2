@@ -1,10 +1,13 @@
 import React, {useEffect, useRef} from 'react';
 
-// import Tts from 'react-native-tts';   this doesn't appear to be being used at the moment
+import Tts from 'react-native-tts';
 
 //navigation imports
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
+
+//@ts-ignore
+import Radar from 'react-native-radar';
 
 import HomeScreen from './src/screens/HomeScreen';
 import CalendarScreen from './src/screens/CalendarScreen';
@@ -22,6 +25,25 @@ function App(): JSX.Element {
   const navigationRef = useRef(null);
 
   useEffect(() => {
+    Radar.initialize('prj_test_pk_2aa353aba74916c7f8c717e47c142613c66c6c31');
+
+    Radar.getPermissionsStatus().then((status: any) => {
+      // do something with status
+      console.log(status);
+    });
+
+    Tts.getInitStatus().then(() => {
+      console.log('TTS INITIALIZED!')
+      Tts.setDefaultLanguage('en-US');
+      Tts.setDefaultRate(0.5);
+      Tts.setDefaultPitch(1.0);
+      Tts.addEventListener('tts-start', (event) => console.log('start', event));
+      Tts.addEventListener('tts-finish', (event) => console.log('finish', event));
+      Tts.addEventListener('tts-cancel', (event) => console.log('cancel', event));
+    }).catch((error) => {
+      console.log("Failed to initialize TTS", error);
+    });
+
     // Check for profile existence
     const checkForProfileAndNavigate = async () => {
       const profileDatabase = new ProfileDatabase();
@@ -29,7 +51,7 @@ function App(): JSX.Element {
         const profileExists = await profileDatabase.checkForProfile();
         if (!profileExists) {
           // Profile does not exist, navigate to the ProfileScreen
-          (navigationRef.current as any)?.navigate('ProfileScreen', {
+          (navigationRef.current as any)?.navigate('Create/Edit Profile', {
             profileData: null,
           });
         }
@@ -42,14 +64,11 @@ function App(): JSX.Element {
   return (
     <NavigationContainer ref={navigationRef}>
       <Stack.Navigator>
-        <Stack.Screen name="Home Screen" component={HomeScreen} />
-        <Stack.Screen name="CalendarScreen" component={CalendarScreen} />
-        <Stack.Screen name="RemindersScreen" component={RemindersScreen} />
-        <Stack.Screen name="ProfileScreen" component={ProfileScreen} />
-        <Stack.Screen
-          name="ProfileDetailScreen"
-          component={ProfileDetailScreen}
-        />
+        <Stack.Screen name="Home" component={HomeScreen} />
+        <Stack.Screen name="Calendar" component={CalendarScreen} />
+        <Stack.Screen name="Reminders" component={RemindersScreen} />
+        <Stack.Screen name="Create/Edit Profile" component={ProfileScreen} />
+        <Stack.Screen name="Profile Details" component={ProfileDetailScreen} />
         <Stack.Screen
           name="AppointmentDetails"
           component={AppointmentDetails}
