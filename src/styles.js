@@ -1,6 +1,8 @@
 // When styling for the <View /> that contains the <Schedule /> you MUST HAVE a height set for the Schedule to render.
 // Styling the Schedule is also somewhat tricky, I will note out all of that sometime.
-import {StyleSheet} from 'react-native';
+import {StyleSheet, Dimensions} from 'react-native';
+
+const {width} = Dimensions.get('window');
 
 export default StyleSheet.create({
   homeContainer: {
@@ -90,5 +92,10 @@ export default StyleSheet.create({
     color: 'white',
     fontSize: 30,
     textAlign: 'center',
+  },
+  speechButtonContainer:{
+    position: 'absolute',
+    bottom: 20,
+    right: 20,
   },
 });
