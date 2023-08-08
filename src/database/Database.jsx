@@ -14,7 +14,7 @@ class Database {
     this.database = SQLite.openDatabase(
       {name: `${fileName}.db`, createFromLocation: 3},
       () => {
-        console.log('Database Ready');
+        // console.log('Database Ready');
         this.databaseReady = true;
       },
       err => {

@@ -18,6 +18,8 @@ class ProfileDatabase extends Database {
       column.create('city', 'TEXT');
       column.create('state', 'TEXT');
       column.create('zipCode', 'INT');
+      column.create('lat', 'REAL');
+      column.create('long', 'REAL');
 
       column.run();
     });
@@ -47,6 +49,8 @@ class ProfileDatabase extends Database {
         returnTable.city = this.table.data[0][4][1];
         returnTable.state = this.table.data[0][5][1];
         returnTable.zipCode = this.table.data[0][6][1];
+        returnTable.lat = this.table.data[0][7][1];
+        returnTable.long = this.table.data[0][8][1];
       }
       resolve(returnTable);
     });
@@ -88,10 +92,10 @@ class ProfileDatabase extends Database {
     });
   }
 
-  async addProfile(firstName, lastName, street, city, state, zipCode) {
+  async addProfile(firstName, lastName, street, city, state, zipCode, lat, long) {
     await this.onProfileReady();
     return new Promise(async (resolve, reject) => {
-      await this.table.add(firstName, lastName, street, city, state, zipCode);
+      await this.table.add(firstName, lastName, street, city, state, zipCode, lat, long);
       resolve(true);
     });
   }
