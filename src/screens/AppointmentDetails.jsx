@@ -1,6 +1,7 @@
-import {View, Text, TouchableOpacity} from 'react-native';
+import {View, Text, TouchableOpacity, Platform, Linking} from 'react-native';
 import React from 'react';
 import AppointmentFormScreen from './AppointmentFormScreen';
+import styles from '../styles.js'
 
 let Database = require('../database/CalendarDatabase.jsx');
 let database = new Database('appointmentDatabase');
@@ -37,21 +38,41 @@ const AppointmentDetails = ({navigation, route}) => {
       database.appReminderTable.removeIndex(allReminders[i].id);
     }
   };
+
+  const openMapWithAddress = (address, city, state, zipCode) => {
+    let formattedAddress = `${address}, ${city}, ${state}, ${zipCode}`.replace(/ /g, "+");
+    
+    // For iOS - using Apple Maps
+    if (Platform.OS === "ios") {
+        Linking.openURL(`http://maps.apple.com/?address=${formattedAddress}`);
+    } 
+    // For Android - using Google Maps
+    else {
+        Linking.openURL(`https://www.google.com/maps/search/?api=1&query=${formattedAddress}`);
+    }
+};
+
+
   if (data.date || data.eventTitle) {
     // console.log(data.date);
     return (
       <View>
         <Text>Event: {data.eventTitle}</Text>
-        {data.location.address &&
-        data.location.city &&
-        data.location.state != null ? (
-          <Text>
-            Location: {data.location.address} {data.location.city},{' '}
-            {data.location.state}
-          </Text>
-        ) : (
-          <Text>No location info saved!</Text>
-        )}
+        {data.location.address && data.location.city && data.location.state != null ? (
+    <View>
+        <Text>
+            Location: {data.location.address} {data.location.city}, {data.location.state} 
+        </Text>
+        <TouchableOpacity 
+            style={styles.submitButton} 
+            onPress={() => openMapWithAddress(data.location.address, data.location.city, data.location.state, data.location.zipCode)}
+        >
+            <Text style={styles.submitText}>Get Directions</Text>
+        </TouchableOpacity>
+    </View>
+) : (
+    <Text>No location info saved!</Text>
+)}
 
         {data.reminder[0] ? (
           <View>
