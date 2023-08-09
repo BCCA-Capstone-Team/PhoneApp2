@@ -12,7 +12,7 @@ import Radar from 'react-native-radar';
 let Database = require('../database/ProfileDatabase.jsx');
 let database = new Database();
 
-let LocationServices = require('../location/Location.jsx')
+let LocationServices = require('../location/location.jsx')
 let locationServices = new LocationServices()
 
 
