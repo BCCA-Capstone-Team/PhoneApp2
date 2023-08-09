@@ -1,7 +1,7 @@
 import {View, Text, TouchableOpacity} from 'react-native';
-import React,{ useEffect } from 'react';
+import React, {useEffect} from 'react';
 import Tts from 'react-native-tts';
-import SpeechButton from'../components/SpeechButton';
+import SpeechButton from '../components/SpeechButton';
 import AppointmentFormScreen from './AppointmentFormScreen';
 //adding some styling too
 import styles from '../styles.js';
@@ -13,20 +13,20 @@ const AppointmentDetails = ({navigation, route}) => {
   const data = route.params;
 
   useEffect(() => {
-    if (route.params.readAppointments){
-        readAppointments();
+    if (route.params.readAppointments) {
+      readAppointments();
     }
-  },[route.params.readAppointments]);
-//this is automated tts...should be at least
+  }, [route.params.readAppointments]);
+  //this is automated tts...should be at least
   const readAppointments = () => {
     if (data.reminder && data.reminder.length > 0) {
-       Tts.speak('Here are you appointments for today: ');
-       data.reminder.forEach(reminder => {
-          Tts.speak('Bring: ${reminder}');
-            });
-            }else{
-               Tts.speak('No appointments today.');
-            }
+      Tts.speak('Here are you appointments for today: ');
+      data.reminder.forEach(reminder => {
+        Tts.speak('Bring: ${reminder}');
+      });
+    } else {
+      Tts.speak('No appointments today.');
+    }
   };
   // console.log(data);
   let editing;
@@ -62,7 +62,7 @@ const AppointmentDetails = ({navigation, route}) => {
     // console.log(data.date);
     return (
       <View>
-        <Text style = {styles.eventTitle}>Event: {data.eventTitle}</Text>
+        <Text style={styles.eventTitle}>Event: {data.eventTitle}</Text>
         {data.location.address &&
         data.location.city &&
         data.location.state != null ? (
@@ -73,14 +73,16 @@ const AppointmentDetails = ({navigation, route}) => {
         ) : (
           <Text>No location info saved!</Text>
         )}
-
         {data.reminder[0] ? (
           <View>
-          //gonna try something new real quick feel free to move  or delete if crash//`
-          {data.reminder.map((reminder, index) => (
-            <Text key={index} style={styles.reminderText}>Bring: {reminder}</Text>
-          ))}
-        </View>
+            //gonna try something new real quick feel free to move or delete if
+            crash//`
+            {data.reminder.map((reminder, index) => (
+              <Text key={index} style={styles.reminderText}>
+                Bring: {reminder}
+              </Text>
+            ))}
+          </View>
         ) : (
           <Text>No reminders to bring along!</Text>
         )}
@@ -101,7 +103,8 @@ const AppointmentDetails = ({navigation, route}) => {
           <TouchableOpacity onPress={handleDeleteItem}>
             <Text>Delete Item</Text>
           </TouchableOpacity>
-        </View>//added this button too//
+        </View>
+        //added this button too//
         <SpeechButton onPress={readAppointments} />
       </View>
     );
@@ -109,17 +112,17 @@ const AppointmentDetails = ({navigation, route}) => {
     console.log('No stuffs.');
     return (
       <View>
-        <Text style ={styles.noAppointmentsText}>No appointments today!</Text>
+        <Text style={styles.noAppointmentsText}>No appointments today!</Text>
         <View>
           <TouchableOpacity
             onPress={() => {
               //  console.log(data);
               handleAddItem();
             }}>
-            <Text style ={styles.addText}>Add Item</Text>
+            <Text style={styles.addText}>Add Item</Text>
           </TouchableOpacity>
           <TouchableOpacity>
-            <Text style ={styles.deleteText}>Delete Item</Text>
+            <Text style={styles.deleteText}>Delete Item</Text>
           </TouchableOpacity>
         </View>
       </View>

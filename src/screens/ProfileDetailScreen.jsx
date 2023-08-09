@@ -23,8 +23,8 @@ const ProfileDetailScreen = ({navigation, route}) => {
       <Text style={styles.text}>City: {profileData.city}</Text>
       <Text style={styles.text}>State: {profileData.state}</Text>
       <Text style={styles.text}>Zip Code: {profileData.zipCode}</Text>
-      <Text style={styles.text}>Latitude: {profileData.lat}</Text>
-      <Text style={styles.text}>Longitude: {profileData.long}</Text>
+      {/* <Text style={styles.text}>Latitude: {profileData.lat}</Text>
+      <Text style={styles.text}>Longitude: {profileData.long}</Text> */}
 
       <TouchableOpacity style={styles.editButton} onPress={handleEditProfile}>
         <Text style={styles.buttonText}>Edit</Text>
