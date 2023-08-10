@@ -12,28 +12,6 @@ import Radar from 'react-native-radar';
 let Database = require('../database/ProfileDatabase.jsx');
 let database = new Database();
 
-let LocationServices = require('../location/Location.jsx')
-let locationServices = new LocationServices()
-
-
-// TESTING LOCATION =============================
-async function testLocation() {
-
-  console.log('=======================')
-  // let myProfile = await database.getProfile();
-  // console.log(myProfile);
-
-  let latitude = 38.50481;
-  let longitude = -75.527665;
-
-  // locationServices.createGeofence(latitude, longitude, 100);
-
-  // locationServices.getCoordsByAddress(address);
-
-}; 
-
-testLocation()
-
 function HomeScreen({navigation}) {
   const [isListening, setIsListening] = useState(false);
 
@@ -134,13 +112,13 @@ function HomeScreen({navigation}) {
     setIsListening(false);
   };
 
-  // event handler for buttons
-  const handleButtonPress = async screenName => {
-    await database.onProfileReady();
-    await database.table.reload();
-    let newProfileData = await database.getProfile();
-    navigation.navigate(screenName, {profileData: newProfileData});
-  };
+    // event handler for buttons
+    const handleButtonPress = async screenName => {
+        await database.onProfileReady();
+        await database.table.reload();
+        let newProfileData = await database.getProfile();
+        navigation.navigate(screenName, {profileData: newProfileData});
+    };
 
   const stopListening = async () => {
     try {

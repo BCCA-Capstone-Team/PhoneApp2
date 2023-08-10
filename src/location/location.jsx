@@ -1,118 +1,149 @@
 import Radar from 'react-native-radar';
+import axios from 'axios';
 import {check, PERMISSIONS, request, RESULTS} from 'react-native-permissions';
 let publishableKey = 'prj_test_pk_2aa353aba74916c7f8c717e47c142613c66c6c31';
-import axios from 'axios';
 
 class LocationServices {
-  constructor() {
-    this.myRadar = Radar;
-    this.axios = axios
-    this.ready = false;
-    this.homeStatus = false;
-    this.homeJoining = [];
-    this.homeLeaving = [];
+    constructor() {
+        this.myRadar = Radar;
+        this.axios = axios
+        this.ready = false;
+        this.homeStatus = false;
+        this.homeJoining = [];
+        this.homeLeaving = [];
+        this.baseCampLocation = { lat: 34.166543, lon: -89.627894 }
 
-    this.myRadar.startTrackingEfficient();
-    this.myRadar.initialize(publishableKey);
-    this.myRadar.setUserId('user1');
+        this.myRadar.startTrackingEfficient();
+        this.myRadar.initialize(publishableKey);
+        this.myRadar.setUserId('user1');
 
-    this.myRadar.getPermissionsStatus().then(status => {
-      if (status != 'GRANTED_BACKGROUND' || status != 'GRANTED_FOREGROUND') {
-        //ANDROID PERMISSIONS
-        this.requestPermission(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION).then(
-          permissionDetails => {
-            // console.log(permissionDetails[1]);
+        this.myRadar.getPermissionsStatus().then((status) => {
+            if (status != 'GRANTED_BACKGROUND' && status != 'GRANTED_FOREGROUND') {
+                //ANDROID PERMISSIONS
+                this.requestPermission(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION).then((permissionDetails) => {
+                    if (permissionDetails[0] == true) {
+                        this.myRadar.requestPermissions(true).then(newStatus => {
+                            this.ready = true;
+                        });
+                    }
+                });
 
-            if (permissionDetails[0] == true) {
-              this.myRadar.requestPermissions(true).then(newStatus => {
-                // console.log(`Updated Permission State: ${newStatus}`);
+                //IOS PERMISSIONS
+                this.requestPermission(PERMISSIONS.IOS.LOCATION_ALWAYS).then((permissionDetails) => {
+                    if (permissionDetails[0] == true) {
+                        this.myRadar.requestPermissions(true).then(newStatus => {
+                            this.ready = true;
+                        });
+                    }
+                });
+            } else {
                 this.ready = true;
-              });
             }
-          },
-        );
-
-        //IOS PERMISSIONS
-        this.requestPermission(PERMISSIONS.IOS.LOCATION_ALWAYS).then(
-          permissionDetails => {
-            // console.log(permissionDetails[1]);
-
-            if (permissionDetails[0] == true) {
-              this.myRadar.requestPermissions(true).then(newStatus => {
-                // console.log(`Updated Permission State: ${newStatus}`);
-                this.ready = true;
-              });
-            }
-          },
-        );
-      } else {
-        this.ready = true;
-      }
-    });
-  }
-
-  onReady() {
-    return new Promise((resolve, reject) => {
-      let readyInterval = setInterval(() => {
-        if (this.ready == true) {
-          resolve();
-          clearInterval(readyInterval);
-        }
-      }, 1);
-    });
-  }
-
-  requestPermission(permissionNode) {
-    return new Promise((resolve, reject) => {
-      check(permissionNode)
-        .then(result => {
-          switch (result) {
-            case RESULTS.UNAVAILABLE:
-              resolve([false, 'This feature is not available']);
-              break;
-            case RESULTS.DENIED:
-              request(permissionNode).then(result => {
-                resolve([true, 'The permission has been accepted']);
-              });
-              break;
-            case RESULTS.GRANTED:
-              resolve([true, 'The permission has been accepted']);
-              break;
-            case RESULTS.BLOCKED:
-              resolve([
-                false,
-                'The permission is denied and not requestable anymore',
-              ]);
-              break;
-          }
-        })
-        .catch(error => {
-          reject(error);
         });
-    });
-  }
+    }
+
+    onReady() {
+        return new Promise((resolve, reject) => {
+            let readyInterval = setInterval(() => {
+                if (this.ready == true) {
+                    resolve();
+                    clearInterval(readyInterval);
+                }
+            }, 1);
+        });
+    }
+
+    requestPermission(permissionNode) {
+        return new Promise((resolve, reject) => {
+            check(permissionNode).then(result => {
+                switch (result) {
+                case RESULTS.UNAVAILABLE:
+                    resolve([false, 'This feature is not available']);
+                    break;
+                case RESULTS.DENIED:
+                    request(permissionNode).then(result => {
+                    resolve([true, 'The permission has been accepted']);
+                    });
+                    break;
+                case RESULTS.GRANTED:
+                    resolve([true, 'The permission has been accepted']);
+                    break;
+                case RESULTS.BLOCKED:
+                    resolve([ false, 'The permission is denied and not requestable anymore']);
+                    break;
+                }
+            })
+            .catch(error => {
+                reject(error);
+            });
+        });
+    }
 
   // GeoCoding Functions ========================
 
-  async getCoordsByAddress(address) {
-    console.log("getCoordsByAddress function in Location.jsx ==================")
-    console.log(`${address}`)
-    await this.onReady();
-    return new Promise((resolve, reject) => {
-        this.myRadar
-            .geocode(address)
-            .then(result => {
-                Object.keys(result).forEach(key => {
-                    console.log(key, result[key]);
-                })
-                console.log(`${result} ===== Successful pull.`);
-                resolve(result);
-            })
-            .catch(err => {
-                console.log(err);
+    async getMyDistanceValue(originLocation, destinationLocation) {
+        await this.onReady();
+        return new Promise((resolve, reject) => {
+            this.myRadar.getDistance({
+                origin: {
+                    latitude: originLocation.lat,
+                    longitude: originLocation.lon,
+                },
+                destination: {
+                    latitude: destinationLocation.lat,
+                    longitude: destinationLocation.lon,
+                },
+                modes: [`car`],
+                units: 'imperial',
+            }).then(result => {
+                let stringLength = result.routes.geodesic.distance.text.length - 3
+                resolve(parseFloat(result.routes.geodesic.distance.text.slice(0, stringLength)));
+            }).catch(err => {
                 reject(err);
+            });
+        })
+    }
+
+    async getCoordsByAddress(address) {
+        await this.onReady();
+        return new Promise((resolve, reject) => {
+            this.myRadar.geocode(address).then((result) => {
+                resolve({ lat: result.addresses[0].latitude, lon: result.addresses[0].longitude });
             })
         })
+    }
+
+    async getMyLocation() {
+        await this.onReady();
+        return new Promise((resolve, reject) => {
+            //let myLocation = this.myRadar.trackOnce()
+            //myLocation.then(async (result) => {
+            //    resolve({ lat: result.location.latitude, lon: result.location.longitude });
+            //})
+            resolve(this.baseCampLocation)
+        })
+    }
+
+    async createGeoFenceAddress(address, distance, enterCallback, leaveCallback, refreshRate) {
+        await this.onReady();
+        let currentState = false 
+        let firstRun = false
+        // False = Outside | True = Inside
+        setInterval(async () => {
+            let addressCoords = await this.getCoordsByAddress(address)
+            let myLocation = await this.getMyLocation()
+            let testDistance = await this.getMyDistanceValue(addressCoords, myLocation)
+
+            if (testDistance < distance && currentState == true || testDistance < distance && firstRun == false) {
+                currentState = false
+                firstRun = true
+                enterCallback()
+            } else if (testDistance > distance && currentState == false || testDistance > distance && firstRun == false) {
+                currentState = true
+                firstRun = true
+                leaveCallback()
+            }
+        }, 1000 * refreshRate)
     }
 
     // GeoFencing API Methods ======================
