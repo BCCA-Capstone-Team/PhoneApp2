@@ -14,8 +14,8 @@ import styles from '../styles';
 let Database = require('../database/ProfileDatabase.jsx');
 let database = new Database();
 
-let LocationServices = require('../location/Location.jsx')
-let locationServices = new LocationServices()
+let LocationServices = require('../location/location.jsx');
+let locationServices = new LocationServices();
 
 const ProfileForm = ({navigation, route, onProfileCreated}) => {
   const {
@@ -52,10 +52,10 @@ const ProfileForm = ({navigation, route, onProfileCreated}) => {
       let profileExists = await database.checkForProfile();
 
       // geocoding inserted address for latitude and longitude:
-      let homeAddress = `${data.street} ${data.city} ${data.state} ${data.zipCode}`
-      let homeLocation = await locationServices.getCoordsByAddress(homeAddress);
-      let latitude = homeLocation.addresses[0].latitude
-      let longitude = homeLocation.addresses[0].longitude
+      let homeAddress = `${data.street} ${data.city} ${data.state} ${data.zipCode}`;
+      //let homeLocation = await locationServices.getCoordsByAddress(homeAddress);
+      //let latitude = homeLocation.addresses[0].latitude
+      //let longitude = homeLocation.addresses[0].longitude
 
       if (profileExists) {
         database.editProfile('firstName', data.firstName);
@@ -64,13 +64,12 @@ const ProfileForm = ({navigation, route, onProfileCreated}) => {
         database.editProfile('city', data.city);
         database.editProfile('state', data.state);
         database.editProfile('zipCode', data.zipCode);
-        database.editProfile('lat', latitude);
-        database.editProfile('long', longitude);
-        let geofenceId = await locationServices.getGeofenceId();
-        await locationServices.editGeofence(geofenceId, {'coordinates': [latitude, longitude]});
-
+        // database.editProfile('lat', 0);
+        // database.editProfile('long', 0);
+        //let geofenceId = await locationServices.getGeofenceId();
+        //await locationServices.editGeofence(geofenceId, {'coordinates': [latitude, longitude]});
       } else {
-        await locationServices.createGeofence(latitude, longitude, 15);
+        //await locationServices.createGeofence(latitude, longitude, 15);
         await database.addProfile(
           data.firstName,
           data.lastName,
@@ -78,8 +77,8 @@ const ProfileForm = ({navigation, route, onProfileCreated}) => {
           data.city,
           data.state,
           parseInt(data.zipCode, 10), // Convert zipCode to an integer (since it was stored as INT in the database)
-          latitude,
-          longitude,
+          0,
+          0,
         );
         onProfileCreated();
       }

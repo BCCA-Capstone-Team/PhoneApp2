@@ -1,3 +1,5 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable no-undef */
 import React, {useState, useEffect, useRef} from 'react';
 import {View, Text, TouchableOpacity} from 'react-native';
 import {startOfWeek, addDays} from 'date-fns';
@@ -62,19 +64,19 @@ const Schedule = ({navigation}) => {
   const voiceInputRef = useRef('');
 
   const toggleListening = () => {
-    if (isListening){
-        Voice.stop();
-    }else {
-     Voice.start('en-US');
+    if (isListening) {
+      Voice.stop();
+    } else {
+      Voice.start('en-US');
     }
     setIsListening(!isListening);
-    };
+  };
 
   useEffect(() => {
     Voice.onSpeechEnd = onSpeechEnd;
 
     return () => {
-        Voice.destroy().then(Voice.removeAllListeners);
+      Voice.destroy().then(Voice.removeAllListeners);
     };
   }, []);
   // const [allAppointmentData, setAllAppointmentData] = useState({});
@@ -89,7 +91,6 @@ const Schedule = ({navigation}) => {
     let data = await getAppointments();
     let fixedDate = '';
     Object.keys(data).forEach(key => {
-
       fixedDate = monthAndDayFormatter(key);
       let datesValue = data[key];
       if (fixedDate != null) {
@@ -100,7 +101,6 @@ const Schedule = ({navigation}) => {
         );
         delete data[key];
       }
-
     });
 
     return data;
@@ -187,24 +187,24 @@ const Schedule = ({navigation}) => {
     );
   };
   //voice commands and TTS//
-  const onSpeechEnd = (e) => {
+  const onSpeechEnd = e => {
     console.log('onSpeechEnd:', e);
     console.log('Final voice input:', voiceInputRef.current);
 
-    const spokenWords = voiceInputRef.current.split(" ");
+    const spokenWords = voiceInputRef.current.split(' ');
     const command = spokenWords[0].toLowerCase();
 
-    if (command ==='add'){
-        addAppointmentByVoice(spokenWords);
-     } else if (command ==='delete'){
-        deleteAppointmentByVoice(spokenWords);
-      }else if (command ==='edit'){
-        editAppointmentByVoice(spokenWords);
-      }else if (command === 'read') {
+    if (command === 'add') {
+      addAppointmentByVoice(spokenWords);
+    } else if (command === 'delete') {
+      deleteAppointmentByVoice(spokenWords);
+    } else if (command === 'edit') {
+      editAppointmentByVoice(spokenWords);
+    } else if (command === 'read') {
       readAppointments();
-      }else {
-        Tts.speak("Sorry I did not understand.");
-       }
+    } else {
+      Tts.speak('Sorry I did not understand.');
+    }
   };
 
   const readAppointments = () => {
@@ -221,8 +221,6 @@ const Schedule = ({navigation}) => {
     }
   };
 
-
-
   // ============== Handle renderEmptyDay and it's onPress ============== //
 
   // ============== DATABASE STUFF ============== //
@@ -230,7 +228,7 @@ const Schedule = ({navigation}) => {
   // ============== DATABASE STUFF ============== //
 
   return (
-    <View style={{ flex: 1 }}>
+    <View style={{flex: 1}}>
       <Agenda
         items={items}
         loadItemsForMonth={loadItems}
@@ -238,10 +236,9 @@ const Schedule = ({navigation}) => {
         renderEmptyDate={renderEmptyDay}
       />
 
-       <View style={styles.speechButtonContainer}>
+      <View style={styles.speechButtonContainer}>
         <SpeechButton isListening={isListening} onPress={toggleListening} />
-       </View>
-
+      </View>
     </View>
   );
 };

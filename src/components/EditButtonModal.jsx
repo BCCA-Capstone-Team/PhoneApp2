@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, Modal, StyleSheet } from 'react-native';
+import React, {useState} from 'react';
+import {View, Text, TouchableOpacity, Modal, StyleSheet} from 'react-native';
 
-const EditButtonModal = ({ children, onEditSubmit}) => {
+const EditButtonModal = ({children, onEditSubmit}) => {
   const [modalVisible, setModalVisible] = useState(false);
 
   const handleOpenModal = () => {
@@ -12,10 +12,10 @@ const EditButtonModal = ({ children, onEditSubmit}) => {
     setModalVisible(false);
   };
 
-  const onSubmitForm = async (data) => {
+  const onSubmitForm = async data => {
     await onEditSubmit(data);
     handleCloseModal();
-  }
+  };
 
   return (
     <View>
@@ -27,14 +27,15 @@ const EditButtonModal = ({ children, onEditSubmit}) => {
         animationType="slide"
         transparent={true}
         visible={modalVisible}
-        onRequestClose={handleCloseModal}
-      >
+        onRequestClose={handleCloseModal}>
         <View style={styles.modalContainer}>
           <View style={styles.modalContent}>
             {/* Render the children inside the modal */}
             {React.cloneElement(children, {onSubmitForm})}
 
-            <TouchableOpacity style={styles.cancelButton} onPress={handleCloseModal}>
+            <TouchableOpacity
+              style={styles.cancelButton}
+              onPress={handleCloseModal}>
               <Text style={styles.cancelButtonText}>Cancel</Text>
             </TouchableOpacity>
           </View>
