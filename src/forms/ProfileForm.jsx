@@ -64,8 +64,8 @@ const ProfileForm = ({navigation, route, onProfileCreated}) => {
         database.editProfile('city', data.city);
         database.editProfile('state', data.state);
         database.editProfile('zipCode', data.zipCode);
-        // database.editProfile('lat', 0);
-        // database.editProfile('long', 0);
+        database.editProfile('lat', latitude);
+        database.editProfile('long', longitude);
         //let geofenceId = await locationServices.getGeofenceId();
         //await locationServices.editGeofence(geofenceId, {'coordinates': [latitude, longitude]});
       } else {
