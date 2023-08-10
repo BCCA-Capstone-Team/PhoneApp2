@@ -98,4 +98,25 @@ export default StyleSheet.create({
     bottom: 20,
     right: 20,
   },
+  noAppointmentsText:{
+  marginTop:40,
+  fontWeight:'bold',
+  margin: 60,
+  fontSize: 30,
+  textAlign:'center',
+  },
+  addText: {
+  textAlign:'center',
+  fontSize: 30,
+  margin: 50,
+  fontWeight: 'bold',
+  },
+  deleteText:{
+  textAlign:'center',
+  textDecorationStyle:'solid',
+  fontWeight: 'bold',
+  fontSize: 30,
+  margin: 50,
+  marginTop:10,
+  }
 });

@@ -58,23 +58,24 @@ const timeToString = time => {
 
 const Schedule = ({navigation}) => {
   const [items, setItems] = useState({});
+
   const [isListening, setIsListening] = useState(false);
   const voiceInputRef = useRef('');
 
   const toggleListening = () => {
-    if (isListening){
-        Voice.stop();
-    }else {
-     Voice.start('en-US');
+    if (isListening) {
+      Voice.stop();
+    } else {
+      Voice.start('en-US');
     }
     setIsListening(!isListening);
-    };
+  };
 
   useEffect(() => {
     Voice.onSpeechEnd = onSpeechEnd;
 
     return () => {
-        Voice.destroy().then(Voice.removeAllListeners);
+      Voice.destroy().then(Voice.removeAllListeners);
     };
   }, []);
   // const [allAppointmentData, setAllAppointmentData] = useState({});
@@ -84,12 +85,12 @@ const Schedule = ({navigation}) => {
   //   '2023-08-07': [{name: 'item 1 for day'}, {name: 'item 2 for day'}],
   // };
 
+
   // Load appointments from database.
   async function loadAllAppointmentData() {
     let data = await getAppointments();
     let fixedDate = '';
     Object.keys(data).forEach(key => {
-
       fixedDate = monthAndDayFormatter(key);
       let datesValue = data[key];
       if (fixedDate != null) {
@@ -100,7 +101,6 @@ const Schedule = ({navigation}) => {
         );
         delete data[key];
       }
-
     });
 
     return data;
@@ -187,39 +187,77 @@ const Schedule = ({navigation}) => {
     );
   };
   //voice commands and TTS//
-  const onSpeechEnd = (e) => {
+  const onSpeechEnd = e => {
     console.log('onSpeechEnd:', e);
     console.log('Final voice input:', voiceInputRef.current);
 
-    const spokenWords = voiceInputRef.current.split(" ");
+    const spokenWords = voiceInputRef.current.split(' ');
     const command = spokenWords[0].toLowerCase();
 
-    if (command ==='add'){
-        addAppointmentByVoice(spokenWords);
-     } else if (command ==='delete'){
-        deleteAppointmentByVoice(spokenWords);
-      }else if (command ==='edit'){
-        editAppointmentByVoice(spokenWords);
-      }else if (command === 'read') {
-      readAppointments();
-      }else {
-        Tts.speak("Sorry I did not understand.");
-       }
-  };
+    if (command === 'add') {
+      const date = extractDate(spokenWords);
+      const otherInfo = extractOtherInfo(spokenWords);
 
-  const readAppointments = () => {
-    const appointmentKeys = Object.keys(items);
-    if (appointmentKeys.length > 0) {
-      appointmentKeys.forEach(key => {
-        const appointments = items[key];
-        appointments.forEach(appointment => {
-          Tts.speak(appointment.eventTitle);
-        });
+      navigation.navigate('AppointmentFormScreen',{
+        date: date,
+        location: location,
+        time: time,
       });
+    } else if (command === 'delete') {
+      deleteAppointmentByVoice(spokenWords);
+    } else if (command === 'edit') {
+      editAppointmentByVoice(spokenWords);
+    } else if (command === 'read') {
+      navigation.navigate('AppointmentDetails',{readAppointments: true});
     } else {
-      Tts.speak('No appointments found.');
+      Tts.speak('Sorry I did not understand.');
     }
   };
+
+
+
+  const extractDate = spokenWords =>{
+    const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November','December'];
+
+    const dateKeywords = ['on','to','for','at'];
+    const dateKeywordIndex = spokenWords.findIndex(word => dateKeywords.includes(word.toLowerCase()));
+
+    if(dateKeywordIndex !=-1){
+        const dateParts = spokenWords.slice(dateKeywordIndex + 1);
+        const dateStr = dateParts.join(' ');
+
+        const matchingMonth = months.find(month => dateStr.toLowerCase().includes(month.toLowerCase()));
+        const matchingDaty = dateParts.find(part => !isNaN(part));
+
+        if(matchingMonth && matchingDay) {
+            const monthIndex = months.indexOf(matchingMonth);
+            const day = parseInt(matchingDay, 10);
+            if(monthIndex !== -1 && day >= 1 && day <=31){
+                const currentDate = new Date();
+                const year = currentDate.getFullYear();
+                const extractedDate = new Date(year, monthIndex, day);
+                return extractedDate;
+            }
+
+        }
+    }
+
+    return null;//only null if failed
+  };
+const extractOtherInfo = spokenWords => {
+  const otherInfoKeywords = ['with', 'by', 'meeting', 'appointment', 'event'];
+  const otherInfoKeywordIndex = spokenWords.findIndex(word => otherInfoKeywords.includes(word.toLowerCase()));
+
+  if (otherInfoKeywordIndex !== -1) {
+    const otherInfoParts = spokenWords.slice(otherInfoKeywordIndex + 1);
+    const otherInfo = otherInfoParts.join(' ');
+    return otherInfo;
+  }
+
+  return null; // only null if failed
+};
+
+
 
 
 
@@ -230,7 +268,7 @@ const Schedule = ({navigation}) => {
   // ============== DATABASE STUFF ============== //
 
   return (
-    <View style={{ flex: 1 }}>
+    <View style={{flex: 1}}>
       <Agenda
         items={items}
         loadItemsForMonth={loadItems}
@@ -238,10 +276,9 @@ const Schedule = ({navigation}) => {
         renderEmptyDate={renderEmptyDay}
       />
 
-       <View style={styles.speechButtonContainer}>
+      <View style={styles.speechButtonContainer}>
         <SpeechButton isListening={isListening} onPress={toggleListening} />
-       </View>
-
+      </View>
     </View>
   );
 };

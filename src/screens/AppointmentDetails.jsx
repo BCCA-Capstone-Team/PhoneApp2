@@ -1,13 +1,33 @@
-import {View, Text, TouchableOpacity, Platform, Linking} from 'react-native';
-import React from 'react';
+import {View, Text, TouchableOpacity} from 'react-native';
+import React, {useEffect} from 'react';
+import Tts from 'react-native-tts';
+import SpeechButton from '../components/SpeechButton';
 import AppointmentFormScreen from './AppointmentFormScreen';
-import styles from '../styles.js'
+//adding some styling too
+import styles from '../styles.js';
 
 let Database = require('../database/CalendarDatabase.jsx');
 let database = new Database('appointmentDatabase');
-
+//changed let data to const data for easier manipulation (JAQ) ALSO ADDED SOME TTS it should trigger automatically when called from the schedule.jsx file by voice in theory....
 const AppointmentDetails = ({navigation, route}) => {
-  let data = route.params;
+  const data = route.params;
+
+  useEffect(() => {
+    if (route.params.readAppointments) {
+      readAppointments();
+    }
+  }, [route.params.readAppointments]);
+  //this is automated tts...should be at least
+  const readAppointments = () => {
+    if (data.reminder && data.reminder.length > 0) {
+      Tts.speak('Here are you appointments for today: ');
+      data.reminder.forEach(reminder => {
+        Tts.speak('Bring: ${reminder}');
+      });
+    } else {
+      Tts.speak('No appointments today.');
+    }
+  };
   // console.log(data);
   let editing;
   let listOfData = [data, editing];
@@ -15,7 +35,7 @@ const AppointmentDetails = ({navigation, route}) => {
   // Add Appointment
   const handleAddItem = () => {
     listOfData[1] = false;
-    // console.log('hello');
+    // console.log('he4llo');
     // if (dayData.date) {
     //   navigation.navigate('AppointmentFormScreen', dayData);
     // } else {
@@ -38,46 +58,29 @@ const AppointmentDetails = ({navigation, route}) => {
       database.appReminderTable.removeIndex(allReminders[i].id);
     }
   };
-
-  const openMapWithAddress = (address, city, state, zipCode) => {
-    let formattedAddress = `${address}, ${city}, ${state}, ${zipCode}`.replace(/ /g, "+");
-    
-    // For iOS - using Apple Maps
-    if (Platform.OS === "ios") {
-        Linking.openURL(`http://maps.apple.com/?address=${formattedAddress}`);
-    } 
-    // For Android - using Google Maps
-    else {
-        Linking.openURL(`https://www.google.com/maps/search/?api=1&query=${formattedAddress}`);
-    }
-};
-
-
   if (data.date || data.eventTitle) {
     // console.log(data.date);
     return (
       <View>
-        <Text>Event: {data.eventTitle}</Text>
-        {data.location.address && data.location.city && data.location.state != null ? (
-    <View>
-        <Text>
-            Location: {data.location.address} {data.location.city}, {data.location.state} 
-        </Text>
-        <TouchableOpacity 
-            style={styles.submitButton} 
-            onPress={() => openMapWithAddress(data.location.address, data.location.city, data.location.state, data.location.zipCode)}
-        >
-            <Text style={styles.submitText}>Get Directions</Text>
-        </TouchableOpacity>
-    </View>
-) : (
-    <Text>No location info saved!</Text>
-)}
-
+        <Text style={styles.eventTitle}>Event: {data.eventTitle}</Text>
+        {data.location.address &&
+        data.location.city &&
+        data.location.state != null ? (
+          <Text>
+            Location: {data.location.address} {data.location.city},{' '}
+            {data.location.state}
+          </Text>
+        ) : (
+          <Text>No location info saved!</Text>
+        )}
         {data.reminder[0] ? (
           <View>
-            {data.reminder.map(reminder => (
-              <Text>Bring: {reminder}</Text>
+            //gonna try something new real quick feel free to move or delete if
+            crash//`
+            {data.reminder.map((reminder, index) => (
+              <Text key={index} style={styles.reminderText}>
+                Bring: {reminder}
+              </Text>
             ))}
           </View>
         ) : (
@@ -101,23 +104,25 @@ const AppointmentDetails = ({navigation, route}) => {
             <Text>Delete Item</Text>
           </TouchableOpacity>
         </View>
+        //added this button too//
+        <SpeechButton onPress={readAppointments} />
       </View>
     );
   } else {
     console.log('No stuffs.');
     return (
       <View>
-        <Text>No appointments today!</Text>
+        <Text style={styles.noAppointmentsText}>No appointments today!</Text>
         <View>
           <TouchableOpacity
             onPress={() => {
-              //   console.log(data);
+              //  console.log(data);
               handleAddItem();
             }}>
-            <Text>Add Item</Text>
+            <Text style={styles.addText}>Add Item</Text>
           </TouchableOpacity>
           <TouchableOpacity>
-            <Text>Delete Item</Text>
+            <Text style={styles.deleteText}>Delete Item</Text>
           </TouchableOpacity>
         </View>
       </View>

@@ -1,18 +1,18 @@
-import React, {useEffect, useState} from 'react';
-import {Text, View, TouchableOpacity} from 'react-native';
-import {check, PERMISSIONS, request} from 'react-native-permissions';
+import React, { useEffect, useState } from 'react';
+import { Text, View, TouchableOpacity } from 'react-native';
+import { check, PERMISSIONS, request } from 'react-native-permissions';
 import Tts from 'react-native-tts';
 import Voice from '@react-native-voice/voice';
 import styles from '../styles';
 import TtsButtonComponent from '../components/TtsButtonComponent';
-import {useFocusEffect} from '@react-navigation/native';
+import { useFocusEffect } from '@react-navigation/native';
 import SpeechButton from '../components/SpeechButton';
 import Radar from 'react-native-radar';
 
 let Database = require('../database/ProfileDatabase.jsx');
 let database = new Database();
 
-function HomeScreen({navigation}) {
+function HomeScreen({ navigation }) {
   const [isListening, setIsListening] = useState(false);
 
   useEffect(() => {
@@ -112,13 +112,13 @@ function HomeScreen({navigation}) {
     setIsListening(false);
   };
 
-    // event handler for buttons
-    const handleButtonPress = async screenName => {
-        await database.onProfileReady();
-        await database.table.reload();
-        let newProfileData = await database.getProfile();
-        navigation.navigate(screenName, {profileData: newProfileData});
-    };
+  // event handler for buttons
+  const handleButtonPress = async screenName => {
+    await database.onProfileReady();
+    await database.table.reload();
+    let newProfileData = await database.getProfile();
+    navigation.navigate(screenName, { profileData: newProfileData });
+  };
 
   const stopListening = async () => {
     try {
