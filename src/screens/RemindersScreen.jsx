@@ -9,6 +9,87 @@ import Voice from '@react-native-voice/voice';
 import SpeechButton from '../components/SpeechButton';
 import styles from '../styles';
 
+let LocationServices = require('../location/Location.jsx')
+
+let Database = require('../database/ProfileDatabase.jsx');
+let database = new Database();
+
+class trackingLocationReminder extends LocationServices {
+    constructor() {
+        super()
+        this.ready = false
+        this.start()
+    }
+
+    onReady() {
+        return new Promise((resolve, reject) => {
+            let readyInterval = setInterval(() => {
+                if (this.ready == true) {
+                    clearInterval(readyInterval)
+                    resolve()
+                }
+            }, 1)
+        })
+    }
+
+    async start() {
+        let myAddress = await this.getMyAddress()
+        console.log(myAddress)
+    }
+
+    async getMyAddress() {
+        return new Promise(async (resolve, reject) => {
+            await database.onProfileReady()
+            await database.table.reload()
+            let addressInterval = setInterval(() => {
+                //console.log('Check')
+                if (database.table.data[0]) {
+                    clearInterval(addressInterval)
+                    let myAddress = `${database.table.data[0][3][1]} ${database.table.data[0][4][1]} ${database.table.data[0][5][1]} ${database.table.data[0][6][1]}`
+                    resolve(myAddress)
+                }
+            }, 1)
+        })
+    }
+
+    async readReminders() {
+        const remindersData = await leavingHomeReminderTable.view();
+        if (remindersData.length > 0) {
+            remindersData.forEach(reminder => {
+                Tts.speak(reminder[1][1]);
+            });
+        } else {
+            Tts.speak('No reminders found.');
+        }
+    }
+
+    async setupDebugInterval() {
+        setInterval(async () => {
+            this.baseCampLocation = await this.getCoordsByAddress("60 Mimosa Dr, Grenada MS 38901")
+
+            setTimeout(async () => {
+                this.baseCampLocation = await this.getCoordsByAddress("802 Central St, Water Valley MS")
+            }, 3000)
+        }, 12000)
+    }
+}; new trackingLocationReminder()
+
+//async function startLocationTracking() {
+
+//    async function readReminders() {
+       
+//    };
+
+//    locationServices.createGeoFenceAddress("802 Central St, Water Valley MS", 20, () => {
+//        console.log('Enter')
+//    }, async () => {
+//        readReminders()
+//    }, 4)
+
+
+//};
+
+
 function RemindersScreen() {
   const [reminders, setReminders] = useState([]);
   const [isListening, setIsListening] = useState(false);

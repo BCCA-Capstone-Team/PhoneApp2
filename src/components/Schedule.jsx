@@ -1,3 +1,5 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable no-undef */
 import React, {useState, useEffect, useRef} from 'react';
 import {View, Text, TouchableOpacity} from 'react-native';
 import {startOfWeek, addDays} from 'date-fns';
@@ -84,7 +86,6 @@ const Schedule = ({navigation}) => {
   //   '2023-07-30': [{name: 'item 1 - any js object', date: '2023-07-30'}],
   //   '2023-08-07': [{name: 'item 1 for day'}, {name: 'item 2 for day'}],
   // };
-
 
   // Load appointments from database.
   async function loadAllAppointmentData() {
@@ -198,7 +199,7 @@ const Schedule = ({navigation}) => {
       const date = extractDate(spokenWords);
       const otherInfo = extractOtherInfo(spokenWords);
 
-      navigation.navigate('AppointmentFormScreen',{
+      navigation.navigate('AppointmentFormScreen', {
         date: date,
         location: location,
         time: time,
@@ -208,58 +209,70 @@ const Schedule = ({navigation}) => {
     } else if (command === 'edit') {
       editAppointmentByVoice(spokenWords);
     } else if (command === 'read') {
-      navigation.navigate('AppointmentDetails',{readAppointments: true});
+      navigation.navigate('AppointmentDetails', {readAppointments: true});
     } else {
       Tts.speak('Sorry I did not understand.');
     }
   };
 
+  const extractDate = spokenWords => {
+    const months = [
+      'January',
+      'February',
+      'March',
+      'April',
+      'May',
+      'June',
+      'July',
+      'August',
+      'September',
+      'October',
+      'November',
+      'December',
+    ];
 
+    const dateKeywords = ['on', 'to', 'for', 'at'];
+    const dateKeywordIndex = spokenWords.findIndex(word =>
+      dateKeywords.includes(word.toLowerCase()),
+    );
 
-  const extractDate = spokenWords =>{
-    const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November','December'];
+    if (dateKeywordIndex != -1) {
+      const dateParts = spokenWords.slice(dateKeywordIndex + 1);
+      const dateStr = dateParts.join(' ');
 
-    const dateKeywords = ['on','to','for','at'];
-    const dateKeywordIndex = spokenWords.findIndex(word => dateKeywords.includes(word.toLowerCase()));
+      const matchingMonth = months.find(month =>
+        dateStr.toLowerCase().includes(month.toLowerCase()),
+      );
+      const matchingDaty = dateParts.find(part => !isNaN(part));
 
-    if(dateKeywordIndex !=-1){
-        const dateParts = spokenWords.slice(dateKeywordIndex + 1);
-        const dateStr = dateParts.join(' ');
-
-        const matchingMonth = months.find(month => dateStr.toLowerCase().includes(month.toLowerCase()));
-        const matchingDaty = dateParts.find(part => !isNaN(part));
-
-        if(matchingMonth && matchingDay) {
-            const monthIndex = months.indexOf(matchingMonth);
-            const day = parseInt(matchingDay, 10);
-            if(monthIndex !== -1 && day >= 1 && day <=31){
-                const currentDate = new Date();
-                const year = currentDate.getFullYear();
-                const extractedDate = new Date(year, monthIndex, day);
-                return extractedDate;
-            }
-
+      if (matchingMonth && matchingDay) {
+        const monthIndex = months.indexOf(matchingMonth);
+        const day = parseInt(matchingDay, 10);
+        if (monthIndex !== -1 && day >= 1 && day <= 31) {
+          const currentDate = new Date();
+          const year = currentDate.getFullYear();
+          const extractedDate = new Date(year, monthIndex, day);
+          return extractedDate;
         }
+      }
     }
 
-    return null;//only null if failed
+    return null; //only null if failed
   };
-const extractOtherInfo = spokenWords => {
-  const otherInfoKeywords = ['with', 'by', 'meeting', 'appointment', 'event'];
-  const otherInfoKeywordIndex = spokenWords.findIndex(word => otherInfoKeywords.includes(word.toLowerCase()));
+  const extractOtherInfo = spokenWords => {
+    const otherInfoKeywords = ['with', 'by', 'meeting', 'appointment', 'event'];
+    const otherInfoKeywordIndex = spokenWords.findIndex(word =>
+      otherInfoKeywords.includes(word.toLowerCase()),
+    );
 
-  if (otherInfoKeywordIndex !== -1) {
-    const otherInfoParts = spokenWords.slice(otherInfoKeywordIndex + 1);
-    const otherInfo = otherInfoParts.join(' ');
-    return otherInfo;
-  }
+    if (otherInfoKeywordIndex !== -1) {
+      const otherInfoParts = spokenWords.slice(otherInfoKeywordIndex + 1);
+      const otherInfo = otherInfoParts.join(' ');
+      return otherInfo;
+    }
 
-  return null; // only null if failed
-};
-
-
-
-
+    return null; // only null if failed
+  };
 
   // ============== Handle renderEmptyDay and it's onPress ============== //
 

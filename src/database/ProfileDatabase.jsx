@@ -1,7 +1,7 @@
 let Database = require('../database/Database.jsx');
 
 class ProfileDatabase extends Database {
-  constructor () {
+  constructor() {
     super('ProfileDatabaseTable');
     this.debug = true;
     this.ready = false;
@@ -49,8 +49,8 @@ class ProfileDatabase extends Database {
         returnTable.city = this.table.data[0][4][1];
         returnTable.state = this.table.data[0][5][1];
         returnTable.zipCode = this.table.data[0][6][1];
-        returnTable.lat = this.table.data[0][7][1];
-        returnTable.long = this.table.data[0][8][1];
+        //returnTable.lat = this.table.data[0][7][1];
+        //returnTable.long = this.table.data[0][8][1];
       }
       resolve(returnTable);
     });
@@ -68,6 +68,33 @@ class ProfileDatabase extends Database {
     });
   }
 
+  // old editProfile function(incomplete)
+  //
+  // editProfile(key, value) {
+  //   return new Promise((resolve, reject) => {
+  //     if (!key || !value) {
+  //       console.error('Invalid Update Value');
+  //       resolve(false);
+  //       return;
+  //     }
+
+  //     if (key == ' ' || value == ' ') {
+  //       console.error('Invalid Update Value');
+  //       resolve(false);
+  //       return;
+  //     }
+
+  //     if (key.toLowerCase() == 'firstname') {
+  //       resolve(true);
+  //       let targetRow = this.table.data[0][0][1];
+  //       this.table.update(targetRow, 'firstName', value);
+  //     } else {
+  //       resolve(false);
+  //     }
+  //   });
+  // }
+  //
+  // new editProfile function (complete)
   editProfile(key, value) {
     return new Promise((resolve, reject) => {
       if (!key || !value) {
@@ -76,26 +103,63 @@ class ProfileDatabase extends Database {
         return;
       }
 
-      if (key == ' ' || value == ' ') {
+      if (key === ' ' || value === ' ') {
         console.error('Invalid Update Value');
         resolve(false);
         return;
       }
 
-      if (key.toLowerCase() == 'firstname') {
-        resolve(true);
+      // now checks all keys to update every field as needed
+      if (key.toLowerCase() === 'firstname') {
         let targetRow = this.table.data[0][0][1];
         this.table.update(targetRow, 'firstName', value);
+      } else if (key.toLowerCase() === 'lastname') {
+        let targetRow = this.table.data[0][0][1];
+        this.table.update(targetRow, 'lastName', value);
+      } else if (key.toLowerCase() === 'street') {
+        let targetRow = this.table.data[0][0][1];
+        this.table.update(targetRow, 'street', value);
+      } else if (key.toLowerCase() === 'city') {
+        let targetRow = this.table.data[0][0][1];
+        this.table.update(targetRow, 'city', value);
+      } else if (key.toLowerCase() === 'state') {
+        let targetRow = this.table.data[0][0][1];
+        this.table.update(targetRow, 'state', value);
+      } else if (key.toLowerCase() === 'zipcode') {
+        let targetRow = this.table.data[0][0][1];
+        this.table.update(targetRow, 'zipCode', parseInt(value, 10));
       } else {
+        console.error('Invalid key:', key);
         resolve(false);
+        return;
       }
+
+      resolve(true);
     });
   }
 
-  async addProfile(firstName, lastName, street, city, state, zipCode, lat, long) {
+  async addProfile(
+    firstName,
+    lastName,
+    street,
+    city,
+    state,
+    zipCode,
+    lat,
+    long,
+  ) {
     await this.onProfileReady();
     return new Promise(async (resolve, reject) => {
-      await this.table.add(firstName, lastName, street, city, state, zipCode, lat, long);
+      await this.table.add(
+        firstName,
+        lastName,
+        street,
+        city,
+        state,
+        zipCode,
+        lat,
+        long,
+      );
       resolve(true);
     });
   }

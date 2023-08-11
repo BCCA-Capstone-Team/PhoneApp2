@@ -6,8 +6,8 @@ import Tts from 'react-native-tts';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 
-// //@ts-ignore
-// import Radar from 'react-native-radar';
+//@ts-ignore
+import Radar from 'react-native-radar';
 
 import HomeScreen from './src/screens/HomeScreen';
 import CalendarScreen from './src/screens/CalendarScreen';
@@ -19,6 +19,8 @@ import AppointmentFormScreen from './src/screens/AppointmentFormScreen';
 import TestScreen from './src/screens/TestScreen';
 
 import ProfileDatabase from './src/database/ProfileDatabase';
+//@ts-ignore
+import Radar from 'react-native-radar';
 
 const Stack = createStackNavigator();
 
@@ -26,17 +28,30 @@ function App(): JSX.Element {
   const navigationRef = useRef(null);
 
   useEffect(() => {
-    Tts.getInitStatus().then(() => {
-      // console.log('TTS INITIALIZED!')
-      Tts.setDefaultLanguage('en-US');
-      Tts.setDefaultRate(0.5);
-      Tts.setDefaultPitch(1.0);
-      Tts.addEventListener('tts-start', (event) => console.log('start', event));
-      Tts.addEventListener('tts-finish', (event) => console.log('finish', event));
-      Tts.addEventListener('tts-cancel', (event) => console.log('cancel', event));
-    }).catch((error) => {
-      console.log("Failed to initialize TTS", error);
+    Radar.initialize('prj_test_pk_2aa353aba74916c7f8c717e47c142613c66c6c31');
+
+    Radar.getPermissionsStatus().then((status: any) => {
+      // do something with status
+      console.log(status);
     });
+
+    Tts.getInitStatus()
+      .then(() => {
+        console.log('TTS INITIALIZED!');
+        Tts.setDefaultLanguage('en-US');
+        Tts.setDefaultRate(0.5);
+        Tts.setDefaultPitch(1.0);
+        Tts.addEventListener('tts-start', event => console.log('start', event));
+        Tts.addEventListener('tts-finish', event =>
+          console.log('finish', event),
+        );
+        Tts.addEventListener('tts-cancel', event =>
+          console.log('cancel', event),
+        );
+      })
+      .catch(error => {
+        console.log('Failed to initialize TTS', error);
+      });
 
     // Check for profile existence
     const checkForProfileAndNavigate = async () => {
