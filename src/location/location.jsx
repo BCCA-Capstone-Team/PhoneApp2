@@ -6,7 +6,7 @@ import axios from 'axios';
 class LocationServices {
   constructor() {
     this.myRadar = Radar;
-    this.axios = axios
+    this.axios = axios;
     this.ready = false;
     this.homeStatus = false;
     this.homeJoining = [];
@@ -95,101 +95,111 @@ class LocationServices {
   // GeoCoding Functions ========================
 
   async getCoordsByAddress(address) {
-    console.log("getCoordsByAddress function in Location.jsx ==================")
-    console.log(`${address}`)
+    console.log(
+      'getCoordsByAddress function in Location.jsx ==================',
+    );
+    console.log(`${address}`);
     await this.onReady();
     return new Promise((resolve, reject) => {
-        this.myRadar
-            .geocode(address)
-            .then(result => {
-                Object.keys(result).forEach(key => {
-                    console.log(key, result[key]);
-                })
-                console.log(`${result} ===== Successful pull.`);
-                resolve(result);
-            })
-            .catch(err => {
-                console.log(err);
-                reject(err);
-            })
+      this.myRadar
+        .geocode(address)
+        .then(result => {
+          Object.keys(result).forEach(key => {
+            console.log(key, result[key]);
+          });
+          console.log(`${result} ===== Successful pull.`);
+          resolve(result);
         })
+        .catch(err => {
+          console.log(err);
+          reject(err);
+        });
+    });
+  }
+
+  // GeoFencing API Methods ======================
+
+  // Unauthorized for some reason....still looking into it.
+
+  async createGeofence(latitude, longitude, radius) {
+    const RADAR_ENDPOINT = 'https://api.radar.io/v1/geofences';
+    const RADAR_SECRET_KEY =
+      'prj_test_sk_183802503547a201917729874412fdbe590a1a9f'; // Replace with your secret key
+
+    const headers = {
+      Authorization: `Bearer ${RADAR_SECRET_KEY}`,
+      'Content-Type': 'application/json',
+    };
+    // h
+
+    const data = {
+      description: 'Home',
+      type: 'circle',
+      coordinates: [longitude, latitude], // Longitude first, then latitude
+      radius: radius, // In meters, so 15 for 15 meters
+      enabled: true,
+      // Add more fields as necessary based on your requirements
+    };
+
+    try {
+      const response = await this.axios.post(RADAR_ENDPOINT, data, {headers});
+      console.log('======== SUCCESSFUL CREATION OF GEOFENCE ==========');
+      return response.data;
+    } catch (error) {
+      console.error('Error creating geofence:', error, error.response.data);
     }
+  }
 
-    // GeoFencing API Methods ======================
+  async getGeofenceId() {
+    const RADAR_ENDPOINT = 'https://api.radar.io/v1/geofences';
+    const RADAR_SECRET_KEY =
+      'prj_test_sk_183802503547a201917729874412fdbe590a1a9f'; // Replace with your secret key
 
-    // Unauthorized for some reason....still looking into it.
+    const headers = {
+      Authorization: `Bearer ${RADAR_SECRET_KEY}`,
+      'Content-Type': 'application/json',
+    };
 
-    async createGeofence(latitude, longitude, radius) {
-        const RADAR_ENDPOINT = 'https://api.radar.io/v1/geofences';
-        const RADAR_SECRET_KEY = 'prj_test_sk_183802503547a201917729874412fdbe590a1a9f';  // Replace with your secret key
-    
-        const headers = {
-            Authorization: `Bearer ${RADAR_SECRET_KEY}`,
-            'Content-Type': 'application/json'
-        };
-        // h
-    
-        const data = {
-            description: "Home",
-            type: "circle",
-            coordinates: [longitude, latitude],  // Longitude first, then latitude
-            radius: radius,  // In meters, so 15 for 15 meters
-            enabled: true,
-            // Add more fields as necessary based on your requirements
-        };
-    
-        try {
-            const response = await this.axios.post(RADAR_ENDPOINT, data, { headers });
-            console.log("======== SUCCESSFUL CREATION OF GEOFENCE ==========")
-            return response.data;
-        } catch (error) {
-            console.error('Error creating geofence:', error, error.response.data);
+    try {
+      const response = await this.axios.get(RADAR_ENDPOINT, {headers});
+      if (response.data && response.data.geofences) {
+        const geofence = response.data.geofences.find(
+          gf => gf.description === 'Home',
+        );
+        if (geofence) {
+          console.log(
+            `======== SUCCESSFUL GETTING OF GEOFENCE ID ${geofence._id}==========`,
+          );
+          return geofence._id;
         }
-        }
-
-    async getGeofenceId() {
-        const RADAR_ENDPOINT = 'https://api.radar.io/v1/geofences';
-        const RADAR_SECRET_KEY = 'prj_test_sk_183802503547a201917729874412fdbe590a1a9f';  // Replace with your secret key
-
-        const headers = {
-            Authorization: `Bearer ${RADAR_SECRET_KEY}`,
-            'Content-Type': 'application/json'
-        };
-
-        try {
-            const response = await this.axios.get(RADAR_ENDPOINT, { headers });
-            if (response.data && response.data.geofences) {
-                const geofence = response.data.geofences.find(gf => gf.description === 'Home');
-                if (geofence) {
-                    console.log(`======== SUCCESSFUL GETTING OF GEOFENCE ID ${geofence._id}==========`)
-                    return geofence._id;
-                }
-            }
-        } catch (error) {
-            console.error('Error fetching geofences:', error);
-            return null;
-        }
+      }
+    } catch (error) {
+      console.error('Error fetching geofences:', error);
+      return null;
     }
+  }
 
-    async editGeofence(geofenceId, updatedData) {
-        const RADAR_ENDPOINT = `https://api.radar.io/v1/geofences/${geofenceId}`;
-        const RADAR_SECRET_KEY = 'prj_test_sk_183802503547a201917729874412fdbe590a1a9f';  // Replace with your secret key
-    
-        const headers = {
-            Authorization: `Bearer ${RADAR_SECRET_KEY}`,
-            'Content-Type': 'application/json'
-        };
-    
-        try {
-            const response = await this.axios.put(RADAR_ENDPOINT, updatedData, { headers });
-            console.log("======== SUCCESSFUL UPDATE OF GEOFENCE ==========")
-            return response.data;
-        } catch (error) {
-            console.error('Error updating geofence:', error);
-            return null;
-        }
+  async editGeofence(geofenceId, updatedData) {
+    const RADAR_ENDPOINT = `https://api.radar.io/v1/geofences/${geofenceId}`;
+    const RADAR_SECRET_KEY =
+      'prj_test_sk_183802503547a201917729874412fdbe590a1a9f'; // Replace with your secret key
+
+    const headers = {
+      Authorization: `Bearer ${RADAR_SECRET_KEY}`,
+      'Content-Type': 'application/json',
+    };
+
+    try {
+      const response = await this.axios.put(RADAR_ENDPOINT, updatedData, {
+        headers,
+      });
+      console.log('======== SUCCESSFUL UPDATE OF GEOFENCE ==========');
+      return response.data;
+    } catch (error) {
+      console.error('Error updating geofence:', error);
+      return null;
     }
-
+  }
 }
 
 module.exports = LocationServices;
