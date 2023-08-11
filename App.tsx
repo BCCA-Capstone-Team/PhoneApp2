@@ -20,7 +20,7 @@ import TestScreen from './src/screens/TestScreen';
 
 import ProfileDatabase from './src/database/ProfileDatabase';
 //@ts-ignore
-import Radar from 'react-native-radar';
+//import Radar from 'react-native-radar';
 
 const Stack = createStackNavigator();
 

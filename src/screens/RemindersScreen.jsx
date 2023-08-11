@@ -9,7 +9,7 @@ import Voice from '@react-native-voice/voice';
 import SpeechButton from '../components/SpeechButton';
 import styles from '../styles';
 
-let LocationServices = require('../location/Location.jsx')
+let LocationServices = require('../location/LocationSys.jsx')
 
 let Database = require('../database/ProfileDatabase.jsx');
 let database = new Database();
