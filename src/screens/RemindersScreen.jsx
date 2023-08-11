@@ -18,6 +18,7 @@ class trackingLocationReminder extends LocationServices {
     constructor() {
         super()
         this.ready = false
+        this.myAddress = ''
         this.start()
     }
 
@@ -33,8 +34,20 @@ class trackingLocationReminder extends LocationServices {
     }
 
     async start() {
+        await database.onProfileReady()
+        await database.table.reload()
         let myAddress = await this.getMyAddress()
-        console.log(myAddress)
+        this.myLocation = await this.getCoordsByAddress("60 Mimosa Dr, Grenada MS 38901")
+        this.myAddress = myAddress
+        this.createGeoFenceAddress(myAddress, 20, () => {
+            Tts.speak(`Welcome Home ${database.table.data[0][1][1]}`);
+        }, async () => {
+            this.readReminders()
+        }, 10)
+        setTimeout(async () => {
+            this.myLocation = await this.getCoordsByAddress("802 Central Street, Water Vally, MS")
+        }, 2000)
+        //this.setupDebugInterval()
     }
 
     async getMyAddress() {
@@ -42,7 +55,6 @@ class trackingLocationReminder extends LocationServices {
             await database.onProfileReady()
             await database.table.reload()
             let addressInterval = setInterval(() => {
-                //console.log('Check')
                 if (database.table.data[0]) {
                     clearInterval(addressInterval)
                     let myAddress = `${database.table.data[0][3][1]} ${database.table.data[0][4][1]} ${database.table.data[0][5][1]} ${database.table.data[0][6][1]}`
@@ -55,7 +67,9 @@ class trackingLocationReminder extends LocationServices {
     async readReminders() {
         const remindersData = await leavingHomeReminderTable.view();
         if (remindersData.length > 0) {
-            remindersData.forEach(reminder => {
+            Tts.speak('Your reminders are the following:');
+            remindersData.forEach((reminder, index) => {
+                Tts.speak(`Number ${index + 1}`);
                 Tts.speak(reminder[1][1]);
             });
         } else {
@@ -65,29 +79,14 @@ class trackingLocationReminder extends LocationServices {
 
     async setupDebugInterval() {
         setInterval(async () => {
-            this.baseCampLocation = await this.getCoordsByAddress("60 Mimosa Dr, Grenada MS 38901")
+            this.myLocation = await this.getCoordsByAddress("60 Mimosa Dr, Grenada MS 38901")
 
             setTimeout(async () => {
-                this.baseCampLocation = await this.getCoordsByAddress("802 Central St, Water Valley MS")
+                this.myLocation = await this.getCoordsByAddress(this.myAddress)
             }, 3000)
         }, 12000)
     }
 }; new trackingLocationReminder()
-
-//async function startLocationTracking() {
-
-//    async function readReminders() {
-       
-//    };
-
-//    locationServices.createGeoFenceAddress("802 Central St, Water Valley MS", 20, () => {
-//        console.log('Enter')
-//    }, async () => {
-//        readReminders()
-//    }, 4)
-
-
-//};
 
 
 function RemindersScreen() {
@@ -102,10 +101,10 @@ function RemindersScreen() {
     try {
       const remindersData = await leavingHomeReminderTable.view();
       setReminders(remindersData);
-      console.log('Updated reminders:', remindersData);
+      //console.log('Updated reminders:', remindersData);
       return remindersData;
     } catch (error) {
-      console.error('Error fetching reminders:', error);
+      //console.error('Error fetching reminders:', error);
     }
   };
 
@@ -114,14 +113,14 @@ function RemindersScreen() {
   const onSubmit = async data => {
     await leavingHomeReminderTable.add(data);
     await fetchRemindersFromDatabase();
-    console.log('Reminders:', data);
+    //console.log('Reminders:', data);
   };
 
   const deleteReminder = async id => {
     try {
       await leavingHomeReminderTable.removeIndex(id);
       await fetchRemindersFromDatabase();
-      console.log('Reminders after deletion:', reminders);
+      //console.log('Reminders after deletion:', reminders);
     } catch (error) {
       console.error('Error deleting reminder:', error);
     }
@@ -131,7 +130,7 @@ function RemindersScreen() {
     try {
       await leavingHomeReminderTable.update(id, 'reminderText', newData);
       await fetchRemindersFromDatabase();
-      console.log('EDITED SUCCESSFULLY', newData);
+      //console.log('EDITED SUCCESSFULLY', newData);
     } catch (error) {
       console.error('Error editing reminder:', error);
     }
@@ -161,12 +160,12 @@ function RemindersScreen() {
 
   const readReminders = async () => {
     const remindersData = await fetchRemindersFromDatabase();
-    console.log(remindersData);
+    //console.log(remindersData);
     if (remindersData.length > 0) {
       remindersData.forEach(reminder => {
         Tts.speak(reminder[1][1]);
         // DEBUG PURPOSES ========================
-        console.log(reminder[1][1])
+        //console.log(reminder[1][1])
       });
     } else {
       Tts.speak('No reminders found.');
@@ -175,7 +174,7 @@ function RemindersScreen() {
 
   const toggleListening = useCallback(() => {
     if (isListening) {
-      console.log("STOP PLEASE");
+      //console.log("STOP PLEASE");
       Voice.stop();
     } else {
       Tts.speak("Say add to add a reminder, delete to delete a reminder, or read to read your reminders aloud.");
@@ -196,7 +195,7 @@ function RemindersScreen() {
 
   // Event handlers for voice recognition
   const onSpeechStart = e => {
-    console.log('Speech started');
+    //console.log('Speech started');
   };
   const addReminderByVoice = async (spokenWords) => {
     // Remove the 'add' command word from the input
@@ -224,10 +223,10 @@ function RemindersScreen() {
 
       if (reminderToDelete) {
         await deleteReminder(reminderToDelete[0][1]);
-        console.log('Deleted reminder:', reminderToDelete);
+        //console.log('Deleted reminder:', reminderToDelete);
       } else {
-        console.log(reminderToDelete);
-        console.log('Reminder not found:', spokenWords);
+        //console.log(reminderToDelete);
+        //console.log('Reminder not found:', spokenWords);
       }
     } catch (error) {
       console.error('Error deleting reminder:', error);
@@ -238,14 +237,14 @@ function RemindersScreen() {
 
   
   const onSpeechEnd = (e) => {
-    console.log('onSpeechEnd:', e);
-    console.log('Final voice input:', voiceInputRef.current); // We use the ref here
+    //console.log('onSpeechEnd:', e);
+    //console.log('Final voice input:', voiceInputRef.current); // We use the ref here
     
     const spokenWords = voiceInputRef.current.split(" ");
     const command = spokenWords[0].toLowerCase();
   
     if (command === 'delete') {
-      console.log("HERE TO DELETE =================")
+      //console.log("HERE TO DELETE =================")
       deleteReminderByVoice(spokenWords);
       return; // Skip the rest of the function
     }
@@ -253,20 +252,20 @@ function RemindersScreen() {
       addReminderByVoice(spokenWords);
       return; // Skip the rest of the function
     } else if (command === 'read') {
-      console.log("HERE TO READ ====================")
+      //console.log("HERE TO READ ====================")
       readReminders();
       return;
     }
   
     // If command is not recognized, do nothing
-    console.log('Command not recognized:', command);
+    //console.log('Command not recognized:', command);
   };
   
 
 
   const onSpeechResults = async (e) => {
-    console.log('onSpeechResults:', e);
-    console.log(e.value[e.value.length - 1]);
+    //console.log('onSpeechResults:', e);
+    //console.log(e.value[e.value.length - 1]);
     const lastResult = e.value[e.value.length - 1];
     voiceInputRef.current = lastResult; // We update the ref here
   };
