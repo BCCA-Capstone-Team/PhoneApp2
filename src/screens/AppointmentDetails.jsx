@@ -96,12 +96,12 @@ const AppointmentDetails = ({navigation, route}) => {
             }}>
             <Text>Edit</Text>
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => handleDeleteItem}>
+          <TouchableOpacity onPress={handleDeleteItem}>
             <Text>Delete Item</Text>
           </TouchableOpacity>
         </View>
         {/* //added this button too// */}
-        <SpeechButton onPress={() => readAppointments} />
+        <SpeechButton onPress={readAppointments} />
       </View>
     );
   } else {
