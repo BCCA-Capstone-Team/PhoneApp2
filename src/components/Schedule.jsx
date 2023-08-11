@@ -147,7 +147,6 @@ const Schedule = ({navigation}) => {
   };
 
   const renderItem = item => {
-    // console.log('yo');
     return (
       <TouchableOpacity
         style={{
@@ -243,7 +242,7 @@ const Schedule = ({navigation}) => {
       const matchingMonth = months.find(month =>
         dateStr.toLowerCase().includes(month.toLowerCase()),
       );
-      const matchingDaty = dateParts.find(part => !isNaN(part));
+      const matchingDay = dateParts.find(part => !isNaN(part));
 
       if (matchingMonth && matchingDay) {
         const monthIndex = months.indexOf(matchingMonth);

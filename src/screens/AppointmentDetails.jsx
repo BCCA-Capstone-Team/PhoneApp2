@@ -11,6 +11,7 @@ let database = new Database('appointmentDatabase');
 //changed let data to const data for easier manipulation (JAQ) ALSO ADDED SOME TTS it should trigger automatically when called from the schedule.jsx file by voice in theory....
 const AppointmentDetails = ({navigation, route}) => {
   const data = route.params;
+  console.log(data);
 
   useEffect(() => {
     if (route.params.readAppointments) {
@@ -35,12 +36,6 @@ const AppointmentDetails = ({navigation, route}) => {
   // Add Appointment
   const handleAddItem = () => {
     listOfData[1] = false;
-    // console.log('he4llo');
-    // if (dayData.date) {
-    //   navigation.navigate('AppointmentFormScreen', dayData);
-    // } else {
-    //   navigation.navigate('AppointmentFormScreen', dayData);
-    // }
     navigation.navigate('AppointmentFormScreen', listOfData);
   };
 
@@ -58,6 +53,7 @@ const AppointmentDetails = ({navigation, route}) => {
       database.appReminderTable.removeIndex(allReminders[i].id);
     }
   };
+
   if (data.date || data.eventTitle) {
     // console.log(data.date);
     return (
@@ -100,12 +96,12 @@ const AppointmentDetails = ({navigation, route}) => {
             }}>
             <Text>Edit</Text>
           </TouchableOpacity>
-          <TouchableOpacity onPress={handleDeleteItem}>
+          <TouchableOpacity onPress={() => handleDeleteItem}>
             <Text>Delete Item</Text>
           </TouchableOpacity>
         </View>
-        //added this button too//
-        <SpeechButton onPress={readAppointments} />
+        {/* //added this button too// */}
+        <SpeechButton onPress={() => readAppointments} />
       </View>
     );
   } else {
