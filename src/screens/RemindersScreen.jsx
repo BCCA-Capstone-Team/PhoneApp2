@@ -37,8 +37,8 @@ class trackingLocationReminder extends LocationServices {
         await database.onProfileReady()
         await database.table.reload()
         let myAddress = await this.getMyAddress()
-        this.myLocation = await this.getCoordsByAddress("60 Mimosa Dr, Grenada MS 38901")
         this.myAddress = myAddress
+        this.myLocation = await this.getCoordsByAddress(this.myAddress)
         this.createGeoFenceAddress(myAddress, 20, () => {
             Tts.speak(`Welcome Home ${database.table.data[0][1][1]}`);
         }, async () => {
