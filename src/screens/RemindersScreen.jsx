@@ -18,6 +18,7 @@ class trackingLocationReminder extends LocationServices {
     constructor() {
         super()
         this.ready = false
+        this.myAddress = ''
         this.start()
     }
 
@@ -34,7 +35,16 @@ class trackingLocationReminder extends LocationServices {
 
     async start() {
         let myAddress = await this.getMyAddress()
-        console.log(myAddress)
+        this.myAddress = myAddress
+        this.createGeoFenceAddress(myAddress, 20, () => {
+            console.log('Enter')
+        }, async () => {
+            this.readReminders()
+        }, 20)
+        setTimeout(async () => {
+            this.myLocation = await this.getCoordsByAddress("60 Mimosa Dr, Grenada MS 38901")
+        }, 5000)
+        //this.setupDebugInterval()
     }
 
     async getMyAddress() {
@@ -42,7 +52,6 @@ class trackingLocationReminder extends LocationServices {
             await database.onProfileReady()
             await database.table.reload()
             let addressInterval = setInterval(() => {
-                //console.log('Check')
                 if (database.table.data[0]) {
                     clearInterval(addressInterval)
                     let myAddress = `${database.table.data[0][3][1]} ${database.table.data[0][4][1]} ${database.table.data[0][5][1]} ${database.table.data[0][6][1]}`
@@ -55,7 +64,9 @@ class trackingLocationReminder extends LocationServices {
     async readReminders() {
         const remindersData = await leavingHomeReminderTable.view();
         if (remindersData.length > 0) {
-            remindersData.forEach(reminder => {
+            Tts.speak('Your reminders are the following:');
+            remindersData.forEach((reminder, index) => {
+                Tts.speak(`Number ${index + 1}`);
                 Tts.speak(reminder[1][1]);
             });
         } else {
@@ -65,29 +76,14 @@ class trackingLocationReminder extends LocationServices {
 
     async setupDebugInterval() {
         setInterval(async () => {
-            this.baseCampLocation = await this.getCoordsByAddress("60 Mimosa Dr, Grenada MS 38901")
+            this.myLocation = await this.getCoordsByAddress("60 Mimosa Dr, Grenada MS 38901")
 
             setTimeout(async () => {
-                this.baseCampLocation = await this.getCoordsByAddress("802 Central St, Water Valley MS")
+                this.myLocation = await this.getCoordsByAddress(this.myAddress)
             }, 3000)
         }, 12000)
     }
 }; new trackingLocationReminder()
-
-//async function startLocationTracking() {
-
-//    async function readReminders() {
-       
-//    };
-
-//    locationServices.createGeoFenceAddress("802 Central St, Water Valley MS", 20, () => {
-//        console.log('Enter')
-//    }, async () => {
-//        readReminders()
-//    }, 4)
-
-
-//};
 
 
 function RemindersScreen() {

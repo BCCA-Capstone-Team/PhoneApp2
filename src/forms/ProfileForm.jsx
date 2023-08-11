@@ -14,7 +14,7 @@ import styles from '../styles';
 let Database = require('../database/ProfileDatabase.jsx');
 let database = new Database();
 
-let LocationServices = require('../location/location.jsx');
+let LocationServices = require('../location/LocationSys.jsx');
 let locationServices = new LocationServices();
 
 const ProfileForm = ({navigation, route, onProfileCreated}) => {

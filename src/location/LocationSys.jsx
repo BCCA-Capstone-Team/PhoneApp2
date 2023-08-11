@@ -11,7 +11,7 @@ class LocationServices {
         this.homeStatus = false;
         this.homeJoining = [];
         this.homeLeaving = [];
-        this.baseCampLocation = { lat: 34.166543, lon: -89.627894 }
+        this.myLocation = { lat: 34.166543, lon: -89.627894 }
 
         this.myRadar.startTrackingEfficient();
         this.myRadar.initialize(publishableKey);
@@ -120,7 +120,7 @@ class LocationServices {
             //myLocation.then(async (result) => {
             //    resolve({ lat: result.location.latitude, lon: result.location.longitude });
             //})
-            resolve(this.baseCampLocation)
+            resolve(this.myLocation)
         })
     }
 
@@ -129,6 +129,21 @@ class LocationServices {
         let currentState = false
         let firstRun = false
         // False = Outside | True = Inside
+
+        let addressCoords = await this.getCoordsByAddress(address)
+        let myLocation = await this.getMyLocation()
+        let testDistance = await this.getMyDistanceValue(addressCoords, myLocation)
+
+        if (testDistance < distance && currentState == true || testDistance < distance && firstRun == false) {
+            currentState = false
+            firstRun = true
+            enterCallback()
+        } else if (testDistance > distance && currentState == false || testDistance > distance && firstRun == false) {
+            currentState = true
+            firstRun = true
+            leaveCallback()
+        }
+
         setInterval(async () => {
             let addressCoords = await this.getCoordsByAddress(address)
             let myLocation = await this.getMyLocation()
