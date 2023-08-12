@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 
 import {
   Text,
@@ -17,7 +17,7 @@ let database = new Database();
 let LocationServices = require('../location/location.jsx');
 let locationServices = new LocationServices();
 
-const ProfileForm = ({navigation, route, onProfileCreated}) => {
+const ProfileForm = ({navigation, route}) => {
   const {
     control,
     handleSubmit,
@@ -64,8 +64,8 @@ const ProfileForm = ({navigation, route, onProfileCreated}) => {
         database.editProfile('city', data.city);
         database.editProfile('state', data.state);
         database.editProfile('zipCode', data.zipCode);
-        database.editProfile('lat', latitude);
-        database.editProfile('long', longitude);
+        database.editProfile('lat', 0o0);
+        database.editProfile('long', 0o0);
         //let geofenceId = await locationServices.getGeofenceId();
         //await locationServices.editGeofence(geofenceId, {'coordinates': [latitude, longitude]});
       } else {
@@ -80,9 +80,17 @@ const ProfileForm = ({navigation, route, onProfileCreated}) => {
           0,
           0,
         );
-        onProfileCreated();
+        // onProfileCreated();
       }
-      await navigation.navigate('HomeScreen', {profileData: data});
+
+      const message = profileExists
+        ? 'Profile successfully updated!'
+        : 'New profile successfully created!';
+
+      await navigation.navigate('HomeScreen', {
+        profileData: data,
+        message: message,
+      });
     } catch (error) {
       console.error('Error adding profile:', error);
     }

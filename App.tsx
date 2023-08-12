@@ -6,9 +6,6 @@ import Tts from 'react-native-tts';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 
-//@ts-ignore
-import Radar from 'react-native-radar';
-
 import HomeScreen from './src/screens/HomeScreen';
 import CalendarScreen from './src/screens/CalendarScreen';
 import RemindersScreen from './src/screens/RemindersScreen';
