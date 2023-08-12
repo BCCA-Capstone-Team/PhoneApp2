@@ -53,6 +53,9 @@ const AppointmentForm = ({navigation, route}) => {
     useEffect(() => {
       setValue('eventTitle', appointmentData[0].eventTitle || '');
       setValue('address', appointmentData[0].location.address);
+      setValue('city', appointmentData[0].location.city);
+      setValue('state', appointmentData[0].location.state);
+      setValue('zipcode', appointmentData[0].location.zipCode);
       setSelectedDate(convertedDate);
     }, [appointmentData, setValue]);
   }
