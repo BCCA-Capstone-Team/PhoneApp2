@@ -2,6 +2,7 @@ import Radar from 'react-native-radar';
 import axios from 'axios';
 import {check, PERMISSIONS, request, RESULTS} from 'react-native-permissions';
 let publishableKey = 'prj_test_pk_2aa353aba74916c7f8c717e47c142613c66c6c31';
+let activateLocationServicesTracking = false;
 
 class LocationServices {
   constructor() {
@@ -11,7 +12,7 @@ class LocationServices {
     this.homeStatus = false;
     this.homeJoining = [];
     this.homeLeaving = [];
-    this.baseCampLocation = {lat: 34.166543, lon: -89.627894};
+    this.myLocation = {lat: 34.166543, lon: -89.627894};
 
     this.myRadar.startTrackingEfficient();
     this.myRadar.initialize(publishableKey);
@@ -138,7 +139,7 @@ class LocationServices {
       //myLocation.then(async (result) => {
       //    resolve({ lat: result.location.latitude, lon: result.location.longitude });
       //})
-      resolve(this.baseCampLocation);
+      resolve(this.myLocation);
     });
   }
 
@@ -153,30 +154,53 @@ class LocationServices {
     let currentState = false;
     let firstRun = false;
     // False = Outside | True = Inside
-    setInterval(async () => {
-      let addressCoords = await this.getCoordsByAddress(address);
-      let myLocation = await this.getMyLocation();
-      let testDistance = await this.getMyDistanceValue(
-        addressCoords,
-        myLocation,
-      );
 
-      if (
-        (testDistance < distance && currentState == true) ||
-        (testDistance < distance && firstRun == false)
-      ) {
-        currentState = false;
-        firstRun = true;
-        enterCallback();
-      } else if (
-        (testDistance > distance && currentState == false) ||
-        (testDistance > distance && firstRun == false)
-      ) {
-        currentState = true;
-        firstRun = true;
-        leaveCallback();
-      }
-    }, 1000 * refreshRate);
+    let addressCoords = await this.getCoordsByAddress(address);
+    let myLocation = await this.getMyLocation();
+    let testDistance = await this.getMyDistanceValue(addressCoords, myLocation);
+
+    if (
+      (testDistance < distance && currentState == true) ||
+      (testDistance < distance && firstRun == false)
+    ) {
+      currentState = false;
+      firstRun = true;
+      enterCallback();
+    } else if (
+      (testDistance > distance && currentState == false) ||
+      (testDistance > distance && firstRun == false)
+    ) {
+      currentState = true;
+      firstRun = true;
+      leaveCallback();
+    }
+
+    if (activateLocationServicesTracking == true) {
+      setInterval(async () => {
+        let addressCoords = await this.getCoordsByAddress(address);
+        let myLocation = await this.getMyLocation();
+        let testDistance = await this.getMyDistanceValue(
+          addressCoords,
+          myLocation,
+        );
+
+        if (
+          (testDistance < distance && currentState == true) ||
+          (testDistance < distance && firstRun == false)
+        ) {
+          currentState = false;
+          firstRun = true;
+          enterCallback();
+        } else if (
+          (testDistance > distance && currentState == false) ||
+          (testDistance > distance && firstRun == false)
+        ) {
+          currentState = true;
+          firstRun = true;
+          leaveCallback();
+        }
+      }, 1000 * refreshRate);
+    }
   }
 
   // GeoFencing API Methods ======================
@@ -205,10 +229,10 @@ class LocationServices {
 
     try {
       const response = await this.axios.post(RADAR_ENDPOINT, data, {headers});
-      console.log('======== SUCCESSFUL CREATION OF GEOFENCE ==========');
+      //console.log("======== SUCCESSFUL CREATION OF GEOFENCE ==========")
       return response.data;
     } catch (error) {
-      console.error('Error creating geofence:', error, error.response.data);
+      //console.error('Error creating geofence:', error, error.response.data);
     }
   }
 
@@ -229,9 +253,7 @@ class LocationServices {
           gf => gf.description === 'Home',
         );
         if (geofence) {
-          console.log(
-            `======== SUCCESSFUL GETTING OF GEOFENCE ID ${geofence._id}==========`,
-          );
+          //console.log(`======== SUCCESSFUL GETTING OF GEOFENCE ID ${geofence._id}==========`)
           return geofence._id;
         }
       }
@@ -255,7 +277,7 @@ class LocationServices {
       const response = await this.axios.put(RADAR_ENDPOINT, updatedData, {
         headers,
       });
-      console.log('======== SUCCESSFUL UPDATE OF GEOFENCE ==========');
+      //console.log("======== SUCCESSFUL UPDATE OF GEOFENCE ==========")
       return response.data;
     } catch (error) {
       console.error('Error updating geofence:', error);
