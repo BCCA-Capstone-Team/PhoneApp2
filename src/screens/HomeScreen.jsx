@@ -129,6 +129,12 @@ function HomeScreen({navigation}) {
     }
   };
 
+  const readInstructions = () => {
+    Tts.speak(
+      'Hello user, press on the listen button to state where you would like to go: Calendar, Profile, or Reminders.',
+    );
+  };
+
   const toggleListening = () => {
     if (isListening) {
       Voice.stop();
@@ -173,7 +179,7 @@ function HomeScreen({navigation}) {
       <SpeechButton isListening={isListening} onPress={toggleListening} />
 
       {/*TTS Button */}
-      <TtsButtonComponent text="Hello user, press on the listen button to state where you would like to go: Calendar, Profile, or Reminders." />
+      <TtsButtonComponent text="Read Instructions" onPress={readInstructions} />
 
       {/* <MicrophoneComponent /> */}
     </View>

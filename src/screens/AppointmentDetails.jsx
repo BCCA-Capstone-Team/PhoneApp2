@@ -3,6 +3,7 @@ import React, {useEffect} from 'react';
 import Tts from 'react-native-tts';
 import SpeechButton from '../components/SpeechButton';
 import AppointmentFormScreen from './AppointmentFormScreen';
+import TtsButtonComponent from '../components/TtsButtonComponent';
 //adding some styling too
 import styles from '../styles.js';
 
@@ -20,13 +21,34 @@ const AppointmentDetails = ({navigation, route}) => {
   }, [route.params.readAppointments]);
   //this is automated tts...should be at least
   const readAppointments = () => {
+    // Start with an introduction
+    Tts.speak('Here are your appointment details:');
+
+    // Read event title
+    Tts.speak(`Event title: ${data.eventTitle}`);
+
+    // Read location details
+    if (
+      data.location &&
+      data.location.address &&
+      data.location.city &&
+      data.location.state
+    ) {
+      Tts.speak(
+        `Location: ${data.location.address}, ${data.location.city}, ${data.location.state}`,
+      );
+    } else {
+      Tts.speak('No location info saved.');
+    }
+
+    // Read reminders
     if (data.reminder && data.reminder.length > 0) {
-      Tts.speak('Here are you appointments for today: ');
+      Tts.speak('Reminders:');
       data.reminder.forEach(reminder => {
-        Tts.speak('Bring: ${reminder}');
+        Tts.speak(`Bring: ${reminder}`);
       });
     } else {
-      Tts.speak('No appointments today.');
+      Tts.speak('No reminders to bring along.');
     }
   };
   // console.log(data);
@@ -71,8 +93,7 @@ const AppointmentDetails = ({navigation, route}) => {
         )}
         {data.reminder[0] ? (
           <View>
-            //gonna try something new real quick feel free to move or delete if
-            crash//`
+            {/*/gonna try something new real quick feel free to move or delete if crash/*/}
             {data.reminder.map((reminder, index) => (
               <Text key={index} style={styles.reminderText}>
                 Bring: {reminder}
@@ -101,7 +122,7 @@ const AppointmentDetails = ({navigation, route}) => {
           </TouchableOpacity>
         </View>
         {/* //added this button too// */}
-        <SpeechButton onPress={readAppointments} />
+        <TtsButtonComponent onPress={readAppointments} />
       </View>
     );
   } else {
