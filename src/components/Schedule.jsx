@@ -73,7 +73,9 @@ const Schedule = ({navigation}) => {
   };
 
   useEffect(() => {
+    Voice.onSpeechStart = onSpeechStart;
     Voice.onSpeechEnd = onSpeechEnd;
+    Voice.onSpeechError = onSpeechError;
     Voice.onSpeechResults = onSpeechResults;
 
     return () => {
@@ -187,6 +189,8 @@ const Schedule = ({navigation}) => {
     );
   };
   //voice commands and TTS//
+  const onSpeechError = e => {};
+
   const onSpeechEnd = e => {
     // console.log('onSpeechEnd:', e);
     // console.log('Final voice input:', voiceInputRef.current);
@@ -229,11 +233,13 @@ const Schedule = ({navigation}) => {
   // in the morning to discuss how we want to do this. If we want to handle all
   // of the speech logic in schedule we will need to figure out how to have more
   // than one flow of Voice commands.
+
   const onSpeechResults = e => {
     // console.log(e.value[0]);
     const spokenWords = e.value[0].split(' ');
     console.log(spokenWords);
-    const command = e.value[0].toLowerCase();
+    const command = spokenWords.join(' ');
+    console.log(command);
     if (command === 'add') {
       const date = extractDate(spokenWords);
       const otherInfo = extractOtherInfo(spokenWords);
