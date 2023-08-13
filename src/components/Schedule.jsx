@@ -151,6 +151,7 @@ const Schedule = ({navigation}) => {
   const renderItem = item => {
     return (
       <TouchableOpacity
+        // eslint-disable-next-line react-native/no-inline-styles
         style={{
           flex: 1,
           alignItems: 'center',
@@ -283,6 +284,87 @@ const Schedule = ({navigation}) => {
     }
     // offerFullAppointmentInfo(appointments[dateToBeRead]);
   };
+
+  const editAppointmentByVoice = async () => {
+    Tts.speak('Please say the title of the appointment you want to edit.');
+
+    // Listener starts for the appointment title to edit
+    Voice.onSpeechResults = async e => {
+      const lastResult = e.value[e.value.length - 1];
+      const appointmentTitle = lastResult.trim();
+
+      // Fetch appointment data and find the correct title
+      const appointments = await loadAllAppointmentData();
+      const appointmentDate = timeToString(new Date());
+
+      if (appointments[appointmentDate]) {
+        const appointmentToEdit = appointments[appointmentDate].find(
+          appointment =>
+            appointment.eventTitle.toLowerCase() ===
+            appointmentTitle.toLowerCase(),
+        );
+        if (appointmentToEdit) {
+          // Stops listening for title
+          Voice.onSpeechResults = undefined;
+
+          Tts.speak('Please state the changes you want to make.');
+
+          // Listener starts for the changes to be made
+          Voice.onSpeechResults = async e => {
+            const changes = e.value.join(' ');
+
+            // Process and apply the changes here
+            const remindersPattern = /reminders:\s*(.*)/i;
+            const timePattern = /time:\s*(.*)/i;
+
+            const remindersMatch = changes.match(remindersPattern);
+            const timeMatch = changes.match(timePattern);
+
+            if (remindersMatch) {
+              const newReminders = remindersMatch[1];
+              // Handle new reminders update here
+            }
+
+            if (timeMatch) {
+              const newTime = timeMatch[1];
+              // Handle new time update here
+            }
+
+            // End the voice interaction
+            Voice.onSpeechResults = undefined;
+            Tts.speak('Appointment updated successfully.');
+          };
+        } else {
+          // No appointment found with the given title
+          Tts.speak('No appointment found with the provided title.');
+        }
+      }
+    };
+  };
+
+  //HAS NOT BEEN TESTED YET
+  const deleteAppointmentByVoice = async spokenWords => {
+    const date = extractDate(spokenWords);
+    const otherInfo = extractOtherInfo(spokenWords);
+
+    if (date) {
+      try {
+        const success = await deleteAppointment(date, otherInfo);
+
+        if (success) {
+          Tts.speak('Appointment deleted successfully.');
+        } else {
+          Tts.speak('Appointment deletion failed.');
+        }
+      } catch (error) {
+        console.error('Error deleting appointment:', error);
+        Tts.speak('Sorry, an error occurred while deleting the appointment.');
+      }
+    } else {
+      Tts.speak("Sorry, I couldn't understand the date for deletion.");
+    }
+  };
+
   // readDaysAppointments(new Date());  // Both of these examples work.
   // readDaysAppointments('2023-08-14');// Just need to crack implementation.
 
@@ -305,13 +387,23 @@ const Schedule = ({navigation}) => {
       'November',
       'December',
     ];
+    //added days of the week to help logic flow smoother...maybe
+    const daysOfWeek = [
+      'sunday',
+      'monday',
+      'tuesday',
+      'wednesday',
+      'thursday',
+      'friday',
+      'saturday',
+    ];
 
     const dateKeywords = ['on', 'to', 'for', 'at'];
     const dateKeywordIndex = spokenWords.findIndex(word =>
       dateKeywords.includes(word.toLowerCase()),
     );
 
-    if (dateKeywordIndex != -1) {
+    if (dateKeywordIndex !== -1) {
       const dateParts = spokenWords.slice(dateKeywordIndex + 1);
       const dateStr = dateParts.join(' ');
 
@@ -319,8 +411,11 @@ const Schedule = ({navigation}) => {
         dateStr.toLowerCase().includes(month.toLowerCase()),
       );
       const matchingDay = dateParts.find(part => !isNaN(part));
+      const matchingDayOfWeek = daysOfWeek.find(day =>
+        dateStr.toLowerCase().includes(day.toLowerCase()),
+      );
 
-      if (matchingMonth && matchingDay) {
+      if (matchingMonth && (matchingDay || matchingDayOfWeek)) {
         const monthIndex = months.indexOf(matchingMonth);
         const day = parseInt(matchingDay, 10);
         if (monthIndex !== -1 && day >= 1 && day <= 31) {

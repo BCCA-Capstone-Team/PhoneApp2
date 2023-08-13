@@ -10,7 +10,7 @@ class ProfileDatabase extends Database {
 
   async startProfileSystem() {
     this.table = await this.createTable('profileDatabase', column => {
-      //column.autoClear();
+      // column.autoClear();
 
       column.create('firstName', 'TEXT');
       column.create('lastName', 'TEXT');
@@ -97,17 +97,17 @@ class ProfileDatabase extends Database {
   // new editProfile function (complete)
   editProfile(key, value) {
     return new Promise((resolve, reject) => {
-      if (!key || !value) {
-        console.error('Invalid Update Value');
-        resolve(false);
-        return;
-      }
+      // if (!key || !value) {
+      //   console.error('Invalid Update Value');
+      //   resolve(false);
+      //   return;
+      // }
 
-      if (key === ' ' || value === ' ') {
-        console.error('Invalid Update Value');
-        resolve(false);
-        return;
-      }
+      // if (key === ' ' || value === ' ') {
+      //   console.error('Invalid Update Value');
+      //   resolve(false);
+      //   return;
+      // }
 
       // now checks all keys to update every field as needed
       if (key.toLowerCase() === 'firstname') {
@@ -128,6 +128,10 @@ class ProfileDatabase extends Database {
       } else if (key.toLowerCase() === 'zipcode') {
         let targetRow = this.table.data[0][0][1];
         this.table.update(targetRow, 'zipCode', parseInt(value, 10));
+      } else if (key.toLowerCase() === 'long') {
+        let targetRow = this.table.data[0][0][1];
+      } else if (key.toLowerCase() === 'lat') {
+        let targetRow = this.table.data[0][0][1];
       } else {
         console.error('Invalid key:', key);
         resolve(false);

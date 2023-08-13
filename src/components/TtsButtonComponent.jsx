@@ -3,9 +3,13 @@ import {TouchableOpacity, Text} from 'react-native';
 import Tts from 'react-native-tts';
 import styles from '../styles';
 
-const TtsButtonComponent = ({text}) => {
+const TtsButtonComponent = ({text, onPress}) => {
   const handleSpeakButtonPress = () => {
-    Tts.speak(text);
+    if (typeof onPress === 'function') {
+      onPress();
+    } else {
+      console.warn('onPress prop of TtsButtonComponent should be a function');
+    }
   };
 
   return (

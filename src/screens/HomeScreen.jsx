@@ -1,5 +1,5 @@
-import React, {useEffect, useState} from 'react';
-import {Text, View, TouchableOpacity} from 'react-native';
+import React, {useEffect, useState, useCallback, useMemo, useRef} from 'react';
+import {Text, View, TouchableOpacity, Animated} from 'react-native';
 import {check, PERMISSIONS, request} from 'react-native-permissions';
 import Tts from 'react-native-tts';
 import Voice from '@react-native-voice/voice';
@@ -8,11 +8,55 @@ import TtsButtonComponent from '../components/TtsButtonComponent';
 import {useFocusEffect} from '@react-navigation/native';
 import SpeechButton from '../components/SpeechButton';
 import Radar from 'react-native-radar';
+import AnimatedView from '../components/AnimatedView';
 
 let Database = require('../database/ProfileDatabase.jsx');
 let database = new Database();
 
-function HomeScreen({navigation}) {
+function HomeScreen({navigation, route}) {
+  const {message} = route.params || '';
+  const [visible, setVisible] = useState(true);
+  const [profileData, setProfileData] = useState(null);
+
+  const fadeAnim = useRef(new Animated.Value(1)).current;
+  // Use useFocusEffect to run animation logic when screen gains focus
+  useFocusEffect(
+    useCallback(() => {
+      const fadeOutAnimation = () => {
+        console.log(message);
+        const fadeOut = Animated.timing(fadeAnim, {
+          toValue: 0,
+          duration: 6000,
+          useNativeDriver: true,
+        });
+
+        console.log(message, 'inside HomeScreen');
+        console.log('Before animation start');
+        fadeOut.start();
+        console.log('Animation completed');
+      };
+
+      fadeOutAnimation(); // Trigger the animation logic
+      // return () => {
+      //   // Cleanup logic if needed
+      // };
+    }, [fadeAnim, message]),
+  );
+
+  // useEffect(() => {
+  //   showAlertAndHide();
+  // }, []);
+
+  useEffect(() => {
+    // Fetch profile data asynchronously and update state
+    const fetchProfileData = async () => {
+      const data = await database.getProfile();
+      setProfileData(data);
+    };
+    console.log('fetch profile triggered');
+    fetchProfileData();
+  }, []);
+
   const [isListening, setIsListening] = useState(false);
 
   useEffect(() => {
@@ -47,6 +91,7 @@ function HomeScreen({navigation}) {
       Voice.onSpeechError = undefined;
       Voice.destroy().then(Voice.removeAllListeners);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Alyx trying some thing
@@ -63,6 +108,7 @@ function HomeScreen({navigation}) {
       Voice.onSpeechError = onSpeechError;
 
       return () => unsubscribe();
+      // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []),
   );
 
@@ -129,6 +175,12 @@ function HomeScreen({navigation}) {
     }
   };
 
+  const readInstructions = () => {
+    Tts.speak(
+      'Hello user, press on the listen button to state where you would like to go: Calendar, Profile, or Reminders.',
+    );
+  };
+
   const toggleListening = () => {
     if (isListening) {
       Voice.stop();
@@ -137,43 +189,38 @@ function HomeScreen({navigation}) {
     }
     setIsListening(!isListening);
   };
-
+  console.log(message);
   return (
     <View style={styles.homeContainer}>
+      <AnimatedView message={message} />
       {/* Calendar Button */}
       <TouchableOpacity
         style={styles.button}
         onPress={() => handleButtonPress('CalendarScreen')}>
         <Text style={styles.buttonText}>Calendar</Text>
       </TouchableOpacity>
-
       {/* Reminders Button */}
       <TouchableOpacity
         style={styles.button}
         onPress={() => handleButtonPress('RemindersScreen')}>
         <Text style={styles.buttonText}>Reminders</Text>
       </TouchableOpacity>
-
       {/* Profile Button */}
       <TouchableOpacity
         style={styles.button}
         onPress={() => handleButtonPress('ProfileDetailScreen')}>
         <Text style={styles.buttonText}>Profile</Text>
       </TouchableOpacity>
-
-      {/* Test Button */}
+      {/* Test Button
       <TouchableOpacity
         style={styles.button}
         onPress={() => handleButtonPress('TestScreen')}>
         <Text style={styles.buttonText}>Test</Text>
-      </TouchableOpacity>
-
+      </TouchableOpacity> */}
       {/* Speak Button */}
-
       <SpeechButton isListening={isListening} onPress={toggleListening} />
-
       {/*TTS Button */}
-      <TtsButtonComponent text="Hello user, press on the listen button to state where you would like to go: Calendar, Profile, or Reminders." />
+      <TtsButtonComponent text="Read Instructions" onPress={readInstructions} />
 
       {/* <MicrophoneComponent /> */}
     </View>

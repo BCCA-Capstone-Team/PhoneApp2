@@ -13,19 +13,11 @@ function ProfileScreen({navigation, route}) {
   const [profileCreated, setProfileCreated] = useState(false);
 
   // Function to handle successful profile creation
+  // eslint-disable-next-line prettier/prettier
   const handleProfileCreated = () => {
     setProfileCreated(true);
   };
 
-  // Inside ProfileScreen.jsx or TestScreen.jsx
-  const handleCloseModal = () => {
-    setProfileCreated(false); // Assuming you are using the state 'profileCreated' to control the modal visibility
-  };
-  // Function to handle modal close (OK button)
-  const closeModal = () => {
-    setProfileCreated(false);
-    console.log('test1');
-  };
   const [profileData, setProfileData] = useState(initialProfileData);
 
   useEffect(() => {
@@ -64,16 +56,6 @@ function ProfileScreen({navigation, route}) {
       />
       {/*TTS Button */}
       <TtsButtonComponent text="This is the profile screen.  Please enter the following information:first name, last name, street address, city, state, and your zipcode.  " />
-      {/* Success Modal */}
-      <SuccessModal
-        visible={profileCreated}
-        message={
-          profileData
-            ? 'Profile edited successfully!'
-            : 'Profile created successfully!'
-        }
-        onClose={handleCloseModal}
-      />
     </View>
   );
 }

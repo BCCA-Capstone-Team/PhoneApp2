@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 
 import {
   Text,
@@ -71,9 +71,17 @@ const ProfileForm = ({navigation, route, onProfileCreated}) => {
           0,
           0,
         );
-        onProfileCreated();
+        // onProfileCreated();
       }
-      await navigation.navigate('HomeScreen', {profileData: data});
+
+      const message = profileExists
+        ? 'Profile successfully updated!'
+        : 'New profile successfully created!';
+
+      await navigation.navigate('HomeScreen', {
+        profileData: data,
+        message: message,
+      });
     } catch (error) {
       console.error('Error adding profile:', error);
     }
