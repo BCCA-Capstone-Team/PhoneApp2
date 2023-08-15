@@ -3,6 +3,9 @@ class VoiceControlSystem {
         this.parseString = ""
         this.commandKeys = []
         this.readyDict = []
+        this.currentCoolDown = 0
+        this.callbackFunc = null
+        this.coolDownInterval = null
     }
 
     addString(value) {
@@ -11,6 +14,48 @@ class VoiceControlSystem {
         } else {
             this.parseString = `${this.parseString} ${value}`
         }
+
+        if (this.currentCoolDown == 0) {
+            this.currentCoolDown = 200
+            this.awaitTimer()
+        } else {
+            this.currentCoolDown = 200
+        }
+    }
+
+    addFullString(value) {
+        this.parseString = value
+
+        if (this.currentCoolDown == 0) {
+            this.currentCoolDown = 200
+            this.awaitTimer()
+        } else {
+            this.currentCoolDown = 200
+        }
+    }
+
+    awaitTimer() {
+        this.coolDownInterval = setInterval(async () => {
+            if (this.currentCoolDown > 0) {
+                this.currentCoolDown = this.currentCoolDown - 1
+            } else {
+                clearInterval(this.coolDownInterval)
+                await this.breakDown()
+                if (this.callbackFunc != null) {
+                    this.callbackFunc(this.readyDict)
+                }
+                this.resetValues()
+            }
+        }, 1)
+    }
+
+    resetValues() {
+        this.parseString = ""
+        this.commandKeys = []
+        this.readyDict = []
+        this.currentCoolDown = 0
+        this.callbackFunc = null
+        this.coolDownInterval = null
     }
 
     breakDown() {
@@ -53,6 +98,10 @@ class VoiceControlSystem {
 
     returnResults() {
         return this.readyDict
+    }
+
+    setReturnCallback(callback) {
+        this.callbackFunc = callback
     }
 }
 
