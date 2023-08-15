@@ -13,6 +13,20 @@ import AnimatedView from '../components/AnimatedView';
 let Database = require('../database/ProfileDatabase.jsx');
 let database = new Database();
 
+let voiceCommands = require('../commandSystem/voiceCommands.jsx');
+
+async function testVoiceCMDS() {
+    let VoiceCommands = new voiceCommands()
+    VoiceCommands.parseString = "address 60 Mimosa Dr state Mississippi country United states name Joseph Dunn"
+    VoiceCommands.commandKeys = ['address', 'country', 'name', 'state']
+    await VoiceCommands.breakDown()
+    let values = VoiceCommands.returnResults()
+    console.log(values.address)
+    console.log(values.country)
+    console.log(values.name)
+    console.log(values.state)
+}
+
 function HomeScreen({navigation, route}) {
   const {message} = route.params || '';
   const [visible, setVisible] = useState(true);
