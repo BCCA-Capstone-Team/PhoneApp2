@@ -10,6 +10,17 @@ import Tts from 'react-native-tts';
 import Voice from '@react-native-voice/voice';
 import SpeechButton from '../components/SpeechButton';
 
+let voiceCommands = require('../commandSystem/voiceCommands.jsx');
+let VoiceCommands = new voiceCommands();
+VoiceCommands.commandKeys = ['address', 'country', 'name', 'state'];
+VoiceCommands.setReturnCallback(values => {
+  console.log('Complete');
+  console.log(values.address);
+  console.log(values.country);
+  console.log(values.name);
+  console.log(values.state);
+});
+
 // Checks to see if the month and day of the date strings are 2 digits
 // If they aren't then it adds a zero to the one missing it.
 function monthAndDayFormatter(dateString) {
@@ -61,20 +72,27 @@ const Schedule = ({navigation}) => {
   // const [allAppointmentData, setAllAppointmentData] = useState({});
 
   const [isListening, setIsListening] = useState(false);
+  const [doneListening, setDoneListening] = useState(true);
   const voiceInputRef = useRef('');
 
   const toggleListening = () => {
     if (isListening) {
       Voice.stop();
+      // setDoneListening(true);
     } else {
       Voice.start('en-US');
+      // setDoneListening(false);
     }
     setIsListening(!isListening);
   };
 
   useEffect(() => {
-    Voice.onSpeechStart = onSpeechStart;
+    Voice.onSpeechStart = e => {
+      // setDoneListening(false);
+      console.log(e);
+    };
     Voice.onSpeechEnd = onSpeechEnd;
+    // Voice.onSpeechRecognized = onSpeechRecognized;
     Voice.onSpeechError = onSpeechError;
     Voice.onSpeechResults = onSpeechResults;
 
@@ -193,7 +211,9 @@ const Schedule = ({navigation}) => {
   const onSpeechError = e => {};
 
   const onSpeechEnd = e => {
-    // console.log('onSpeechEnd:', e);
+    // setDoneListening(true);
+    // setIsListening(false);
+    console.log(result);
     // console.log('Final voice input:', voiceInputRef.current);
     let a = 'a'; // Did this for testing.
     // const spokenWords = voiceInputRef.current.split(' ');
@@ -229,118 +249,147 @@ const Schedule = ({navigation}) => {
     //   Tts.speak('Sorry I did not understand.');
     // }
   };
+  // let result;
+  // const [result, setResult] = useState('');
+  const onSpeechResults = e => {
+    // setResult('');
+    let appointmentData = {};
+    const spokenWords = e.value[0].split(' ');
+    const command = spokenWords.join(' ').toLowerCase();
+    // setResult(e.value[0]);
+    result = e.value[0];
+  };
+
+  // ORIGINAL ONSPEECHRESULTS //
 
   // Is now accepting speech results. Armando and I need to speak on the phone
   // in the morning to discuss how we want to do this. If we want to handle all
   // of the speech logic in schedule we will need to figure out how to have more
   // than one flow of Voice commands.
 
-  const onSpeechResults = e => {
-    // console.log(e.value[0]);
-    const spokenWords = e.value[0].split(' ');
-    console.log(spokenWords);
-    const command = spokenWords.join(' ');
-    console.log(command);
-    if (command === 'add') {
-      const date = extractDate(spokenWords);
-      const otherInfo = extractOtherInfo(spokenWords);
-
-      navigation.navigate('AppointmentFormScreen', {
-        date: date,
-        location: location,
-        time: time,
-      });
-    } else if (command === 'delete') {
-      deleteAppointmentByVoice(spokenWords);
-    } else if (command === 'edit') {
-      editAppointmentByVoice(spokenWords);
-    } else if (command === 'read') {
-      navigation.navigate('AppointmentDetails', {readAppointments: true});
-    } else if (command == 'today') {
-      // Logan, 'today' if statement is currently for testing
-      // while I'm learning to take more than single word input.
-      readDaysAppointments();
-    } else {
-      let b = 'b';
-      // Tts.speak('Sorry I did not understand.');
-      // Logan, I did this so I wouldn't have to keep hearing it during testing.
-    }
+  const onSpeechRecognized = e => {
+    console.log(e.isFinal);
+    // Object.keys(e).forEach(each => console.log(each));
+    let a = 'a';
   };
+  // // const [commandTier, setCommandTier] = useState('base');
+  // let commandTier = 'base';
+  // const [currentField, setCurrentField] = useState('');
+  // const onSpeechResults = async e => {
+  //   const spokenWords = e.value[0].split(' ');
+  //   const command = spokenWords.join(' ').toLowerCase();
+  //   console.log(command);
+  //   console.log(commandTier);
+  //   if (commandTier === 'base') {
+  //     if (command.includes('add')) {
+  //       commandTier = 'add';
+  //       // setCommandTier('add');
+  //       setCurrentField('eventTitle');
+  //       // const date = extractDate(spokenWords);
+  //       // const otherInfo = await extractOtherInfo(spokenWords);
+  //       // console.log(date);
 
-  // Logan, Testing some stuff to try to figure out tts and speech.
-  // Altered this function to potentially take in a date
-  // To make it applicable to today or a given day.
-  const readDaysAppointments = async potentiallyADate => {
-    const dateToBeRead = potentiallyADate
-      ? potentiallyADate
-      : timeToString(new Date());
-    const appointments = await loadAllAppointmentData();
-    if (appointments[dateToBeRead]) {
-      appointments[dateToBeRead].forEach(each => {
-        Tts.speak(each.eventTitle);
-      });
-    } else {
-      Tts.speak('You have no appointments for today!');
-    }
-    // offerFullAppointmentInfo(appointments[dateToBeRead]);
-  };
+  //       // navigation.navigate('AppointmentFormScreen', {
+  //       //   date: date,
+  //       //   // location: location,
+  //       //   // time: time,
+  //       // });
+  //     } else if (command === 'delete') {
+  //       deleteAppointmentByVoice(spokenWords);
+  //     } else if (command === 'edit') {
+  //       editAppointmentByVoice(spokenWords);
+  //     } else if (command === 'read') {
+  //       navigation.navigate('AppointmentDetails', {readAppointments: true});
+  //     } else if (command === 'today') {
+  //       // Logan, 'today' if statement is currently for testing
+  //       // while I'm learning to take more than single word input.
+  //       readDaysAppointments();
+  //     } else {
+  //       let b = 'b';
+  //       // Tts.speak('Sorry I did not understand.');
+  //       // Logan, I did this so I wouldn't have to keep hearing it during testing.
+  //     }
+  //   } else if (commandTier === 'add') {
+  //   }
+  // };
 
-  const editAppointmentByVoice = async () => {
-    Tts.speak('Please say the title of the appointment you want to edit.');
+  // // Logan, Testing some stuff to try to figure out tts and speech.
+  // // Altered this function to potentially take in a date
+  // // To make it applicable to today or a given day.
+  // const readDaysAppointments = async potentiallyADate => {
+  //   console.log('here');
+  //   const dateToBeRead = potentiallyADate
+  //     ? potentiallyADate
+  //     : timeToString(new Date());
+  //   const appointments = await loadAllAppointmentData();
+  //   if (appointments[dateToBeRead]) {
+  //     appointments[dateToBeRead].forEach(each => {
+  //       Tts.speak(each.eventTitle);
+  //     });
+  //   } else {
+  //     Tts.speak('You have no appointments for today!');
+  //   }
+  //   // offerFullAppointmentInfo(appointments[dateToBeRead]);
+  // };
 
-    // Listener starts for the appointment title to edit
-    Voice.onSpeechResults = async e => {
-      const lastResult = e.value[e.value.length - 1];
-      const appointmentTitle = lastResult.trim();
+  // ORIGINAL ONSPEECHRESULTS //
 
-      // Fetch appointment data and find the correct title
-      const appointments = await loadAllAppointmentData();
-      const appointmentDate = timeToString(new Date());
+  // const editAppointmentByVoice = async () => {
+  //   Tts.speak('Please say the title of the appointment you want to edit.');
 
-      if (appointments[appointmentDate]) {
-        const appointmentToEdit = appointments[appointmentDate].find(
-          appointment =>
-            appointment.eventTitle.toLowerCase() ===
-            appointmentTitle.toLowerCase(),
-        );
-        if (appointmentToEdit) {
-          // Stops listening for title
-          Voice.onSpeechResults = undefined;
+  //   // Listener starts for the appointment title to edit
+  //   Voice.onSpeechResults = async e => {
+  //     const lastResult = e.value[e.value.length - 1];
+  //     const appointmentTitle = lastResult.trim();
 
-          Tts.speak('Please state the changes you want to make.');
+  //     // Fetch appointment data and find the correct title
+  //     const appointments = await loadAllAppointmentData();
+  //     const appointmentDate = timeToString(new Date());
 
-          // Listener starts for the changes to be made
-          Voice.onSpeechResults = async e => {
-            const changes = e.value.join(' ');
+  //     if (appointments[appointmentDate]) {
+  //       const appointmentToEdit = appointments[appointmentDate].find(
+  //         appointment =>
+  //           appointment.eventTitle.toLowerCase() ===
+  //           appointmentTitle.toLowerCase(),
+  //       );
+  //       if (appointmentToEdit) {
+  //         // Stops listening for title
+  //         Voice.onSpeechResults = undefined;
 
-            // Process and apply the changes here
-            const remindersPattern = /reminders:\s*(.*)/i;
-            const timePattern = /time:\s*(.*)/i;
+  //         Tts.speak('Please state the changes you want to make.');
 
-            const remindersMatch = changes.match(remindersPattern);
-            const timeMatch = changes.match(timePattern);
+  //         // Listener starts for the changes to be made
+  //         Voice.onSpeechResults = async e => {
+  //           const changes = e.value.join(' ');
 
-            if (remindersMatch) {
-              const newReminders = remindersMatch[1];
-              // Handle new reminders update here
-            }
+  //           // Process and apply the changes here
+  //           const remindersPattern = /reminders:\s*(.*)/i;
+  //           const timePattern = /time:\s*(.*)/i;
 
-            if (timeMatch) {
-              const newTime = timeMatch[1];
-              // Handle new time update here
-            }
+  //           const remindersMatch = changes.match(remindersPattern);
+  //           const timeMatch = changes.match(timePattern);
 
-            // End the voice interaction
-            Voice.onSpeechResults = undefined;
-            Tts.speak('Appointment updated successfully.');
-          };
-        } else {
-          // No appointment found with the given title
-          Tts.speak('No appointment found with the provided title.');
-        }
-      }
-    };
-  };
+  //           if (remindersMatch) {
+  //             const newReminders = remindersMatch[1];
+  //             // Handle new reminders update here
+  //           }
+
+  //           if (timeMatch) {
+  //             const newTime = timeMatch[1];
+  //             // Handle new time update here
+  //           }
+
+  //           // End the voice interaction
+  //           Voice.onSpeechResults = undefined;
+  //           Tts.speak('Appointment updated successfully.');
+  //         };
+  //       } else {
+  //         // No appointment found with the given title
+  //         Tts.speak('No appointment found with the provided title.');
+  //       }
+  //     }
+  //   };
+  // };
 
   //HAS NOT BEEN TESTED YET
   const deleteAppointmentByVoice = async spokenWords => {
