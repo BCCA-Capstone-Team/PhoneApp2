@@ -235,95 +235,70 @@ const Schedule = ({navigation}) => {
       'tidal',
       'date',
       'zip',
+      'add',
+      'edit',
+      'delete',
     ];
     VoiceCommands.parseString = result;
     await VoiceCommands.breakDown();
     let fullResult = VoiceCommands.returnResults();
 
-    let fullTitle = '';
-    if (fullResult.title) {
-      fullTitle = fullResult.title;
-    } else if (fullResult.tidal) {
-      fullTitle = fullResult.tidal;
-    }
-
-    if (
-      fullTitle != '' &&
-      fullResult.address &&
-      fullResult.city &&
-      fullResult.state &&
-      fullResult.date &&
-      fullResult.zip
-    ) {
-      let currentDate = fullResult.date;
-      let dateTable = currentDate.split(' ');
-      for (let i = 0; i < dateTable.length; i++) {
-        dateTable[i] = dateTable[i].replaceAll(',', '');
+    //==========| ADD |==========\\
+    if (fullResult.add) {
+      //===| CONVERT FOR ACCENT |===\\
+      let fullTitle = '';
+      if (fullResult.title) {
+        fullTitle = fullResult.title;
+      } else if (fullResult.tidal) {
+        fullTitle = fullResult.tidal;
       }
-      let newDate = new Date(
-        dateTable[2],
-        allMonths[dateTable[0]].value - 1,
-        dateTable[1],
-      );
 
-      await database.appTable.add(
-        fullTitle,
-        JSON.stringify({
-          address: fullResult.address,
-          city: fullResult.city,
-          state: fullResult.state,
-          zipCode: fullResult.zip,
-        }),
-        JSON.stringify([]),
-        newDate.toString(),
-        newDate.toString(),
-      );
-      console.log('Created Event');
-    } else {
-      console.error('Missing Data to add event');
-      console.error(VoiceCommands.parseString);
-      console.error(`Title: ${fullTitle}`);
-      console.error(`Address: ${fullResult.address}`);
-      console.error(`City: ${fullResult.city}`);
-      console.error(`State: ${fullResult.state}`);
-      console.error(`Date: ${fullResult.date}`);
-      console.error(`Zip: ${fullResult.zip}`);
+      //===| CHECK FOR VALUES |===\\
+      if (
+        fullTitle != '' &&
+        fullResult.address &&
+        fullResult.city &&
+        fullResult.state &&
+        fullResult.date &&
+        fullResult.zip
+      ) {
+        let currentDate = fullResult.date;
+        let dateTable = currentDate.split(' ');
+        for (let i = 0; i < dateTable.length; i++) {
+          dateTable[i] = dateTable[i].replaceAll(',', '');
+        }
+        let newDate = new Date(
+          dateTable[2],
+          allMonths[dateTable[0]].value - 1,
+          dateTable[1],
+        );
+
+        await database.appTable.add(
+          fullTitle,
+          JSON.stringify({
+            address: fullResult.address,
+            city: fullResult.city,
+            state: fullResult.state,
+            zipCode: fullResult.zip,
+          }),
+          JSON.stringify([]),
+          newDate.toString(),
+          newDate.toString(),
+        );
+        console.log('Created Event');
+      } else {
+        console.error('Missing Data to add event');
+        console.error(VoiceCommands.parseString);
+        console.error(`Title: ${fullTitle}`);
+        console.error(`Address: ${fullResult.address}`);
+        console.error(`City: ${fullResult.city}`);
+        console.error(`State: ${fullResult.state}`);
+        console.error(`Date: ${fullResult.date}`);
+        console.error(`Zip: ${fullResult.zip}`);
+      }
+    } else if (fullResult.edit) {
+    } else if (fullResult.delete) {
     }
-
-    // console.log('Final voice input:', voiceInputRef.current);
-    let a = 'a'; // Did this for testing.
-    // const spokenWords = voiceInputRef.current.split(' ');
-    // // console.log(`spokenWords ${spokenWords}`);
-    // const command = spokenWords[0].toLowerCase();
-
-    // if (command === 'add') {
-    //   const date = extractDate(spokenWords);
-    //   const otherInfo = extractOtherInfo(spokenWords);
-
-    //   navigation.navigate('AppointmentFormScreen', {
-    //     date: date,
-    //     location: location,
-    //     time: time,
-    //   });
-    // } else if (command === 'delete') {
-    //   deleteAppointmentByVoice(spokenWords);
-    // } else if (command === 'edit') {
-    //   editAppointmentByVoice(spokenWords);
-    // } else if (command === 'read') {
-    //   navigation.navigate('AppointmentDetails', {readAppointments: true});
-    // } else if (command === 'today') {
-    //   // Logan, 'today' if statement is currently for testing
-    //   // while I'm learning to take more than single word input.
-    //   readTodaysAppointments;
-    // } else if (
-    //   command != 'delete' ||
-    //   command != 'edit' ||
-    //   command != 'read' ||
-    //   command != 'today' ||
-    //   command != 'add'
-    // ) {
-    //   Tts.speak('Sorry I did not understand.');
-    // }
   };
   // let result;
   // const [result, setResult] = useState('');
