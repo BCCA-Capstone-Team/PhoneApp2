@@ -12,7 +12,7 @@ const ProfileDetailScreen = ({navigation, route}) => {
   }
 
   const handleEditProfile = () => {
-    navigation.navigate('ProfileScreen', {profileData});
+    navigation.navigate('Profile Creation', {profileData});
   };
 
   return (

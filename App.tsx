@@ -70,12 +70,12 @@ function App(): JSX.Element {
   return (
     <NavigationContainer ref={navigationRef}>
       <Stack.Navigator>
-        <Stack.Screen name="HomeScreen" component={HomeScreen} />
-        <Stack.Screen name="CalendarScreen" component={CalendarScreen} />
-        <Stack.Screen name="RemindersScreen" component={RemindersScreen} />
-        <Stack.Screen name="ProfileScreen" component={ProfileScreen} />
+        <Stack.Screen name="Home" component={HomeScreen} />
+        <Stack.Screen name="Calendar" component={CalendarScreen} />
+        <Stack.Screen name="Leaving Home Reminders" component={RemindersScreen} />
+        <Stack.Screen name="Profile Creation" component={ProfileScreen} />
         <Stack.Screen
-          name="ProfileDetailScreen"
+          name="Profile"
           component={ProfileDetailScreen}
         />
         <Stack.Screen

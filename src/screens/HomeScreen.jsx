@@ -233,19 +233,19 @@ function HomeScreen({navigation, route}) {
       {/* Calendar Button */}
       <TouchableOpacity
         style={styles.button}
-        onPress={() => handleButtonPress('CalendarScreen')}>
+        onPress={() => handleButtonPress('Calendar')}>
         <Text style={styles.buttonText}>Calendar</Text>
       </TouchableOpacity>
       {/* Reminders Button */}
       <TouchableOpacity
         style={styles.button}
-        onPress={() => handleButtonPress('RemindersScreen')}>
+        onPress={() => handleButtonPress('Leaving Home Reminders')}>
         <Text style={styles.buttonText}>Reminders</Text>
       </TouchableOpacity>
       {/* Profile Button */}
       <TouchableOpacity
         style={styles.button}
-        onPress={() => handleButtonPress('ProfileDetailScreen')}>
+        onPress={() => handleButtonPress('Profile')}>
         <Text style={styles.buttonText}>Profile</Text>
       </TouchableOpacity>
       {/* Test Button
