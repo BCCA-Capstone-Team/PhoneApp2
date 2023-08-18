@@ -11,15 +11,22 @@ import Voice from '@react-native-voice/voice';
 import SpeechButton from '../components/SpeechButton';
 
 let voiceCommands = require('../commandSystem/voiceCommands.jsx');
-let VoiceCommands = new voiceCommands();
-VoiceCommands.commandKeys = ['address', 'country', 'name', 'state'];
-VoiceCommands.setReturnCallback(values => {
-  console.log('Complete');
-  console.log(values.address);
-  console.log(values.country);
-  console.log(values.name);
-  console.log(values.state);
-});
+let Database = require('../database/CalendarDatabase.jsx');
+let database = new Database('appointmentDatabase');
+let allMonths = {
+  January: {value: 1},
+  February: {value: 2},
+  March: {value: 3},
+  April: {value: 4},
+  May: {value: 5},
+  June: {value: 6},
+  July: {value: 7},
+  August: {value: 8},
+  September: {value: 9},
+  October: {value: 10},
+  November: {value: 11},
+  December: {value: 12},
+};
 
 // Checks to see if the month and day of the date strings are 2 digits
 // If they aren't then it adds a zero to the one missing it.
@@ -85,12 +92,20 @@ const Schedule = ({navigation}) => {
     }
     setIsListening(!isListening);
   };
+  ///armando added the command to be able to stop listening via voice special command is 'finish'
+  const handleVoiceResults = e => {
+    const recognizedText = e.value[0].toLowerCase();
+
+    if (recognizedText.includes('finish')) {
+      toggleListening(); // Stop listening when 'finish' is recognized
+    }
+  };
 
   useEffect(() => {
-    Voice.onSpeechStart = e => {
-      // setDoneListening(false);
-      console.log(e);
-    };
+    // Voice.onSpeechStart = e => {
+    //   // setDoneListening(false);
+    //   // console.log(e);
+    // };
     Voice.onSpeechEnd = onSpeechEnd;
     // Voice.onSpeechRecognized = onSpeechRecognized;
     Voice.onSpeechError = onSpeechError;
@@ -210,10 +225,71 @@ const Schedule = ({navigation}) => {
   //voice commands and TTS//
   const onSpeechError = e => {};
 
-  const onSpeechEnd = e => {
-    // setDoneListening(true);
-    // setIsListening(false);
-    console.log(result);
+  const onSpeechEnd = async e => {
+    let VoiceCommands = new voiceCommands();
+    VoiceCommands.commandKeys = [
+      'address',
+      'city',
+      'state',
+      'title',
+      'tidal',
+      'date',
+      'zip',
+    ];
+    VoiceCommands.parseString = result;
+    await VoiceCommands.breakDown();
+    let fullResult = VoiceCommands.returnResults();
+
+    let fullTitle = '';
+    if (fullResult.title) {
+      fullTitle = fullResult.title;
+    } else if (fullResult.tidal) {
+      fullTitle = fullResult.tidal;
+    }
+
+    if (
+      fullTitle != '' &&
+      fullResult.address &&
+      fullResult.city &&
+      fullResult.state &&
+      fullResult.date &&
+      fullResult.zip
+    ) {
+      let currentDate = fullResult.date;
+      let dateTable = currentDate.split(' ');
+      for (let i = 0; i < dateTable.length; i++) {
+        dateTable[i] = dateTable[i].replaceAll(',', '');
+      }
+      let newDate = new Date(
+        dateTable[2],
+        allMonths[dateTable[0]].value - 1,
+        dateTable[1],
+      );
+
+      await database.appTable.add(
+        fullTitle,
+        JSON.stringify({
+          address: fullResult.address,
+          city: fullResult.city,
+          state: fullResult.state,
+          zipCode: fullResult.zip,
+        }),
+        JSON.stringify([]),
+        newDate.toString(),
+        newDate.toString(),
+      );
+      console.log('Created Event');
+    } else {
+      console.error('Missing Data to add event');
+      console.error(VoiceCommands.parseString);
+      console.error(`Title: ${fullTitle}`);
+      console.error(`Address: ${fullResult.address}`);
+      console.error(`City: ${fullResult.city}`);
+      console.error(`State: ${fullResult.state}`);
+      console.error(`Date: ${fullResult.date}`);
+      console.error(`Zip: ${fullResult.zip}`);
+    }
+
     // console.log('Final voice input:', voiceInputRef.current);
     let a = 'a'; // Did this for testing.
     // const spokenWords = voiceInputRef.current.split(' ');
@@ -258,6 +334,7 @@ const Schedule = ({navigation}) => {
     const command = spokenWords.join(' ').toLowerCase();
     // setResult(e.value[0]);
     result = e.value[0];
+    handleVoiceResults(e); /////should trigger the added function to make the button stop listening..armando
   };
 
   // ORIGINAL ONSPEECHRESULTS //
@@ -272,46 +349,6 @@ const Schedule = ({navigation}) => {
     // Object.keys(e).forEach(each => console.log(each));
     let a = 'a';
   };
-  // // const [commandTier, setCommandTier] = useState('base');
-  // let commandTier = 'base';
-  // const [currentField, setCurrentField] = useState('');
-  // const onSpeechResults = async e => {
-  //   const spokenWords = e.value[0].split(' ');
-  //   const command = spokenWords.join(' ').toLowerCase();
-  //   console.log(command);
-  //   console.log(commandTier);
-  //   if (commandTier === 'base') {
-  //     if (command.includes('add')) {
-  //       commandTier = 'add';
-  //       // setCommandTier('add');
-  //       setCurrentField('eventTitle');
-  //       // const date = extractDate(spokenWords);
-  //       // const otherInfo = await extractOtherInfo(spokenWords);
-  //       // console.log(date);
-
-  //       // navigation.navigate('AppointmentFormScreen', {
-  //       //   date: date,
-  //       //   // location: location,
-  //       //   // time: time,
-  //       // });
-  //     } else if (command === 'delete') {
-  //       deleteAppointmentByVoice(spokenWords);
-  //     } else if (command === 'edit') {
-  //       editAppointmentByVoice(spokenWords);
-  //     } else if (command === 'read') {
-  //       navigation.navigate('AppointmentDetails', {readAppointments: true});
-  //     } else if (command === 'today') {
-  //       // Logan, 'today' if statement is currently for testing
-  //       // while I'm learning to take more than single word input.
-  //       readDaysAppointments();
-  //     } else {
-  //       let b = 'b';
-  //       // Tts.speak('Sorry I did not understand.');
-  //       // Logan, I did this so I wouldn't have to keep hearing it during testing.
-  //     }
-  //   } else if (commandTier === 'add') {
-  //   }
-  // };
 
   // // Logan, Testing some stuff to try to figure out tts and speech.
   // // Altered this function to potentially take in a date

@@ -99,6 +99,7 @@ const AppointmentForm = ({navigation, route}) => {
       );
       appointmentTable.reload();
     } else {
+      console.log(formData.reminder);
       await appointmentTable.add(
         formData.eventTitle,
         formData.location,
