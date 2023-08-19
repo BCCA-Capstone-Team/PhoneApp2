@@ -37,7 +37,6 @@ function ProfileScreen({navigation, route}) {
     fetchProfileData();
   }, []);
 
-
   useLayoutEffect(() => {
     navigation.setOptions({
       headerLeft: profileData
@@ -55,7 +54,6 @@ function ProfileScreen({navigation, route}) {
         profileData={profileData}
         onProfileCreated={handleProfileCreated}
       />
-
     </View>
   );
 }
