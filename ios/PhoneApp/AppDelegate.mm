@@ -4,7 +4,6 @@
 
 #import <RadarSDK/RadarSDK.h>
 
-#import "RNSplashScreen.h"
 
 @implementation AppDelegate
 
