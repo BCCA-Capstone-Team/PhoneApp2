@@ -1,42 +1,53 @@
-import React, {useEffect, useState, useCallback, useMemo, useRef} from 'react';
+import React, {useEffect, useState, useRef, useCallback} from 'react';
 import {Text, View, TouchableOpacity, Animated} from 'react-native';
 import {check, PERMISSIONS, request} from 'react-native-permissions';
 import Tts from 'react-native-tts';
 import Voice from '@react-native-voice/voice';
 import styles from '../styles';
-import TtsButtonComponent from '../components/TtsButtonComponent';
 import {useFocusEffect} from '@react-navigation/native';
 import SpeechButton from '../components/SpeechButton';
-import Radar from 'react-native-radar';
 import AnimatedView from '../components/AnimatedView';
+import MinimalAnimatedView from '../components/MinimalAnimatedView';
 
 let Database = require('../database/ProfileDatabase.jsx');
 let database = new Database();
 
-let voiceCommands = require('../commandSystem/voiceCommands.jsx');
-
-// let dialogClass = require('../commandSystem/dialogCommands.jsx');
-// let dialogSystem = new dialogClass();
-// dialogSystem.readPromptText('Would you like to edit, add, read, or delete');
-// dialogSystem.registerCommand(
-//   'edit',
-//   'Let me know what you would like to edit',
-//   ['title', 'value'],
-//   returnValues => {
-//     console.log('Return values');
-//     console.log(returnValues.title);
-//   },
-// );
-
 function HomeScreen({navigation, route}) {
+  const [refreshKey, setRefreshKey] = useState(0);
+  console.log('HomeScreen rendering');
   const {message} = route.params || '';
-  const [visible, setVisible] = useState(true);
+  //const [visible, setVisible] = useState(true);
   const [profileData, setProfileData] = useState(null);
 
+  //---------- ANIMATION LOGIC -----------//
+
   const fadeAnim = useRef(new Animated.Value(1)).current;
-  // Use useFocusEffect to run animation logic when screen gains focus
+
+  // Add a listener to the Animated value to track its changes
+  fadeAnim.addListener(value => {
+    console.log('fadeAnim value:', value);
+  });
+
+  // useEffect(() => {
+  //   triggerRefresh;
+  //   const fadeOut = Animated.timing(fadeAnim, {
+  //     toValue: 0,
+  //     duration: 6000,
+  //     useNativeDriver: true,
+  //   });
+
+  //   fadeOut.start();
+  // }, [fadeAnim, message, refreshKey]);
+
+  // const triggerRefresh = () => {
+  //   setRefreshKey(prevKey => prevKey + 1);
+  // };
+
+  //---------------------------
+  //Use useFocusEffect to run animation logic when screen gains focus
   useFocusEffect(
     useCallback(() => {
+      triggerRefresh();
       const fadeOutAnimation = () => {
         console.log(message);
         const fadeOut = Animated.timing(fadeAnim, {
@@ -45,10 +56,7 @@ function HomeScreen({navigation, route}) {
           useNativeDriver: true,
         });
 
-        console.log(message, 'inside HomeScreen');
-        console.log('Before animation start');
         fadeOut.start();
-        console.log('Animation completed');
       };
 
       fadeOutAnimation(); // Trigger the animation logic
@@ -58,18 +66,26 @@ function HomeScreen({navigation, route}) {
     }, [fadeAnim, message]),
   );
 
+  const triggerRefresh = () => {
+    setRefreshKey(prevKey => prevKey + 1);
+  };
+  //------------------------
   // useEffect(() => {
   //   showAlertAndHide();
   // }, []);
+  //--------------------------------------//
 
   useEffect(() => {
     // Fetch profile data asynchronously and update state
     const fetchProfileData = async () => {
       const data = await database.getProfile();
       setProfileData(data);
+      console.log(data);
+      await readInstructions(data.firstName);
     };
     console.log('fetch profile triggered');
     fetchProfileData();
+    // await readInstructions(data.firstName);
   }, []);
 
   const [isListening, setIsListening] = useState(false);
@@ -109,7 +125,6 @@ function HomeScreen({navigation, route}) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Alyx trying some thing
   useFocusEffect(
     React.useCallback(() => {
       const unsubscribe = () => {
@@ -133,13 +148,13 @@ function HomeScreen({navigation, route}) {
     const command = spokenWords[0].toLowerCase();
     switch (command) {
       case 'calendar':
-        handleButtonPress('CalendarScreen');
+        handleButtonPress('Calendar');
         break;
       case 'reminders':
-        handleButtonPress('RemindersScreen');
+        handleButtonPress('Leaving Home Reminders');
         break;
       case 'profile':
-        handleButtonPress('ProfileDetailScreen');
+        handleButtonPress('Profile');
         break;
       default:
         Tts.speak('Sorry, I did not understand.'); //message for unknown commands
@@ -190,9 +205,9 @@ function HomeScreen({navigation, route}) {
     }
   };
 
-  const readInstructions = () => {
+  const readInstructions = name => {
     Tts.speak(
-      'Hello user, press on the listen button to state where you would like to go: Calendar, Profile, or Reminders.',
+      `Hello ${name}, press on the J button to state where you would like to go: Calendar, Profile, or Reminders.`,
     );
   };
 
@@ -207,37 +222,38 @@ function HomeScreen({navigation, route}) {
   console.log(message);
   return (
     <View style={styles.homeContainer}>
-      <AnimatedView message={message} />
-      {/* Calendar Button */}
-      <TouchableOpacity
-        style={styles.button}
-        onPress={() => handleButtonPress('Calendar')}>
-        <Text style={styles.buttonText}>Calendar</Text>
-      </TouchableOpacity>
-      {/* Reminders Button */}
-      <TouchableOpacity
-        style={styles.button}
-        onPress={() => handleButtonPress('Leaving Home Reminders')}>
-        <Text style={styles.buttonText}>Reminders</Text>
-      </TouchableOpacity>
-      {/* Profile Button */}
-      <TouchableOpacity
-        style={styles.button}
-        onPress={() => handleButtonPress('Profile')}>
-        <Text style={styles.buttonText}>Profile</Text>
-      </TouchableOpacity>
-      {/* Test Button
-      <TouchableOpacity
-        style={styles.button}
-        onPress={() => handleButtonPress('TestScreen')}>
-        <Text style={styles.buttonText}>Test</Text>
-      </TouchableOpacity> */}
-      {/* Speak Button */}
-      <SpeechButton isListening={isListening} onPress={toggleListening} />
-      {/*TTS Button */}
-      <TtsButtonComponent text="Read Instructions" onPress={readInstructions} />
+      {/* <AnimatedView message={message} /> */}
+      <Text style={styles.welcomeText}>
+        Hello {profileData ? profileData.firstName : 'Loading...'}!
+      </Text>
+      {/* <AnimatedView message={message} /> */}
 
-      {/* <MicrophoneComponent /> */}
+      <MinimalAnimatedView message={message} />
+
+      {/* Calendar Button */}
+      <View style={styles.childHomeContainer}>
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => handleButtonPress('Calendar')}>
+          <Text style={styles.buttonText}>Calendar</Text>
+        </TouchableOpacity>
+        {/* Reminders Button */}
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => handleButtonPress('Leaving Home Reminders')}>
+          <Text style={styles.buttonText}>Reminders</Text>
+        </TouchableOpacity>
+        {/* Profile Button */}
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => handleButtonPress('Profile')}>
+          <Text style={styles.buttonText}>Profile</Text>
+        </TouchableOpacity>
+      </View>
+      {/* Speak Button */}
+      <View style={styles.speechButtonContainer}>
+        <SpeechButton isListening={isListening} onPress={toggleListening} />
+      </View>
     </View>
   );
 }

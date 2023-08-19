@@ -4,6 +4,8 @@
 
 #import <RadarSDK/RadarSDK.h>
 
+#import "RNSplashScreen.h"
+
 @implementation AppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
@@ -11,8 +13,10 @@
   self.moduleName = @"PhoneApp";
   // You can add your custom initial props in the dictionary below.
   // They will be passed down to the ViewController used by React Native.
+//  [RNSplashScreen show];
   [Radar initializeWithPublishableKey:@"prj_test_pk_2aa353aba74916c7f8c717e47c142613c66c6c31"];
   self.initialProps = @{};
+  
 
   return [super application:application didFinishLaunchingWithOptions:launchOptions];
 }

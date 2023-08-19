@@ -74,34 +74,13 @@ const timeToString = time => {
   return date.toISOString().split('T')[0];
 };
 
-const Schedule = ({navigation, route}) => {
+const Schedule = ({navigation}) => {
   const [items, setItems] = useState({});
   // const [allAppointmentData, setAllAppointmentData] = useState({});
 
   const [isListening, setIsListening] = useState(false);
   const [doneListening, setDoneListening] = useState(true);
   const voiceInputRef = useRef('');
-
-  const rerenderData = async () => {
-    if (route) {
-      const routingInfo = route.params;
-      loadItems();
-      // if (routingInfo.passReload) {
-
-      // }
-    }
-  };
-
-  // useEffect(() => {
-  //   if (items === null) {
-  //     loadItems();
-  //   }
-  // }, [items]);
-
-  // const reloadSchedule = () => {
-  //   setItems({});
-  // };
-  // reloadSchedule();
 
   const toggleListening = () => {
     if (isListening) {
@@ -166,7 +145,6 @@ const Schedule = ({navigation, route}) => {
 
   const loadItems = async day => {
     let allAppointmentData = await loadAllAppointmentData();
-    // setAllAppointmentData(await loadAllAppointmentData());
     // console.log(allAppointmentData);
     setTimeout(() => {
       const newItems = {};
@@ -200,26 +178,38 @@ const Schedule = ({navigation, route}) => {
 
   const handleItemPress = item => {
     console.log(item);
-    navigation.navigate('AppointmentDetails', item);
+    navigation.navigate('Appointment', item);
   };
 
+  // ============= Format Time for Styling Purposes ================= //
+
+  function formatTime(dateObj) {
+    let hours = dateObj.getHours();
+    const minutes = String(dateObj.getMinutes()).padStart(2, '0');
+    const ampm = hours >= 12 ? 'PM' : 'AM';
+  
+    if (hours > 12) {
+        hours -= 12;
+    } else if (hours === 0) {
+        hours = 12; // for midnight
+    }
+  
+    return `${hours}:${minutes} ${ampm}`;
+  }
+
   const renderItem = item => {
+    const dateTimeStr = item.time;
+
+    const dateObj = new Date(dateTimeStr);
+    const time = formatTime(dateObj); 
     return (
       <TouchableOpacity
         // eslint-disable-next-line react-native/no-inline-styles
-        style={{
-          flex: 1,
-          alignItems: 'center',
-          justifyContent: 'center',
-          borderStyle: 'solid',
-          borderBlockColor: 'red',
-          marginBottom: 5,
-          marginTop: 5,
-        }}
+        style={styles.eventButton}
         onPress={() => {
           handleItemPress(item);
         }}>
-        <Text>{item.eventTitle}</Text>
+        <Text style={styles.buttonText}>{item.eventTitle} at {time}</Text>
       </TouchableOpacity>
     );
   };
@@ -229,18 +219,18 @@ const Schedule = ({navigation, route}) => {
   // ============== Handle renderEmptyDay and it's onPress ============== //
 
   const handleEmptyDayPress = day => {
-    navigation.navigate('AppointmentDetails', day);
+    navigation.navigate('Appointment', day);
   };
 
   const renderEmptyDay = day => {
     return (
       <TouchableOpacity
-        style={{margin: 5}}
+        style={styles.emptyDayButton}
         onPress={() => {
           // console.log(timeToString(day));
           handleEmptyDayPress(timeToString(day));
         }}>
-        <Text>Empty Day</Text>
+        {/* <Text style={styles.appointmentText}>Empty Day</Text> */}
       </TouchableOpacity>
     );
   };
@@ -250,65 +240,58 @@ const Schedule = ({navigation, route}) => {
   const onSpeechEnd = async e => {
     let VoiceCommands = new voiceCommands();
     VoiceCommands.commandKeys = [
-      'address',
-      'city',
-      'state',
-      'title',
-      'tidal',
-      'date',
-      'zip',
-      'add',
-      'edit',
-      'delete',
+        'address',
+        'city',
+        'state',
+        'title',
+        'tidal',
+        'date',
+        'zip',
     ];
     VoiceCommands.parseString = result;
     await VoiceCommands.breakDown();
     let fullResult = VoiceCommands.returnResults();
 
-    //==========| ADD |==========\\
-    if (fullResult.add[0]) {
-      //===| CONVERT FOR ACCENT |===\\
-      let fullTitle = '';
-      if (fullResult.title[0]) {
+    let fullTitle = '';
+    if (fullResult.title[0]) {
         fullTitle = fullResult.title[0];
-      } else if (fullResult.tidal[0]) {
+    } else if (fullResult.tidal[0]) {
         fullTitle = fullResult.tidal[0];
-      }
+    }
 
-      //===| CHECK FOR VALUES |===\\
-      if (
-        fullTitle != '' &&
+    if (
+      fullTitle != '' &&
         fullResult.address[0] &&
         fullResult.city[0] &&
         fullResult.state[0] &&
         fullResult.date[0] &&
         fullResult.zip[0]
-      ) {
+    ) {
         let currentDate = fullResult.date[0];
         let dateTable = currentDate.split(' ');
         for (let i = 0; i < dateTable.length; i++) {
-          dateTable[i] = dateTable[i].replaceAll(',', '');
+        dateTable[i] = dateTable[i].replaceAll(',', '');
         }
         let newDate = new Date(
-          dateTable[2],
-          allMonths[dateTable[0]].value - 1,
-          dateTable[1],
+        dateTable[2],
+        allMonths[dateTable[0]].value - 1,
+        dateTable[1],
         );
 
         await database.appTable.add(
-          fullTitle,
-          JSON.stringify({
+        fullTitle,
+        JSON.stringify({
             address: fullResult.address[0],
             city: fullResult.city[0],
             state: fullResult.state[0],
             zipCode: fullResult.zip[0],
-          }),
-          JSON.stringify([]),
-          newDate.toString(),
-          newDate.toString(),
+        }),
+        JSON.stringify([]),
+        newDate.toString(),
+        newDate.toString(),
         );
         console.log('Created Event');
-      } else {
+    } else {
         console.error('Missing Data to add event');
         console.error(VoiceCommands.parseString);
         console.error(`Title: ${fullTitle}`);
@@ -317,42 +300,47 @@ const Schedule = ({navigation, route}) => {
         console.error(`State: ${fullResult.state[0]}`);
         console.error(`Date: ${fullResult.date[0]}`);
         console.error(`Zip: ${fullResult.zip[0]}`);
-      }
-    } else if (fullResult.edit[0]) {
-      //===| CONVERT FOR ACCENT |===\\
-      if (
-        fullResult.title[0] &&
-        fullResult.date[0] &&
-        fullResult.title[1] &&
-        fullResult.date[1]
-      ) {
-        console.log('Edit');
-        console.log(fullResult);
-      } else {
-        console.error('Missing Data to add event');
-        console.error(VoiceCommands.parseString);
-        console.error(`Title: ${fullResult.title[0]}`);
-        console.error(`Date: ${fullResult.date[0]}`);
-        console.error(`New Title: ${fullResult.title[1]}`);
-        console.error(`New Date: ${fullResult.date[1]}`);
-      }
-    } else if (fullResult.delete) {
-      //===| CHECK FOR VALUES |===\\
-      if (fullResult.title != '' && fullResult.date) {
-        console.log('Delete Stuff');
-      } else {
-        console.error('Missing Data to add event');
-        console.error(VoiceCommands.parseString);
-        console.error(`Title: ${fullTitle}`);
-        console.error(`Date: ${fullResult.date}`);
-      }
     }
+
+    // console.log('Final voice input:', voiceInputRef.current);
+    let a = 'a'; // Did this for testing.
+    // const spokenWords = voiceInputRef.current.split(' ');
+    // // console.log(`spokenWords ${spokenWords}`);
+    // const command = spokenWords[0].toLowerCase();
+
+    // if (command === 'add') {
+    //   const date = extractDate(spokenWords);
+    //   const otherInfo = extractOtherInfo(spokenWords);
+
+    //   navigation.navigate('AppointmentFormScreen', {
+    //     date: date,
+    //     location: location,
+    //     time: time,
+    //   });
+    // } else if (command === 'delete') {
+    //   deleteAppointmentByVoice(spokenWords);
+    // } else if (command === 'edit') {
+    //   editAppointmentByVoice(spokenWords);
+    // } else if (command === 'read') {
+    //   navigation.navigate('AppointmentDetails', {readAppointments: true});
+    // } else if (command === 'today') {
+    //   // Logan, 'today' if statement is currently for testing
+    //   // while I'm learning to take more than single word input.
+    //   readTodaysAppointments;
+    // } else if (
+    //   command != 'delete' ||
+    //   command != 'edit' ||
+    //   command != 'read' ||
+    //   command != 'today' ||
+    //   command != 'add'
+    // ) {
+    //   Tts.speak('Sorry I did not understand.');
+    // }
   };
   // let result;
   // const [result, setResult] = useState('');
   const onSpeechResults = e => {
     // setResult('');
-    console.log(e.value);
     let appointmentData = {};
     const spokenWords = e.value[0].split(' ');
     const command = spokenWords.join(' ').toLowerCase();

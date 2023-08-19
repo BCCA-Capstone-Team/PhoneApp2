@@ -1,13 +1,13 @@
+/* eslint-disable no-undef */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
-import {Text, View, ScrollView, Button} from 'react-native';
+import {Text, View, ScrollView} from 'react-native';
 import RemindersForm from '../forms/RemindersForm';
-import EditReminderForm from '../forms/EditReminderForm';
 import AddButtonModal from '../components/AddButtonModal';
-import EditButtonModal from '../components/EditButtonModal';
 import Tts from 'react-native-tts';
 import Voice from '@react-native-voice/voice';
 import SpeechButton from '../components/SpeechButton';
 import styles from '../styles';
+import TrashButton from '../components/TrashButton';
 
 let LocationServices = require('../location/LocationSys.jsx');
 
@@ -165,6 +165,7 @@ function RemindersScreen() {
       Tts.stop();
       Voice.destroy().then(Voice.removeAllListeners);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [toggleListening]);
 
   const readReminders = async () => {
@@ -281,8 +282,7 @@ function RemindersScreen() {
   };
 
   return (
-    <View style={{flex: 1}}>
-      <Text style={styles.sectionTitle}>Reminders</Text>
+    <View style={styles.homeContainer}>
       <AddButtonModal children={<RemindersForm />} onSubmit={onSubmit} />
 
       <ScrollView style={{flex: 1}}>
@@ -292,29 +292,23 @@ function RemindersScreen() {
           reminders.map((reminder, index) => (
             <View
               key={index}
-              style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-              <Text>{reminder[1][1]}</Text>
+              style={styles.remindersContainer}>
+              <Text style={styles.infoText}>{reminder[1][1]}</Text>
 
-              <EditButtonModal
-                children={<EditReminderForm reminderData={reminder} />}
-                onEditSubmit={editedData =>
-                  updateReminder(reminder[0][1], editedData)
-                }
-              />
-              <Button
-                title="Delete"
-                onPress={() => {
+              <TrashButton onPress={() => {
                   deleteReminder(reminder[0][1]);
-                }}
-              />
+                }} />
+
             </View>
           ))
         ) : (
-          <Text>No reminders found.</Text>
+          <Text style={styles.infoText}>No reminders found.</Text>
         )}
       </ScrollView>
       {/* <Button title="Read Reminders" onPress={readReminders} /> */}
+      <View style={styles.speechButtonContainer} >
       <SpeechButton isListening={isListening} onPress={toggleListening} />
+      </View>
     </View>
   );
 }

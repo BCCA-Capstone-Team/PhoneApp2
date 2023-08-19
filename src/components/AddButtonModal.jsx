@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, Modal, StyleSheet } from 'react-native';
+import styles from '../styles';
 
 const AddButtonModal = ({ children, onSubmit}) => {
   const [modalVisible, setModalVisible] = useState(false);
@@ -19,8 +20,8 @@ const AddButtonModal = ({ children, onSubmit}) => {
 
   return (
     <View>
-      <TouchableOpacity style={styles.addButton} onPress={handleOpenModal}>
-        <Text style={styles.addButtonText}>Add</Text>
+      <TouchableOpacity style={styles.button} onPress={handleOpenModal}>
+        <Text style={styles.buttonText}>Add</Text>
       </TouchableOpacity>
 
       <Modal
@@ -44,30 +45,5 @@ const AddButtonModal = ({ children, onSubmit}) => {
   );
 };
 
-const styles = StyleSheet.create({
-  addButton: {
-    backgroundColor: '#007BFF',
-    padding: 10,
-    borderRadius: 5,
-    alignSelf: 'center',
-    marginTop: 20,
-  },
-  addButtonText: {
-    color: 'white',
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-  modalContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-  },
-  modalContent: {
-    backgroundColor: 'white',
-    padding: 20,
-    marginHorizontal: 20,
-    borderRadius: 10,
-  },
-});
 
 export default AddButtonModal;
