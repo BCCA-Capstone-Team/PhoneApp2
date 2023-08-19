@@ -240,66 +240,66 @@ const Schedule = ({navigation}) => {
   const onSpeechEnd = async e => {
     let VoiceCommands = new voiceCommands();
     VoiceCommands.commandKeys = [
-      'address',
-      'city',
-      'state',
-      'title',
-      'tidal',
-      'date',
-      'zip',
+        'address',
+        'city',
+        'state',
+        'title',
+        'tidal',
+        'date',
+        'zip',
     ];
     VoiceCommands.parseString = result;
     await VoiceCommands.breakDown();
     let fullResult = VoiceCommands.returnResults();
 
     let fullTitle = '';
-    if (fullResult.title) {
-      fullTitle = fullResult.title;
-    } else if (fullResult.tidal) {
-      fullTitle = fullResult.tidal;
+    if (fullResult.title[0]) {
+        fullTitle = fullResult.title[0];
+    } else if (fullResult.tidal[0]) {
+        fullTitle = fullResult.tidal[0];
     }
 
     if (
       fullTitle != '' &&
-      fullResult.address &&
-      fullResult.city &&
-      fullResult.state &&
-      fullResult.date &&
-      fullResult.zip
+        fullResult.address[0] &&
+        fullResult.city[0] &&
+        fullResult.state[0] &&
+        fullResult.date[0] &&
+        fullResult.zip[0]
     ) {
-      let currentDate = fullResult.date;
-      let dateTable = currentDate.split(' ');
-      for (let i = 0; i < dateTable.length; i++) {
+        let currentDate = fullResult.date[0];
+        let dateTable = currentDate.split(' ');
+        for (let i = 0; i < dateTable.length; i++) {
         dateTable[i] = dateTable[i].replaceAll(',', '');
-      }
-      let newDate = new Date(
+        }
+        let newDate = new Date(
         dateTable[2],
         allMonths[dateTable[0]].value - 1,
         dateTable[1],
-      );
+        );
 
-      await database.appTable.add(
+        await database.appTable.add(
         fullTitle,
         JSON.stringify({
-          address: fullResult.address,
-          city: fullResult.city,
-          state: fullResult.state,
-          zipCode: fullResult.zip,
+            address: fullResult.address[0],
+            city: fullResult.city[0],
+            state: fullResult.state[0],
+            zipCode: fullResult.zip[0],
         }),
         JSON.stringify([]),
         newDate.toString(),
         newDate.toString(),
-      );
-      console.log('Created Event');
+        );
+        console.log('Created Event');
     } else {
-      console.error('Missing Data to add event');
-      console.error(VoiceCommands.parseString);
-      console.error(`Title: ${fullTitle}`);
-      console.error(`Address: ${fullResult.address}`);
-      console.error(`City: ${fullResult.city}`);
-      console.error(`State: ${fullResult.state}`);
-      console.error(`Date: ${fullResult.date}`);
-      console.error(`Zip: ${fullResult.zip}`);
+        console.error('Missing Data to add event');
+        console.error(VoiceCommands.parseString);
+        console.error(`Title: ${fullTitle}`);
+        console.error(`Address: ${fullResult.address[0]}`);
+        console.error(`City: ${fullResult.city[0]}`);
+        console.error(`State: ${fullResult.state[0]}`);
+        console.error(`Date: ${fullResult.date[0]}`);
+        console.error(`Zip: ${fullResult.zip[0]}`);
     }
 
     // console.log('Final voice input:', voiceInputRef.current);
