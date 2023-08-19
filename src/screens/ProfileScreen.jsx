@@ -7,9 +7,23 @@ import TtsButtonComponent from '../components/TtsButtonComponent';
 import ProfileDatabase from '../database/ProfileDatabase';
 import SuccessModal from '../components/SuccessModal';
 import SpeechButton from '../components/SpeechButton';
+import Voice from '@react-native-voice/voice';
 
 let Database = require('../database/ProfileDatabase.jsx');
 let database = new Database();
+
+//------------//------------//
+//VOICE COMMANDS FOR PROFILE
+
+let voiceCommands = require('../commandSystem/voiceCommands.jsx');
+let VoiceCommands = new voiceCommands();
+VoiceCommands.commandKeys = ['edit'];
+VoiceCommands.parseString = 'add title new event';
+await VoiceCommands.breakDown();
+let fullResult = VoiceCommands.returnResults();
+console.log(fullResult.title[0]);
+
+//------------//------------//
 
 function ProfileScreen({navigation, route}) {
   //Phillip trying something
