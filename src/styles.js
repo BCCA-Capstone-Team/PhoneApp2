@@ -3,6 +3,7 @@
 import {StyleSheet, Dimensions} from 'react-native';
 
 const {width} = Dimensions.get('window');
+const screenHeight = Dimensions.get('window').height;
 let blueColor = '#0C2340';
 let orangeColor = '#F26522';
 
@@ -30,6 +31,19 @@ export default StyleSheet.create({
     fontWeight: 'bold',
     color: blueColor,
   },
+  headerContainer:{
+    position: 'absolute',
+    top: 15,
+    left: 20,
+  },
+  dateContainer:{
+    position: 'absolute',
+    top: 75,
+  },
+  appointmentRemindersContainer: {
+    height: screenHeight * 0.225
+  },
+  
   // ======================== GENERIC BUTTON STYLING ================================
   button: {
     backgroundColor: blueColor,
@@ -80,6 +94,22 @@ export default StyleSheet.create({
     height: '100%',
     resizeMode: 'contain',
   },
+  trashButtonContainer:{
+    position: 'absolute',
+    top: 15,
+    right: 20,
+  },
+  appointmentButton: {
+    backgroundColor: blueColor,
+    width: width * 0.75,
+    height: 50,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 8,
+    margin: 5,
+    borderColor: orangeColor,
+    borderWidth: 3
+  },
   // ============================= LISTEN BUTTON STYLING ==========================
   speakButton: {
     backgroundColor: blueColor,
@@ -109,6 +139,10 @@ export default StyleSheet.create({
   },
   infoText: {
     fontSize: 24,
+    padding: 5,
+  },
+  appointmentText: {
+    fontSize: 20,
     padding: 5,
   },
 
@@ -151,6 +185,29 @@ export default StyleSheet.create({
     alignItems: 'center',
     marginVertical: 5,
 
+  },
+
+  // =============== CALENDAR STYLING =================================================
+  emptyDayButton: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderStyle: 'solid',
+    borderBlockColor: blueColor,
+    borderWidth: 3,
+    marginBottom: 5,
+    marginTop: 5,
+  },
+  eventButton: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderStyle: 'solid',
+    borderBlockColor: blueColor,
+    backgroundColor: orangeColor,
+    borderWidth: 3,
+    marginBottom: 5,
+    marginTop: 5,
   },
 
   sectionContainer: {

@@ -181,23 +181,35 @@ const Schedule = ({navigation}) => {
     navigation.navigate('Appointment', item);
   };
 
+  // ============= Format Time for Styling Purposes ================= //
+
+  function formatTime(dateObj) {
+    let hours = dateObj.getHours();
+    const minutes = String(dateObj.getMinutes()).padStart(2, '0');
+    const ampm = hours >= 12 ? 'PM' : 'AM';
+  
+    if (hours > 12) {
+        hours -= 12;
+    } else if (hours === 0) {
+        hours = 12; // for midnight
+    }
+  
+    return `${hours}:${minutes} ${ampm}`;
+  }
+
   const renderItem = item => {
+    const dateTimeStr = item.time;
+
+    const dateObj = new Date(dateTimeStr);
+    const time = formatTime(dateObj); 
     return (
       <TouchableOpacity
         // eslint-disable-next-line react-native/no-inline-styles
-        style={{
-          flex: 1,
-          alignItems: 'center',
-          justifyContent: 'center',
-          borderStyle: 'solid',
-          borderBlockColor: 'red',
-          marginBottom: 5,
-          marginTop: 5,
-        }}
+        style={styles.eventButton}
         onPress={() => {
           handleItemPress(item);
         }}>
-        <Text>{item.eventTitle}</Text>
+        <Text style={styles.buttonText}>{item.eventTitle} at {time}</Text>
       </TouchableOpacity>
     );
   };
@@ -213,12 +225,12 @@ const Schedule = ({navigation}) => {
   const renderEmptyDay = day => {
     return (
       <TouchableOpacity
-        style={{margin: 5}}
+        style={styles.emptyDayButton}
         onPress={() => {
           // console.log(timeToString(day));
           handleEmptyDayPress(timeToString(day));
         }}>
-        <Text>Empty Day</Text>
+        {/* <Text style={styles.appointmentText}>Empty Day</Text> */}
       </TouchableOpacity>
     );
   };
