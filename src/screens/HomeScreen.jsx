@@ -12,6 +12,38 @@ import MinimalAnimatedView from '../components/MinimalAnimatedView';
 let Database = require('../database/ProfileDatabase.jsx');
 let database = new Database();
 
+
+let voiceCommands = require('../commandSystem/voiceCommands.jsx');
+
+//async function testVoiceCMDS() {
+//    let VoiceCommands = new voiceCommands()
+//    VoiceCommands.commandKeys = ['address', 'country', 'name', 'state']
+//    VoiceCommands.setReturnCallback((values) => {
+//        console.log('Complete')
+//        console.log(`Address: ${values.address[0]}`)
+//        console.log(`Country: ${values.country[0]}`)
+//        console.log(`Value: ${values.name[0]}`)
+//        console.log(`State: ${values.state[0]}`)
+//        console.log(`State: ${values.state[1]}`)
+//    })
+
+//    let sayingWords = ['address', '60', 'Mimosa', 'Dr', 'state', 'Mississippi', 'country', 'United', 'states', 'name', 'Joseph', 'Dunn', 'state', 'St Louis',]
+    
+//    for (let i = 0; i < sayingWords.length; i++) {
+//        await new Promise((rsolve, reject) => {
+//            VoiceCommands.addString(sayingWords[i])
+//            setTimeout(() => {
+//                rsolve()
+//            }, 300)
+//        })
+//    }
+//}
+
+//setTimeout(() => {
+//    console.log('Starting')
+//    testVoiceCMDS()
+//}, 2500)
+
 function HomeScreen({navigation, route}) {
   const [refreshKey, setRefreshKey] = useState(0);
   console.log('HomeScreen rendering');
@@ -24,9 +56,9 @@ function HomeScreen({navigation, route}) {
   const fadeAnim = useRef(new Animated.Value(1)).current;
 
   // Add a listener to the Animated value to track its changes
-  fadeAnim.addListener(value => {
-    console.log('fadeAnim value:', value);
-  });
+  //fadeAnim.addListener(value => {
+  //  console.log('fadeAnim value:', value);
+  //});
 
   // useEffect(() => {
   //   triggerRefresh;
