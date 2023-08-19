@@ -501,11 +501,11 @@ PODS:
     - React-Core
   - RNDateTimePicker (7.4.1):
     - React-Core
-  - RNGestureHandler (2.12.0):
+  - RNGestureHandler (2.12.1):
     - React-Core
   - RNPermissions (3.8.4):
     - React-Core
-  - RNScreens (3.23.0):
+  - RNScreens (3.24.0):
     - React-Core
     - React-RCTImage
   - SocketRocket (0.6.1)
@@ -771,9 +771,9 @@ SPEC CHECKSUMS:
   ReactCommon: 3ccb8fb14e6b3277e38c73b0ff5e4a1b8db017a9
   RNCPicker: 0bc2f0a29abcca7b7ed44a2d036aac9ab6d25700
   RNDateTimePicker: 9b4091348e53f540180abdc54984d839a556f593
-  RNGestureHandler: dec4645026e7401a0899f2846d864403478ff6a5
+  RNGestureHandler: c0d04458598fcb26052494ae23dda8f8f5162b13
   RNPermissions: 09010ab77268f92c9d34d8ab696532d6cdb8c2a3
-  RNScreens: 6a8a3c6b808aa48dca1780df7b73ea524f602c63
+  RNScreens: b21dc57dfa2b710c30ec600786a3fc223b1b92e7
   SocketRocket: f32cd54efbe0f095c4d7594881e52619cfe80b17
   TextToSpeech: b3aa777ff5585705f179c0a2436bfd0926d1716e
   Yoga: 8796b55dba14d7004f980b54bcc9833ee45b28ce

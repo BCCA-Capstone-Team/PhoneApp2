@@ -7,6 +7,7 @@ import styles from '../styles';
 import {useFocusEffect} from '@react-navigation/native';
 import SpeechButton from '../components/SpeechButton';
 import AnimatedView from '../components/AnimatedView';
+import MinimalAnimatedView from '../components/MinimalAnimatedView';
 
 let Database = require('../database/ProfileDatabase.jsx');
 let database = new Database();
