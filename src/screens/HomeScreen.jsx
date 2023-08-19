@@ -4,10 +4,8 @@ import {check, PERMISSIONS, request} from 'react-native-permissions';
 import Tts from 'react-native-tts';
 import Voice from '@react-native-voice/voice';
 import styles from '../styles';
-import TtsButtonComponent from '../components/TtsButtonComponent';
 import {useFocusEffect} from '@react-navigation/native';
 import SpeechButton from '../components/SpeechButton';
-import Radar from 'react-native-radar';
 import AnimatedView from '../components/AnimatedView';
 
 let Database = require('../database/ProfileDatabase.jsx');
@@ -89,9 +87,12 @@ function HomeScreen({navigation, route}) {
     const fetchProfileData = async () => {
       const data = await database.getProfile();
       setProfileData(data);
+      console.log(data)
+      await readInstructions(data.firstName);
     };
     console.log('fetch profile triggered');
     fetchProfileData();
+    // await readInstructions(data.firstName);
   }, []);
 
   const [isListening, setIsListening] = useState(false);
@@ -155,13 +156,13 @@ function HomeScreen({navigation, route}) {
     const command = spokenWords[0].toLowerCase();
     switch (command) {
       case 'calendar':
-        handleButtonPress('CalendarScreen');
+        handleButtonPress('Calendar');
         break;
       case 'reminders':
-        handleButtonPress('RemindersScreen');
+        handleButtonPress('Leaving Home Reminders');
         break;
       case 'profile':
-        handleButtonPress('ProfileDetailScreen');
+        handleButtonPress('Profile');
         break;
       default:
         Tts.speak('Sorry, I did not understand.'); //message for unknown commands
@@ -212,9 +213,9 @@ function HomeScreen({navigation, route}) {
     }
   };
 
-  const readInstructions = () => {
+  const readInstructions = (name) => {
     Tts.speak(
-      'Hello user, press on the listen button to state where you would like to go: Calendar, Profile, or Reminders.',
+      `Hello ${name}, press on the J button to state where you would like to go: Calendar, Profile, or Reminders.`,
     );
   };
 
@@ -229,37 +230,32 @@ function HomeScreen({navigation, route}) {
   console.log(message);
   return (
     <View style={styles.homeContainer}>
-      <AnimatedView message={message} />
+      {/* <AnimatedView message={message} /> */}
+      <Text style={styles.welcomeText}>Hello {profileData ? profileData.firstName : 'Loading...'}!</Text>
       {/* Calendar Button */}
-      <TouchableOpacity
-        style={styles.button}
-        onPress={() => handleButtonPress('Calendar')}>
-        <Text style={styles.buttonText}>Calendar</Text>
-      </TouchableOpacity>
-      {/* Reminders Button */}
-      <TouchableOpacity
-        style={styles.button}
-        onPress={() => handleButtonPress('Leaving Home Reminders')}>
-        <Text style={styles.buttonText}>Reminders</Text>
-      </TouchableOpacity>
-      {/* Profile Button */}
-      <TouchableOpacity
-        style={styles.button}
-        onPress={() => handleButtonPress('Profile')}>
-        <Text style={styles.buttonText}>Profile</Text>
-      </TouchableOpacity>
-      {/* Test Button
-      <TouchableOpacity
-        style={styles.button}
-        onPress={() => handleButtonPress('TestScreen')}>
-        <Text style={styles.buttonText}>Test</Text>
-      </TouchableOpacity> */}
+      <View style={styles.childHomeContainer}>
+        <TouchableOpacity
+          style={styles.navButton}
+          onPress={() => handleButtonPress('Calendar')}>
+          <Text style={styles.navButtonText}>Calendar</Text>
+        </TouchableOpacity>
+        {/* Reminders Button */}
+        <TouchableOpacity
+          style={styles.navButton}
+          onPress={() => handleButtonPress('Leaving Home Reminders')}>
+          <Text style={styles.navButtonText}>Reminders</Text>
+        </TouchableOpacity>
+        {/* Profile Button */}
+        <TouchableOpacity
+          style={styles.navButton}
+          onPress={() => handleButtonPress('Profile')}>
+          <Text style={styles.navButtonText}>Profile</Text>
+        </TouchableOpacity>
+      </View>
       {/* Speak Button */}
+      <View style={styles.speechButtonContainer} >
       <SpeechButton isListening={isListening} onPress={toggleListening} />
-      {/*TTS Button */}
-      <TtsButtonComponent text="Read Instructions" onPress={readInstructions} />
-
-      {/* <MicrophoneComponent /> */}
+      </View>
     </View>
   );
 }

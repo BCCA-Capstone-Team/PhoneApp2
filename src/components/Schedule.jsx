@@ -178,7 +178,7 @@ const Schedule = ({navigation}) => {
 
   const handleItemPress = item => {
     console.log(item);
-    navigation.navigate('AppointmentDetails', item);
+    navigation.navigate('Appointment', item);
   };
 
   const renderItem = item => {
@@ -207,7 +207,7 @@ const Schedule = ({navigation}) => {
   // ============== Handle renderEmptyDay and it's onPress ============== //
 
   const handleEmptyDayPress = day => {
-    navigation.navigate('AppointmentDetails', day);
+    navigation.navigate('Appointment', day);
   };
 
   const renderEmptyDay = day => {

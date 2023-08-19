@@ -58,13 +58,13 @@ const AppointmentDetails = ({navigation, route}) => {
   // Add Appointment
   const handleAddItem = () => {
     listOfData[1] = false;
-    navigation.navigate('AppointmentFormScreen', listOfData);
+    navigation.navigate('Appointment Creation', listOfData);
   };
 
   // Edit Appointment
   const handleEditItem = dayData => {
     listOfData[1] = true;
-    navigation.navigate('AppointmentFormScreen', listOfData);
+    navigation.navigate('Appointment Creation', listOfData);
   };
 
   // Delete Appointment
