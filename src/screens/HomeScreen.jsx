@@ -12,7 +12,6 @@ import MinimalAnimatedView from '../components/MinimalAnimatedView';
 let Database = require('../database/ProfileDatabase.jsx');
 let database = new Database();
 
-
 let voiceCommands = require('../commandSystem/voiceCommands.jsx');
 
 //async function testVoiceCMDS() {
@@ -28,7 +27,7 @@ let voiceCommands = require('../commandSystem/voiceCommands.jsx');
 //    })
 
 //    let sayingWords = ['address', '60', 'Mimosa', 'Dr', 'state', 'Mississippi', 'country', 'United', 'states', 'name', 'Joseph', 'Dunn', 'state', 'St Louis',]
-    
+
 //    for (let i = 0; i < sayingWords.length; i++) {
 //        await new Promise((rsolve, reject) => {
 //            VoiceCommands.addString(sayingWords[i])
@@ -92,9 +91,9 @@ function HomeScreen({navigation, route}) {
       };
 
       fadeOutAnimation(); // Trigger the animation logic
-      // return () => {
-      //   // Cleanup logic if needed
-      // };
+      return () => {
+        // Cleanup logic if needed
+      };
     }, [fadeAnim, message]),
   );
 
@@ -108,7 +107,6 @@ function HomeScreen({navigation, route}) {
   //--------------------------------------//
 
   useEffect(() => {
-    // Fetch profile data asynchronously and update state
     const fetchProfileData = async () => {
       const data = await database.getProfile();
       setProfileData(data);
@@ -116,9 +114,18 @@ function HomeScreen({navigation, route}) {
       await readInstructions(data.firstName);
     };
     console.log('fetch profile triggered');
-    fetchProfileData();
+
+    // Check if there is updatedProfileData in the route params
+    const updatedProfileData = route.params?.updatedProfileData;
+    if (updatedProfileData) {
+      // If there is updatedProfileData, set it as the new profileData
+      setProfileData(updatedProfileData);
+    } else {
+      // If there is no updatedProfileData, fetch the profile data as usual
+      fetchProfileData();
+    }
     // await readInstructions(data.firstName);
-  }, []);
+  }, [route.params]);
 
   const [isListening, setIsListening] = useState(false);
 

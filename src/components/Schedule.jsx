@@ -28,19 +28,6 @@ let allMonths = {
   December: {value: 12},
 };
 
-async function getAppointments() {
-  let Database = require('../database/CalendarDatabase.jsx');
-  let database = new Database();
-  await database.onAppReady();
-
-  let allData = await database.getAll();
-  // console.log(allData);
-  // console.log(allData['2023-6-29']);
-  let test = database.checkForAppointment(2);
-  test.then(resp => console.log(resp));
-  return allData;
-}
-
 // Checks to see if the month and day of the date strings are 2 digits
 // If they aren't then it adds a zero to the one missing it.
 function monthAndDayFormatter(dateString) {
@@ -67,40 +54,33 @@ function monthAndDayFormatter(dateString) {
   return combinedDateString;
 }
 
+async function getAppointments() {
+  let Database = require('../database/CalendarDatabase.jsx');
+  let database = new Database();
+  await database.onAppReady();
+
+  let allData = await database.getAll();
+  // console.log(allData);
+  // console.log(allData['2023-6-29']);
+  let test = database.checkForAppointment(2);
+  test.then(resp => console.log(resp));
+  return allData;
+}
+// getAppointments();
+
 const timeToString = time => {
   const date = new Date(time);
   date.setHours(date.getHours() - 5);
   return date.toISOString().split('T')[0];
 };
 
-const Schedule = ({navigation, route}) => {
-  let routeData = route ? route.params : false;
+const Schedule = ({navigation}) => {
   const [items, setItems] = useState({});
   // const [allAppointmentData, setAllAppointmentData] = useState({});
 
   const [isListening, setIsListening] = useState(false);
   const [doneListening, setDoneListening] = useState(true);
   const voiceInputRef = useRef('');
-
-  // console.log(`route data ======= ${routeData}`);
-  // if (route) {
-  //   console.log('made it');
-  //   if (route.params.passReload) {
-  //     loadItems();
-  //   }
-  // }
-  // setInterval(() => {
-  //   loadItems();
-  // }, 10000);
-  // useEffect(() => {
-  //   if (items === null) {
-  //     loadItems();
-  //   }
-  // }, [items]);
-
-  // const reloadAgenda = () => {
-  //   setItems(null);
-  // };
 
   const toggleListening = () => {
     if (isListening) {
@@ -166,37 +146,38 @@ const Schedule = ({navigation, route}) => {
   const loadItems = async day => {
     let allAppointmentData = await loadAllAppointmentData();
     // console.log(allAppointmentData);
+    setTimeout(() => {
+      const newItems = {};
+      for (let i = -15; i < 85; i++) {
+        const time = day.timestamp + i * 24 * 60 * 60 * 1000;
+        const strTime = timeToString(time);
+        if (i == 0) {
+          console.log(strTime);
+        }
 
-    const newItems = {};
-    for (let i = -15; i < 85; i++) {
-      const time = day.timestamp + i * 24 * 60 * 60 * 1000;
-      const strTime = timeToString(time);
-      if (i == 0) {
-        // console.log(strTime);
+        // Create events for different dates and add them to myItems array
+        // Example:
+        // myItems.push({ name: 'Event 1', height: 50 });
+        // myItems.push({ name: 'Event 2', height: 80 });
+        // ...
+        if (!allAppointmentData[strTime]) {
+          items[strTime] = [];
+        } else {
+          items[strTime] = allAppointmentData[strTime];
+        }
       }
-
-      // Create events for different dates and add them to myItems array
-      // Example:
-      // myItems.push({ name: 'Event 1', height: 50 });
-      // myItems.push({ name: 'Event 2', height: 80 });
-      // ...
-      if (!allAppointmentData[strTime]) {
-        items[strTime] = [];
-      } else {
-        items[strTime] = allAppointmentData[strTime];
-      }
-    }
-    Object.keys(items).forEach(key => {
-      newItems[key] = items[key];
-      // console.log(key, '===', newItems[key]);
-    });
-    setItems(newItems);
+      Object.keys(items).forEach(key => {
+        newItems[key] = items[key];
+        // console.log(key, '===', newItems[key]);
+      });
+      setItems(newItems);
+    }, 1000);
   };
 
   // ============== Handle renderItem and it's onPress ============== //
 
   const handleItemPress = item => {
-    // console.log(item);
+    console.log(item);
     navigation.navigate('Appointment', item);
   };
 
@@ -206,13 +187,13 @@ const Schedule = ({navigation, route}) => {
     let hours = dateObj.getHours();
     const minutes = String(dateObj.getMinutes()).padStart(2, '0');
     const ampm = hours >= 12 ? 'PM' : 'AM';
-
+  
     if (hours > 12) {
-      hours -= 12;
+        hours -= 12;
     } else if (hours === 0) {
-      hours = 12; // for midnight
+        hours = 12; // for midnight
     }
-
+  
     return `${hours}:${minutes} ${ampm}`;
   }
 
@@ -220,7 +201,7 @@ const Schedule = ({navigation, route}) => {
     const dateTimeStr = item.time;
 
     const dateObj = new Date(dateTimeStr);
-    const time = formatTime(dateObj);
+    const time = formatTime(dateObj); 
     return (
       <TouchableOpacity
         // eslint-disable-next-line react-native/no-inline-styles
@@ -228,9 +209,8 @@ const Schedule = ({navigation, route}) => {
         onPress={() => {
           handleItemPress(item);
         }}>
-        <Text style={styles.buttonText}>
-          {item.eventTitle} at {time}
-        </Text>
+        <Text style={styles.appointmentDayText}>{item.eventTitle}</Text>
+        <Text style={styles.appointmentDayText}>at {time}</Text>
       </TouchableOpacity>
     );
   };
@@ -251,7 +231,8 @@ const Schedule = ({navigation, route}) => {
           // console.log(timeToString(day));
           handleEmptyDayPress(timeToString(day));
         }}>
-        {/* <Text style={styles.appointmentText}>Empty Day</Text> */}
+        <Text style={styles.appointmentText}>No appointments</Text>
+        <Text style={styles.emptyDayText}>Add appointment</Text>
       </TouchableOpacity>
     );
   };
@@ -261,31 +242,28 @@ const Schedule = ({navigation, route}) => {
   const onSpeechEnd = async e => {
     let VoiceCommands = new voiceCommands();
     VoiceCommands.commandKeys = [
-      'address',
-      'city',
-      'state',
-      'title',
-      'tidal',
-      'date',
-      'zip',
-      'add',
-      'edit',
-      'remove',
-      'read',
+        'address',
+        'city',
+        'state',
+        'title',
+        'tidal',
+        'date',
+        'zip',
     ];
     VoiceCommands.parseString = result;
     await VoiceCommands.breakDown();
     let fullResult = VoiceCommands.returnResults();
 
-    if (fullResult.add) {
-      addVoiceOption(fullResult, VoiceCommands);
-    } else if (fullResult.edit) {
-      editVoiceOptions(fullResult, VoiceCommands);
-    } else if (fullResult.remove) {
-      removeVoiceOption(fullResult, VoiceCommands);
-    } else if (fullResult.read) {
-      readVoiceOption(fullResult, VoiceCommands);
-    }
+      if (fullResult.add) {
+          addVoiceOption(fullResult)
+      } else if (fullResult.edit) {
+          editVoiceOptions(fullResult)
+      } else if (fullResult.remove) {
+          removeVoiceOption(fullResult)
+      }
+
+    
+    
 
     // console.log('Final voice input:', voiceInputRef.current);
     let a = 'a'; // Did this for testing.
@@ -342,7 +320,7 @@ const Schedule = ({navigation, route}) => {
   // than one flow of Voice commands.
 
   const onSpeechRecognized = e => {
-    // console.log(e.isFinal);
+    console.log(e.isFinal);
     // Object.keys(e).forEach(each => console.log(each));
     let a = 'a';
   };
@@ -536,6 +514,19 @@ const Schedule = ({navigation, route}) => {
   return (
     <View style={{flex: 1}}>
       <Agenda
+        theme={{
+          dotColor: '#0C2340',
+          todayDotColor: '#0C2340',
+          selectedDotColor: '#0C2340',
+          selectedDayBackgroundColor: '#F26522',
+          todayTextColor: '#0C2340',
+          dayTextColor: '#0C2340',
+          textSectionTitleColor: '#0C2340',
+          agendaDayTextColor: '#0C2340',
+          agendaKnobColor: '#0C2340',
+          agendaTodayColor: '#F26522',
+          agendaDayNumColor: '#0C2340'
+        }}
         items={items}
         loadItemsForMonth={loadItems}
         renderItem={renderItem}
@@ -552,175 +543,92 @@ const Schedule = ({navigation, route}) => {
 
 export default Schedule;
 
+
 //==========| ADD NEW APPT |==========\\
-async function addVoiceOption(fullResult, VoiceCommands) {
-  let fullTitle = '';
-  if (fullResult.title) {
-    fullTitle = fullResult.title[0];
-  } else if (fullResult.tidal) {
-    fullTitle = fullResult.tidal[0];
-  }
-
-  if (fullTitle != '' && fullResult.date) {
-    let cityValue = '';
-    let stateValue = '';
-    let zipValue = '';
-    let addressValue = '';
-    if (fullResult.city) {
-      cityValue = fullResult.city;
-    }
-    if (fullResult.state) {
-      stateValue = fullResult.state;
-    }
-    if (fullResult.zip) {
-      zipValue = fullResult.zip;
-    }
-    if (fullResult.address) {
-      addressValue = fullResult.address;
+async function addVoiceOption(fullResult) {
+    let fullTitle = '';
+    if (fullResult.title[0]) {
+        fullTitle = fullResult.title[0];
+    } else if (fullResult.tidal[0]) {
+        fullTitle = fullResult.tidal[0];
     }
 
-    let currentDate = fullResult.date[0];
-    let dateTable = currentDate.split(' ');
-    for (let i = 0; i < dateTable.length; i++) {
-      dateTable[i] = dateTable[i].replaceAll(',', '');
-    }
-    let newDate = new Date(
-      dateTable[2],
-      allMonths[dateTable[0]].value - 1,
-      dateTable[1],
-    );
+    if (
+        fullTitle != '' &&
+        fullResult.address[0] &&
+        fullResult.city[0] &&
+        fullResult.state[0] &&
+        fullResult.date[0] &&
+        fullResult.zip[0]
+    ) {
+        let currentDate = fullResult.date[0];
+        let dateTable = currentDate.split(' ');
+        for (let i = 0; i < dateTable.length; i++) {
+            dateTable[i] = dateTable[i].replaceAll(',', '');
+        }
+        let newDate = new Date(
+            dateTable[2],
+            allMonths[dateTable[0]].value - 1,
+            dateTable[1],
+        );
 
-    await database.appTable.add(
-      fullTitle,
-      JSON.stringify({
-        address: addressValue,
-        city: cityValue,
-        state: stateValue,
-        zipCode: zipValue,
-      }),
-      JSON.stringify([]),
-      newDate.toString(),
-      newDate.toString(),
-    );
-  } else {
-    console.error('Missing Data to add event');
-    console.error(VoiceCommands.parseString);
-  }
+        await database.appTable.add(
+            fullTitle,
+            JSON.stringify({
+                address: fullResult.address[0],
+                city: fullResult.city[0],
+                state: fullResult.state[0],
+                zipCode: fullResult.zip[0],
+            }),
+            JSON.stringify([]),
+            newDate.toString(),
+            newDate.toString(),
+        );
+        console.log('Created Event');
+    } else {
+        console.error('Missing Data to add event');
+        console.error(VoiceCommands.parseString);
+        console.error(`Title: ${fullTitle}`);
+        console.error(`Address: ${fullResult.address[0]}`);
+        console.error(`City: ${fullResult.city[0]}`);
+        console.error(`State: ${fullResult.state[0]}`);
+        console.error(`Date: ${fullResult.date[0]}`);
+        console.error(`Zip: ${fullResult.zip[0]}`);
+    }
 }
+
 
 //==========| EDIT APPT |==========\\
-async function editVoiceOptions(fullResult, VoiceCommands) {
-  if (fullResult.title && fullResult.date) {
-    await database.onAppReady();
-    await database.appTable.reload();
-    let findDate = fullResult.date[0];
-    let title = fullResult.title[0];
-
-    let dateTable = findDate.split(' ');
-    for (let i = 0; i < dateTable.length; i++) {
-      dateTable[i] = dateTable[i].replaceAll(',', '');
+async function editVoiceOptions(fullResult) {
+    if (
+        fullResult.title[0] &&
+        fullResult.date[0]
+    ) {
+        console.log('Edit Stuff')
+        await database.reload()
+        let allData = database.data
+    } else {
+        console.error('Missing Data to add event');
+        console.error(VoiceCommands.parseString);
+        console.error(`Title: ${fullResult.title[0]}`);
+        console.error(`Date: ${fullResult.date[0]}`);
     }
-    let newDate = new Date(
-      dateTable[2],
-      allMonths[dateTable[0]].value - 1,
-      dateTable[1],
-    );
-
-    database.appTable.data.forEach(event => {
-      let testDate = new Date(event[4][1]);
-
-      let parseDate1 = `${newDate.getMonth()}-${newDate.getDate()}-${newDate.getFullYear()}`;
-      let parsedate2 = `${testDate.getMonth()}-${testDate.getDate()}-${testDate.getFullYear()}`;
-
-      if (
-        parseDate1 == parsedate2 &&
-        title.toLowerCase() == event[1][1].toLowerCase()
-      ) {
-        if (fullResult.title[1]) {
-          database.appTable.update(
-            event[0][1],
-            'eventTitle',
-            fullResult.title[1],
-          );
-        } else {
-          console.error('No valid');
-        }
-      }
-    });
-  } else {
-    console.error('Missing Data to edit event');
-    console.error(VoiceCommands.parseString);
-  }
 }
+
 
 //==========| REMOVE APPT |==========\\
-async function removeVoiceOption(fullResult, VoiceCommands) {
-  if (fullResult.title && fullResult.date) {
-    await database.onAppReady();
-    await database.appTable.reload();
-    let findDate = fullResult.date[0];
-    let title = fullResult.title[0];
-
-    let dateTable = findDate.split(' ');
-    for (let i = 0; i < dateTable.length; i++) {
-      dateTable[i] = dateTable[i].replaceAll(',', '');
+async function removeVoiceOption(fullResult) {
+    if (
+        fullResult.title[0] &&
+        fullResult.date[0]
+    ) {
+        console.log('Edit Stuff')
+        await database.reload()
+        let allData = database.data
+    } else {
+        console.error('Missing Data to add event');
+        console.error(VoiceCommands.parseString);
+        console.error(`Title: ${fullResult.title[0]}`);
+        console.error(`Date: ${fullResult.date[0]}`);
     }
-    let newDate = new Date(
-      dateTable[2],
-      allMonths[dateTable[0]].value - 1,
-      dateTable[1],
-    );
-
-    database.appTable.data.forEach(event => {
-      let testDate = new Date(event[4][1]);
-
-      let parseDate1 = `${newDate.getMonth()}-${newDate.getDate()}-${newDate.getFullYear()}`;
-      let parsedate2 = `${testDate.getMonth()}-${testDate.getDate()}-${testDate.getFullYear()}`;
-
-      if (parseDate1 == parsedate2) {
-        database.appTable.removeIndex(event[0][1]);
-      }
-    });
-  } else {
-    console.error('Missing Data to remove event');
-    console.error(VoiceCommands.parseString);
-  }
 }
-
-//==========| READ APPT |==========\\
-async function readVoiceOption(fullResult, VoiceCommands) {
-  await database.onAppReady();
-  await database.appTable.reload();
-  let findDate = fullResult.read[0];
-
-  let dateTable = findDate.split(' ');
-  for (let i = 0; i < dateTable.length; i++) {
-    dateTable[i] = dateTable[i].replaceAll(',', '');
-  }
-  let newDate = new Date(
-    dateTable[2],
-    allMonths[dateTable[0]].value - 1,
-    dateTable[1],
-  );
-
-  Tts.speak('Your reminders are the following.');
-  database.appTable.data.forEach(event => {
-    let testDate = new Date(event[4][1]);
-
-    let parseDate1 = `${newDate.getMonth()}-${newDate.getDate()}-${newDate.getFullYear()}`;
-    let parsedate2 = `${testDate.getMonth()}-${testDate.getDate()}-${testDate.getFullYear()}`;
-
-    if (parseDate1 == parsedate2) {
-      Tts.speak(event[1][1]);
-    }
-  });
-}
-
-setInterval(async () => {
-  await database.onAppReady();
-  await database.appTable.reload();
-  let fullData = database.appTable.data;
-  fullData.forEach(event => {
-    event;
-  });
-}, 55000);

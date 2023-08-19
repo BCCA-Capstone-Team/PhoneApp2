@@ -70,7 +70,13 @@ function App(): JSX.Element {
   }, []);
   return (
     <NavigationContainer ref={navigationRef}>
-      <Stack.Navigator>
+      <Stack.Navigator
+        screenOptions={{
+          headerTintColor: '#F26522',
+          headerTitleStyle: {
+            color: '#0C2340',
+          },
+        }}>
         <Stack.Screen name="Home" component={HomeScreen} />
         <Stack.Screen name="Calendar" component={CalendarScreen} />
         <Stack.Screen

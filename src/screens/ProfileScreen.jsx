@@ -7,6 +7,23 @@ import TtsButtonComponent from '../components/TtsButtonComponent';
 import ProfileDatabase from '../database/ProfileDatabase';
 import SuccessModal from '../components/SuccessModal';
 import SpeechButton from '../components/SpeechButton';
+import Voice from '@react-native-voice/voice';
+
+let Database = require('../database/ProfileDatabase.jsx');
+let database = new Database();
+
+//------------//------------//
+//VOICE COMMANDS FOR PROFILE
+
+let voiceCommands = require('../commandSystem/voiceCommands.jsx');
+let VoiceCommands = new voiceCommands();
+VoiceCommands.commandKeys = ['edit'];
+VoiceCommands.parseString = 'add title new event';
+await VoiceCommands.breakDown();
+let fullResult = VoiceCommands.returnResults();
+console.log(fullResult.title[0]);
+
+//------------//------------//
 
 function ProfileScreen({navigation, route}) {
   //Phillip trying something
@@ -37,6 +54,13 @@ function ProfileScreen({navigation, route}) {
     fetchProfileData();
   }, []);
 
+  //FIX FOR HOMESCREEN USERNAME
+
+  const updateProfileData = async () => {
+    const newData = await database.getProfile(); // Fetch updated profile data
+    navigation.navigate('HomeScreen', {updatedProfileData: newData}); // Pass the updated data to HomeScreen
+  };
+
   useLayoutEffect(() => {
     navigation.setOptions({
       headerLeft: profileData
@@ -53,6 +77,7 @@ function ProfileScreen({navigation, route}) {
         route={route}
         profileData={profileData}
         onProfileCreated={handleProfileCreated}
+        updateProfileData={updateProfileData}
       />
     </View>
   );

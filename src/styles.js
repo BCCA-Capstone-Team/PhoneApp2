@@ -17,11 +17,31 @@ export default StyleSheet.create({
     padding: 10,
     paddingTop: 0,
   },
+  formContainer: {
+    padding: 10,
+
+  },
   childHomeContainer: {
     marginTop: -50,
   },
+  otherContainer: {
+    marginTop: -45,
+  },
   container: {
     margin: 20,
+  },
+  appointmentFormRemindersContainer: { 
+    flexDirection: 'row', 
+    alignItems: 'center', 
+    marginBottom: 10 
+  },
+  appointmentDetailsContainer: {
+    flex: 1,
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+    paddingTop: 0,
   },
   welcomeText: {
     position: 'absolute',
@@ -35,13 +55,25 @@ export default StyleSheet.create({
     position: 'absolute',
     top: 15,
     left: 20,
+    width: width * 0.65,
   },
   dateContainer:{
-    position: 'absolute',
-    top: 75,
+    borderBottomColor: orangeColor,
+    borderBottomWidth: 2,
+    borderStyle: 'solid',
+    alignItems: 'center',
+    padding: 5,
   },
   appointmentRemindersContainer: {
-    height: screenHeight * 0.225
+    height: screenHeight * 0.20,
+    width: width * 0.75,
+
+  },
+  dateReminderContainer:{
+    borderBottomColor: orangeColor,
+    borderBottomWidth: 2,
+    borderStyle: 'solid',
+    flex: 1,
   },
   
   // ======================== GENERIC BUTTON STYLING ================================
@@ -110,6 +142,16 @@ export default StyleSheet.create({
     borderColor: orangeColor,
     borderWidth: 3
   },
+  emptyDayText: {
+    color: blueColor,
+    fontSize: 24,
+    fontWeight: 'bold',
+  },
+  appointmentDayText: {
+    color: 'white',
+    fontSize: 24,
+    fontWeight: 'bold',
+  },
   // ============================= LISTEN BUTTON STYLING ==========================
   speakButton: {
     backgroundColor: blueColor,
@@ -137,6 +179,11 @@ export default StyleSheet.create({
     marginBottom: 10,
     fontWeight: 'bold',
   },
+  appointmentHeaderText: {
+    fontSize: 20,
+    marginBottom: 5,
+    fontWeight: 'bold',
+  },
   infoText: {
     fontSize: 24,
     padding: 5,
@@ -144,6 +191,12 @@ export default StyleSheet.create({
   appointmentText: {
     fontSize: 20,
     padding: 5,
+  },
+  remindersHeaderText: {
+    textAlign: 'left',
+    fontSize: 24,
+    padding: 5,
+    fontWeight: 'bold',
   },
 
   // ===================== FORM STYLING ==========================================
@@ -159,6 +212,17 @@ export default StyleSheet.create({
     marginBottom: 10,
     fontSize: 24,
   },
+  inputReminders: {
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 4,
+    marginBottom: 10,
+    fontSize: 24,
+    flex: 1, 
+    marginRight: 20
+  },
+
+
   errorText: {
     color: 'red',
   },
@@ -190,9 +254,11 @@ export default StyleSheet.create({
   // =============== CALENDAR STYLING =================================================
   emptyDayButton: {
     flex: 1,
+    width: width * 0.8,
     alignItems: 'center',
     justifyContent: 'center',
     borderStyle: 'solid',
+    borderRadius: 8,
     borderBlockColor: blueColor,
     borderWidth: 3,
     marginBottom: 5,
@@ -200,15 +266,22 @@ export default StyleSheet.create({
   },
   eventButton: {
     flex: 1,
+    width: width * 0.8,
     alignItems: 'center',
     justifyContent: 'center',
     borderStyle: 'solid',
+    borderRadius: 8,
     borderBlockColor: blueColor,
     backgroundColor: orangeColor,
     borderWidth: 3,
     marginBottom: 5,
     marginTop: 5,
   },
+
+
+  // ====================== AGENDA STYLING ===============
+
+
 
   sectionContainer: {
     marginTop: 32,
