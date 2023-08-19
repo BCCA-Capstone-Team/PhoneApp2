@@ -260,7 +260,7 @@ const Schedule = ({navigation}) => {
     }
 
     if (
-      fullTitle != '' &&
+        fullTitle != '' &&
         fullResult.address[0] &&
         fullResult.city[0] &&
         fullResult.state[0] &&

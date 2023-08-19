@@ -24,9 +24,9 @@ function HomeScreen({navigation, route}) {
   const fadeAnim = useRef(new Animated.Value(1)).current;
 
   // Add a listener to the Animated value to track its changes
-  fadeAnim.addListener(value => {
-    console.log('fadeAnim value:', value);
-  });
+  //fadeAnim.addListener(value => {
+  //  console.log('fadeAnim value:', value);
+  //});
 
   // useEffect(() => {
   //   triggerRefresh;
