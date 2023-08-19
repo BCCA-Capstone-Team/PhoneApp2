@@ -15,40 +15,18 @@ let database = new Database();
 
 let voiceCommands = require('../commandSystem/voiceCommands.jsx');
 
-async function testVoiceCMDS() {
-    let VoiceCommands = new voiceCommands()
-    VoiceCommands.commandKeys = ['address', 'country', 'name', 'state']
-    VoiceCommands.setReturnCallback((values) => {
-        console.log('Complete')
-        console.log(values.address)
-        console.log(values.country)
-        console.log(values.name)
-        console.log(values.state)
-    })
-
-    let sayingWords = ['address', '60', 'Mimosa', 'Dr', 'state', 'Mississippi', 'country', 'United', 'states', 'name', 'Joseph', 'Dunn']
-
-    for (let i = 0; i < sayingWords.length; i++) {
-        await new Promise((rsolve, reject) => {
-            VoiceCommands.addString(sayingWords[i])
-            setTimeout(() => {
-                rsolve()
-            }, 300)
-        })
-    }
-    //VoiceCommands.parseString = "address 60 Mimosa Dr state Mississippi country oUnited states name Joseph Dunn"
-    //ViceCommands.commandKeys = ['address', 'country', 'name', 'state']
-    //await VoiceCommands.breakDown()
-    //let values = VoiceCommands.returnResults()
-    //console.log(values.address)
-    //console.log(values.country)
-    //console.log(values.name)
-    //console.log(values.state)
-}
-
-//setTimeout(() => {
-//    testVoiceCMDS()
-//}, 2500)
+// let dialogClass = require('../commandSystem/dialogCommands.jsx');
+// let dialogSystem = new dialogClass();
+// dialogSystem.readPromptText('Would you like to edit, add, read, or delete');
+// dialogSystem.registerCommand(
+//   'edit',
+//   'Let me know what you would like to edit',
+//   ['title', 'value'],
+//   returnValues => {
+//     console.log('Return values');
+//     console.log(returnValues.title);
+//   },
+// );
 
 function HomeScreen({navigation, route}) {
   const {message} = route.params || '';

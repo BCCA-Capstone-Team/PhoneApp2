@@ -74,13 +74,34 @@ const timeToString = time => {
   return date.toISOString().split('T')[0];
 };
 
-const Schedule = ({navigation}) => {
+const Schedule = ({navigation, route}) => {
   const [items, setItems] = useState({});
   // const [allAppointmentData, setAllAppointmentData] = useState({});
 
   const [isListening, setIsListening] = useState(false);
   const [doneListening, setDoneListening] = useState(true);
   const voiceInputRef = useRef('');
+
+  const rerenderData = async () => {
+    if (route) {
+      const routingInfo = route.params;
+      loadItems();
+      // if (routingInfo.passReload) {
+
+      // }
+    }
+  };
+
+  // useEffect(() => {
+  //   if (items === null) {
+  //     loadItems();
+  //   }
+  // }, [items]);
+
+  // const reloadSchedule = () => {
+  //   setItems({});
+  // };
+  // reloadSchedule();
 
   const toggleListening = () => {
     if (isListening) {
@@ -145,6 +166,7 @@ const Schedule = ({navigation}) => {
 
   const loadItems = async day => {
     let allAppointmentData = await loadAllAppointmentData();
+    // setAllAppointmentData(await loadAllAppointmentData());
     // console.log(allAppointmentData);
     setTimeout(() => {
       const newItems = {};
@@ -244,25 +266,25 @@ const Schedule = ({navigation}) => {
     let fullResult = VoiceCommands.returnResults();
 
     //==========| ADD |==========\\
-    if (fullResult.add) {
+    if (fullResult.add[0]) {
       //===| CONVERT FOR ACCENT |===\\
       let fullTitle = '';
-      if (fullResult.title) {
-        fullTitle = fullResult.title;
-      } else if (fullResult.tidal) {
-        fullTitle = fullResult.tidal;
+      if (fullResult.title[0]) {
+        fullTitle = fullResult.title[0];
+      } else if (fullResult.tidal[0]) {
+        fullTitle = fullResult.tidal[0];
       }
 
       //===| CHECK FOR VALUES |===\\
       if (
         fullTitle != '' &&
-        fullResult.address &&
-        fullResult.city &&
-        fullResult.state &&
-        fullResult.date &&
-        fullResult.zip
+        fullResult.address[0] &&
+        fullResult.city[0] &&
+        fullResult.state[0] &&
+        fullResult.date[0] &&
+        fullResult.zip[0]
       ) {
-        let currentDate = fullResult.date;
+        let currentDate = fullResult.date[0];
         let dateTable = currentDate.split(' ');
         for (let i = 0; i < dateTable.length; i++) {
           dateTable[i] = dateTable[i].replaceAll(',', '');
@@ -276,10 +298,10 @@ const Schedule = ({navigation}) => {
         await database.appTable.add(
           fullTitle,
           JSON.stringify({
-            address: fullResult.address,
-            city: fullResult.city,
-            state: fullResult.state,
-            zipCode: fullResult.zip,
+            address: fullResult.address[0],
+            city: fullResult.city[0],
+            state: fullResult.state[0],
+            zipCode: fullResult.zip[0],
           }),
           JSON.stringify([]),
           newDate.toString(),
@@ -290,20 +312,47 @@ const Schedule = ({navigation}) => {
         console.error('Missing Data to add event');
         console.error(VoiceCommands.parseString);
         console.error(`Title: ${fullTitle}`);
-        console.error(`Address: ${fullResult.address}`);
-        console.error(`City: ${fullResult.city}`);
-        console.error(`State: ${fullResult.state}`);
-        console.error(`Date: ${fullResult.date}`);
-        console.error(`Zip: ${fullResult.zip}`);
+        console.error(`Address: ${fullResult.address[0]}`);
+        console.error(`City: ${fullResult.city[0]}`);
+        console.error(`State: ${fullResult.state[0]}`);
+        console.error(`Date: ${fullResult.date[0]}`);
+        console.error(`Zip: ${fullResult.zip[0]}`);
       }
-    } else if (fullResult.edit) {
+    } else if (fullResult.edit[0]) {
+      //===| CONVERT FOR ACCENT |===\\
+      if (
+        fullResult.title[0] &&
+        fullResult.date[0] &&
+        fullResult.title[1] &&
+        fullResult.date[1]
+      ) {
+        console.log('Edit');
+        console.log(fullResult);
+      } else {
+        console.error('Missing Data to add event');
+        console.error(VoiceCommands.parseString);
+        console.error(`Title: ${fullResult.title[0]}`);
+        console.error(`Date: ${fullResult.date[0]}`);
+        console.error(`New Title: ${fullResult.title[1]}`);
+        console.error(`New Date: ${fullResult.date[1]}`);
+      }
     } else if (fullResult.delete) {
+      //===| CHECK FOR VALUES |===\\
+      if (fullResult.title != '' && fullResult.date) {
+        console.log('Delete Stuff');
+      } else {
+        console.error('Missing Data to add event');
+        console.error(VoiceCommands.parseString);
+        console.error(`Title: ${fullTitle}`);
+        console.error(`Date: ${fullResult.date}`);
+      }
     }
   };
   // let result;
   // const [result, setResult] = useState('');
   const onSpeechResults = e => {
     // setResult('');
+    console.log(e.value);
     let appointmentData = {};
     const spokenWords = e.value[0].split(' ');
     const command = spokenWords.join(' ').toLowerCase();
