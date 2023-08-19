@@ -69,24 +69,22 @@ function App(): JSX.Element {
   }, []);
   return (
     <NavigationContainer ref={navigationRef}>
-      <Stack.Navigator screenOptions={{
-        headerTintColor: '#F26522',
-        headerTitleStyle: {
-          color: '#0C2340'
-        }
-    }}>
+      <Stack.Navigator
+        screenOptions={{
+          headerTintColor: '#F26522',
+          headerTitleStyle: {
+            color: '#0C2340',
+          },
+        }}>
         <Stack.Screen name="Home" component={HomeScreen} />
         <Stack.Screen name="Calendar" component={CalendarScreen} />
-        <Stack.Screen name="Leaving Home Reminders" component={RemindersScreen} />
+        <Stack.Screen
+          name="Leaving Home Reminders"
+          component={RemindersScreen}
+        />
         <Stack.Screen name="Profile Creation" component={ProfileScreen} />
-        <Stack.Screen
-          name="Profile"
-          component={ProfileDetailScreen}
-        />
-        <Stack.Screen
-          name="Appointment"
-          component={AppointmentDetails}
-        />
+        <Stack.Screen name="Profile" component={ProfileDetailScreen} />
+        <Stack.Screen name="Appointment" component={AppointmentDetails} />
         <Stack.Screen
           name="Appointment Creation"
           component={AppointmentFormScreen}
