@@ -209,7 +209,8 @@ const Schedule = ({navigation}) => {
         onPress={() => {
           handleItemPress(item);
         }}>
-        <Text style={styles.buttonText}>{item.eventTitle} at {time}</Text>
+        <Text style={styles.appointmentDayText}>{item.eventTitle}</Text>
+        <Text style={styles.appointmentDayText}>at {time}</Text>
       </TouchableOpacity>
     );
   };
@@ -230,7 +231,8 @@ const Schedule = ({navigation}) => {
           // console.log(timeToString(day));
           handleEmptyDayPress(timeToString(day));
         }}>
-        {/* <Text style={styles.appointmentText}>Empty Day</Text> */}
+        <Text style={styles.appointmentText}>No appointments</Text>
+        <Text style={styles.emptyDayText}>Add appointment</Text>
       </TouchableOpacity>
     );
   };
@@ -551,6 +553,19 @@ const Schedule = ({navigation}) => {
   return (
     <View style={{flex: 1}}>
       <Agenda
+        theme={{
+          dotColor: '#0C2340',
+          todayDotColor: '#0C2340',
+          selectedDotColor: '#0C2340',
+          selectedDayBackgroundColor: '#F26522',
+          todayTextColor: '#0C2340',
+          dayTextColor: '#0C2340',
+          textSectionTitleColor: '#0C2340',
+          agendaDayTextColor: '#0C2340',
+          agendaKnobColor: '#0C2340',
+          agendaTodayColor: '#F26522',
+          agendaDayNumColor: '#0C2340'
+        }}
         items={items}
         loadItemsForMonth={loadItems}
         renderItem={renderItem}

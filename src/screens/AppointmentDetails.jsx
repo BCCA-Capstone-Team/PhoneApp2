@@ -157,80 +157,88 @@ function formatTime(dateObj) {
   if (data.date || data.eventTitle) {
     // console.log(data.date);
     return (
-      <View style={styles.homeContainer}>
+      <View style={styles.appointmentDetailsContainer}>
         <View style={styles.trashButtonContainer}>
             <TrashButton onPress={handleDeleteItem} />
         </View>
         <View style={styles.headerContainer}>
           <Text style={styles.headerText}>{data.eventTitle}</Text>
         </View>
-        <View style={styles.dateContainer}>
-          <Text style={styles.appointmentText}>{date} at {time}</Text>
-        </View>
-        {data.location.address &&
-        data.location.city &&
-        data.location.state != null ? (
-          <View>
-            <Text style={styles.infoText}>Where:</Text>
-            <Text style={styles.appointmentText}>
-              {data.location.address} {data.location.city},{' '}
-              {data.location.state}
-            </Text>
-          <TouchableOpacity 
-            style={styles.appointmentButton} 
-            onPress={() => openMapWithAddress(data.location.address, data.location.city, data.location.state, data.location.zipCode)}
-        >
-            <Text style={styles.buttonText}>Get Directions</Text>
-        </TouchableOpacity>
+        <View style={styles.otherContainer}>
+          <View style={styles.dateContainer}>
+            <Text style={styles.appointmentHeaderText}>{date} at {time}</Text>
           </View>
-          
-        ) : (
-          <Text style={styles.appointmentText}>No location info saved!</Text>
-        )}
-        {data.reminder[0] ? (
-          <View style={styles.appointmentRemindersContainer}>
-          <ScrollView style={{flex: 1}}>
-            <Text style={styles.appointmentText}>Reminders:</Text>
-            {/*/gonna try something new real quick feel free to move or delete if crash/*/}
-            {data.reminder.map((reminder, index) => (
-              <Text key={index} style={styles.appointmentText}>
-                {reminder}
+          {data.location.address &&
+          data.location.city &&
+          data.location.state != null ? (
+            <View style={styles.dateContainer}>
+              <Text style={styles.appointmentHeaderText}>
+                {data.location.address} 
               </Text>
-            ))}
-          </ScrollView>
-          </View>
-        ) : (
-          <Text style={styles.appointmentText} >No reminders to bring along!</Text>
-        )}
-        <View>
-        <TouchableOpacity style={styles.appointmentButton}
-            onPress={() => {
-              //  console.log(data);
-              handleAddItem();
-            }}>
-            <Text style={styles.buttonText}>Add Appointment</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.appointmentButton}
-            onPress={() => {
-              handleEditItem();
-            }}>
-            <Text style={styles.buttonText}>Edit Appointment</Text>
-          </TouchableOpacity>
-        
-        </View>
-        {/* //added this button too// */}
-        {/* <TtsButtonComponent onPress={readAppointments} /> */}
-        <View style={styles.speechButtonContainer} >
-          <SpeechButton isListening={isListening} onPress={toggleListening} />
-        </View>
+              <Text style={styles.appointmentHeaderText}>
+              {data.location.city},{' '}
+                {data.location.state}
+              </Text>
+
       
+              <TouchableOpacity 
+                style={styles.appointmentButton} 
+                onPress={() => openMapWithAddress(data.location.address, data.location.city, data.location.state, data.location.zipCode)}
+              >
+                <Text style={styles.buttonText}>Get Directions</Text>
+              </TouchableOpacity>
+            </View>
+            
+            
+          ) : (
+            <View style={styles.dateContainer}>
+              <Text style={styles.appointmentText}>No location info saved!</Text>
+            </View>
+          )}
+          {data.reminder[0] ? (
+            <View style={styles.appointmentRemindersContainer}>
+            <ScrollView style={styles.dateReminderContainer}>
+              <Text style={styles.remindersHeaderText}>Reminders:</Text>
+              {/*/gonna try something new real quick feel free to move or delete if crash/*/}
+              {data.reminder.map((reminder, index) => (
+                <Text key={index} style={styles.appointmentText}>
+                  - {reminder}
+                </Text>
+              ))}
+            </ScrollView>
+            </View>
+          ) : (
+            <View style={styles.dateContainer}>
+              <Text style={styles.appointmentText} >No reminders!</Text>
+            </View>
+          )}
+          <View>
+          <TouchableOpacity style={styles.appointmentButton}
+              onPress={() => {
+                //  console.log(data);
+                handleAddItem();
+              }}>
+              <Text style={styles.buttonText}>Add Appointment</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.appointmentButton}
+              onPress={() => {
+                handleEditItem();
+              }}>
+              <Text style={styles.buttonText}>Edit Appointment</Text>
+            </TouchableOpacity>
+          
+          </View>
+          </View>
+          <View style={styles.speechButtonContainer} >
+            <SpeechButton isListening={isListening} onPress={toggleListening} />
+          </View>
       </View>
     );
   } else {
     console.log('No stuffs.');
     return (
       <View style={styles.homeContainer}>
-        <Text style={styles.noAppointmentsText}>No appointments today!</Text>
+        <Text style={styles.headerText}>No events today.</Text>
         <View>
           <TouchableOpacity style={styles.button}
             onPress={() => {
