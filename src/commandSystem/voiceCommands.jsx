@@ -93,10 +93,7 @@ class VoiceControlSystem {
     }
 
     saveCommandString(command, value) {
-        if (!this.readyDict[command]) {
-            this.readyDict[command] = []
-        }
-        this.readyDict[command].push(value)
+        this.readyDict[command] = value
     }
 
     returnResults() {
