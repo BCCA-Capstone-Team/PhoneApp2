@@ -18,7 +18,7 @@ let database = new Database();
 let LocationServices = require('../location/LocationSys.jsx');
 let locationServices = new LocationServices();
 
-const ProfileForm = ({navigation, route, onProfileCreated}) => {
+const ProfileForm = ({navigation, route, updateProfileData}) => {
   const {
     control,
     handleSubmit,
@@ -56,12 +56,12 @@ const ProfileForm = ({navigation, route, onProfileCreated}) => {
 
       // geocoding inserted address for latitude and longitude:
       let homeAddress = `${data.street} ${data.city} ${data.state} ${data.zipCode}`;
-      console.log(homeAddress)
+      console.log(homeAddress);
       let homeLocation = await locationServices.getCoordsByAddress(homeAddress);
-      console.log(homeLocation)
-      let latitude = homeLocation.lat
-      let longitude = homeLocation.lon
-      console.log(latitude, longitude)
+      console.log(homeLocation);
+      let latitude = homeLocation.lat;
+      let longitude = homeLocation.lon;
+      console.log(latitude, longitude);
 
       if (profileExists) {
         database.editProfile('firstName', data.firstName);
@@ -89,6 +89,10 @@ const ProfileForm = ({navigation, route, onProfileCreated}) => {
       const message = profileExists
         ? 'Profile successfully updated!'
         : 'New profile successfully created!';
+
+      //fix attempt
+
+      await updateProfileData();
 
       await navigation.navigate('Home', {
         profileData: data,
@@ -198,9 +202,7 @@ const ProfileForm = ({navigation, route, onProfileCreated}) => {
         <Text style={styles.error}>{errors.zipCode.message}</Text>
       )}
 
-      <TouchableOpacity
-        style={styles.button}
-        onPress={handleSubmit(onSubmit)}>
+      <TouchableOpacity style={styles.button} onPress={handleSubmit(onSubmit)}>
         <Text style={styles.buttonText}>Submit</Text>
       </TouchableOpacity>
     </View>
