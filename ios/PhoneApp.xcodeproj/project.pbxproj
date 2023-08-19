@@ -496,8 +496,6 @@
 				DEVELOPMENT_TEAM = WB7685W7GC;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = PhoneApp/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = "Hey James!";
-				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -525,8 +523,6 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = WB7685W7GC;
 				INFOPLIST_FILE = PhoneApp/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = "Hey James!";
-				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

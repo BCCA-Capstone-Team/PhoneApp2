@@ -3,77 +3,31 @@
 import {StyleSheet, Dimensions} from 'react-native';
 
 const {width} = Dimensions.get('window');
-let blueColor = '#0C2340';
-let orangeColor = '#F26522';
 
 export default StyleSheet.create({
-  // Home Page Styling
   homeContainer: {
     flex: 1,
-    flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 10,
-    paddingTop: 0,
-
-  },
-  childHomeContainer: {
-    marginTop: -50,
   },
   container: {
     margin: 20,
   },
-  welcomeText: {
-    position: 'absolute',
-    top: 15,
-    left: 15,
-    fontSize: 30,
-    fontWeight: 'bold',
-  },
-  // Button Styling
-  navButton: {
-    backgroundColor: orangeColor,
-    width: width * 0.7,
-    height: 50,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: 8,
-    margin: 5,
-    marginVertical: 25,
-  },
-  navButtonText: {
-    color: blueColor,
-    fontSize: 30,
-    fontWeight: 'bold',
-  },
-  // Listening Button Styling
-  speakButton: {
-    backgroundColor: blueColor,
-    width: 100,            
-    height: 100,          
-    borderRadius: 50,      
-    justifyContent: 'center', 
-    alignItems: 'center',     
-    margin: 5,
-  },
-  listenButtonImage: {
-    width: 90,
-    height: 90,
-    borderRadius: 45,
-    overflow: 'hidden'
-  },
-  speechButtonContainer:{
-    position: 'absolute',
-    bottom: 20,
-    right: 20,
-  },
-  // Other
   headerText: {
     fontSize: 18,
     marginBottom: 10,
   },
   buttonContainer: {
     marginBottom: 20,
+  },
+  buttonText: {
+    color: 'black',
+    fontSize: 30,
+    fontWeight: 'bold',
+    padding: 8,
+  },
+  button: {
+    margin: 3,
   },
   input: {
     borderWidth: 1,
@@ -100,6 +54,13 @@ export default StyleSheet.create({
   },
   highlight: {
     fontWeight: '700',
+  },
+  speakButton: {
+    backgroundColor: '#0C2340',
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    borderRadius: 8,
+    margin: 5,
   },
   speakButtonText: {
     color: 'white',
@@ -131,6 +92,11 @@ export default StyleSheet.create({
     color: 'white',
     fontSize: 30,
     textAlign: 'center',
+  },
+  speechButtonContainer:{
+    position: 'absolute',
+    bottom: 20,
+    right: 20,
   },
   noAppointmentsText:{
   marginTop:40,

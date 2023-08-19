@@ -314,9 +314,7 @@ function RemindersScreen() {
         )}
       </ScrollView>
       {/* <Button title="Read Reminders" onPress={readReminders} /> */}
-      <View style={styles.speechButtonContainer} >
       <SpeechButton isListening={isListening} onPress={toggleListening} />
-      </View>
     </View>
   );
 }

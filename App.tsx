@@ -79,11 +79,11 @@ function App(): JSX.Element {
           component={ProfileDetailScreen}
         />
         <Stack.Screen
-          name="Appointment"
+          name="AppointmentDetails"
           component={AppointmentDetails}
         />
         <Stack.Screen
-          name="Appointment Creation"
+          name="AppointmentFormScreen"
           component={AppointmentFormScreen}
         />
         <Stack.Screen name="TestScreen" component={TestScreen} />
