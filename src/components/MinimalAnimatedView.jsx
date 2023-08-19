@@ -3,7 +3,7 @@ import {Animated, Text} from 'react-native';
 
 const MinimalAnimatedView = ({message}) => {
   const fadeAnim = useRef(new Animated.Value(1)).current;
-  //
+
   useEffect(() => {
     const fadeOut = Animated.timing(fadeAnim, {
       toValue: 0,

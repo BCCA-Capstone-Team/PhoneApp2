@@ -12,7 +12,6 @@ import MinimalAnimatedView from '../components/MinimalAnimatedView';
 let Database = require('../database/ProfileDatabase.jsx');
 let database = new Database();
 
-
 let voiceCommands = require('../commandSystem/voiceCommands.jsx');
 
 //async function testVoiceCMDS() {
@@ -28,7 +27,7 @@ let voiceCommands = require('../commandSystem/voiceCommands.jsx');
 //    })
 
 //    let sayingWords = ['address', '60', 'Mimosa', 'Dr', 'state', 'Mississippi', 'country', 'United', 'states', 'name', 'Joseph', 'Dunn', 'state', 'St Louis',]
-    
+
 //    for (let i = 0; i < sayingWords.length; i++) {
 //        await new Promise((rsolve, reject) => {
 //            VoiceCommands.addString(sayingWords[i])
