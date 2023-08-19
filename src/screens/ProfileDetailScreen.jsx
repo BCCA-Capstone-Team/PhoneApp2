@@ -1,5 +1,6 @@
 import React from 'react';
 import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
+import styles from '../styles';
 import {HeaderBackButton} from '@react-navigation/stack';
 
 const ProfileDetailScreen = ({navigation, route}) => {
@@ -33,15 +34,6 @@ const ProfileDetailScreen = ({navigation, route}) => {
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 20,
-  },
-  text: {
-    fontSize: 18,
-    marginBottom: 10,
-  },
-});
+
 
 export default ProfileDetailScreen;
