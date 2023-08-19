@@ -14,6 +14,9 @@ import styles from '../styles';
 let Database = require('../database/ProfileDatabase.jsx');
 let database = new Database();
 
+let LocationServices = require('../location/LocationSys.jsx');
+let locationServices = new LocationServices();
+
 const ProfileForm = ({navigation, route, onProfileCreated}) => {
   const {
     control,
@@ -50,6 +53,12 @@ const ProfileForm = ({navigation, route, onProfileCreated}) => {
 
       // geocoding inserted address for latitude and longitude:
       let homeAddress = `${data.street} ${data.city} ${data.state} ${data.zipCode}`;
+      console.log(homeAddress)
+      let homeLocation = await locationServices.getCoordsByAddress(homeAddress);
+      console.log(homeLocation)
+      let latitude = homeLocation.lat
+      let longitude = homeLocation.lon
+      console.log(latitude, longitude)
 
       if (profileExists) {
         database.editProfile('firstName', data.firstName);
@@ -68,8 +77,8 @@ const ProfileForm = ({navigation, route, onProfileCreated}) => {
           data.city,
           data.state,
           parseInt(data.zipCode, 10), // Convert zipCode to an integer (since it was stored as INT in the database)
-          0,
-          0,
+          latitude,
+          longitude,
         );
         // onProfileCreated();
       }
@@ -78,7 +87,7 @@ const ProfileForm = ({navigation, route, onProfileCreated}) => {
         ? 'Profile successfully updated!'
         : 'New profile successfully created!';
 
-      await navigation.navigate('HomeScreen', {
+      await navigation.navigate('Home', {
         profileData: data,
         message: message,
       });
