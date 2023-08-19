@@ -57,7 +57,7 @@ function App(): JSX.Element {
         const profileExists = await profileDatabase.checkForProfile();
         if (!profileExists) {
           // Profile does not exist, navigate to the ProfileScreen
-          (navigationRef.current as any)?.navigate('ProfileScreen', {
+          (navigationRef.current as any)?.navigate('Profile Creation', {
             profileData: null,
           });
         }
