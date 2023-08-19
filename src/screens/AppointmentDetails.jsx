@@ -1,8 +1,9 @@
 import {View, Text, TouchableOpacity} from 'react-native';
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import Tts from 'react-native-tts';
 import SpeechButton from '../components/SpeechButton';
 import AppointmentFormScreen from './AppointmentFormScreen';
+import TrashButton from '../components/TrashButton';
 import TtsButtonComponent from '../components/TtsButtonComponent';
 //adding some styling too
 import styles from '../styles.js';
@@ -12,6 +13,7 @@ let database = new Database('appointmentDatabase');
 //changed let data to const data for easier manipulation (JAQ) ALSO ADDED SOME TTS it should trigger automatically when called from the schedule.jsx file by voice in theory....
 const AppointmentDetails = ({navigation, route}) => {
   const data = route.params;
+  const [isListening, setIsListening] = useState(false);
   console.log(data);
 
   useEffect(() => {
@@ -76,71 +78,83 @@ const AppointmentDetails = ({navigation, route}) => {
     }
   };
 
+  const toggleListening = () => {
+    if (isListening) {
+      Voice.stop();
+    } else {
+      Voice.start('en-US');
+    }
+    setIsListening(!isListening);
+  };
+
   if (data.date || data.eventTitle) {
     // console.log(data.date);
     return (
-      <View>
-        <Text style={styles.eventTitle}>Event: {data.eventTitle}</Text>
+      <View style={styles.homeContainer}>
+        <Text style={styles.headerText}>{data.eventTitle}</Text>
+        <Text style={styles.infoText}>{data.date}</Text>
+        <Text style={styles.infoText}>{data.time}</Text>
         {data.location.address &&
         data.location.city &&
         data.location.state != null ? (
-          <Text>
+          <Text style={styles.infoText}>
             Location: {data.location.address} {data.location.city},{' '}
             {data.location.state}
           </Text>
         ) : (
-          <Text>No location info saved!</Text>
+          <Text style={styles.infoText}>No location info saved!</Text>
         )}
         {data.reminder[0] ? (
           <View>
             {/*/gonna try something new real quick feel free to move or delete if crash/*/}
             {data.reminder.map((reminder, index) => (
-              <Text key={index} style={styles.reminderText}>
+              <Text key={index} style={styles.infoText}>
                 Bring: {reminder}
               </Text>
             ))}
           </View>
         ) : (
-          <Text>No reminders to bring along!</Text>
+          <Text style={styles.infoText} >No reminders to bring along!</Text>
         )}
         <View>
-          <TouchableOpacity
-            style={{marginBottom: 10}}
+        <TouchableOpacity style={styles.button}
             onPress={() => {
+              //  console.log(data);
               handleAddItem();
             }}>
-            <Text>Add Item</Text>
+            <Text style={styles.buttonText}>Add Appointment</Text>
           </TouchableOpacity>
-          <TouchableOpacity
+          <TouchableOpacity style={styles.button}
             onPress={() => {
               handleEditItem();
             }}>
-            <Text>Edit</Text>
+            <Text style={styles.buttonText}>Edit Appointment</Text>
           </TouchableOpacity>
-          <TouchableOpacity onPress={handleDeleteItem}>
-            <Text>Delete Item</Text>
-          </TouchableOpacity>
+          <TrashButton onPress={handleDeleteItem} />
         </View>
         {/* //added this button too// */}
-        <TtsButtonComponent onPress={readAppointments} />
+        {/* <TtsButtonComponent onPress={readAppointments} /> */}
+        <View style={styles.speechButtonContainer} >
+          <SpeechButton isListening={isListening} onPress={toggleListening} />
+        </View>
       </View>
     );
   } else {
     console.log('No stuffs.');
     return (
-      <View>
+      <View style={styles.homeContainer}>
         <Text style={styles.noAppointmentsText}>No appointments today!</Text>
         <View>
-          <TouchableOpacity
+          <TouchableOpacity style={styles.button}
             onPress={() => {
               //  console.log(data);
               handleAddItem();
             }}>
-            <Text style={styles.addText}>Add Item</Text>
+            <Text style={styles.buttonText}>Add Appointment</Text>
           </TouchableOpacity>
-          <TouchableOpacity>
-            <Text style={styles.deleteText}>Delete Item</Text>
-          </TouchableOpacity>
+        </View>
+        <View style={styles.speechButtonContainer} >
+          <SpeechButton isListening={isListening} onPress={toggleListening} />
         </View>
       </View>
     );

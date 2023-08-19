@@ -1,5 +1,5 @@
 import React from 'react';
-import {Text, View, TextInput, Button, StyleSheet} from 'react-native';
+import {Text, View, TextInput, TouchableOpacity} from 'react-native';
 import {useForm, Controller} from 'react-hook-form';
 import styles from '../styles';
 
@@ -35,7 +35,7 @@ const RemindersForm = ({onSubmitForm}) => {
   };
 
   return (
-    <View style={styles.container}>
+    <View>
       <Controller
         control={control}
         render={({field: {onChange, value}}) => (
@@ -54,7 +54,11 @@ const RemindersForm = ({onSubmitForm}) => {
         <Text style={styles.error}>{errors.leavingHomeReminder.message}</Text>
       )}
 
-      <Button title="Submit" onPress={handleSubmit(onSubmit)} />
+      <TouchableOpacity
+        style={styles.button}
+        onPress={handleSubmit(onSubmit)}>
+        <Text style={styles.buttonText}>Submit</Text>
+      </TouchableOpacity>
     </View>
   );
 };

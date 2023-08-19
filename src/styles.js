@@ -48,6 +48,38 @@ export default StyleSheet.create({
     fontSize: 30,
     fontWeight: 'bold',
   },
+  cancelButton: {
+    backgroundColor: orangeColor,
+    width: width * 0.75,
+    height: 50,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 8,
+    margin: 5,
+    marginVertical: 25,
+    borderColor: blueColor,
+    borderWidth: 3
+  },
+  cancelButtonText: {
+    color: blueColor,
+    fontSize: 30,
+    fontWeight: 'bold',
+  },
+  trashButton: {
+    width: 40,
+    height: 40,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: orangeColor,
+    padding: 5,
+    borderRadius: 5,
+    marginLeft: 100,
+  },
+  trashIcon: {
+    width: '100%',
+    height: '100%',
+    resizeMode: 'contain',
+  },
   // ============================= LISTEN BUTTON STYLING ==========================
   speakButton: {
     backgroundColor: blueColor,
@@ -96,6 +128,31 @@ export default StyleSheet.create({
   errorText: {
     color: 'red',
   },
+
+// ===================== MODAL STYLING SPECIFICALLY FOR REMINDERS SCREEN =============
+
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  modalContent: {
+    backgroundColor: 'white',
+    padding: 20,
+    marginHorizontal: 20,
+    borderRadius: 10,
+  },
+
+  // =============== VIEW STYLING FOR REMINDERS SCREEN ================================
+  
+  remindersContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginVertical: 5,
+
+  },
+
   sectionContainer: {
     marginTop: 32,
     paddingHorizontal: 24,

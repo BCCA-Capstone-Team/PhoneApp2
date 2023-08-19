@@ -132,7 +132,6 @@ function HomeScreen({navigation, route}) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Alyx trying some thing
   useFocusEffect(
     React.useCallback(() => {
       const unsubscribe = () => {
