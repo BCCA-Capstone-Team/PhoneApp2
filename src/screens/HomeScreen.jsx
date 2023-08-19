@@ -235,21 +235,21 @@ function HomeScreen({navigation, route}) {
       {/* Calendar Button */}
       <View style={styles.childHomeContainer}>
         <TouchableOpacity
-          style={styles.navButton}
+          style={styles.button}
           onPress={() => handleButtonPress('Calendar')}>
-          <Text style={styles.navButtonText}>Calendar</Text>
+          <Text style={styles.buttonText}>Calendar</Text>
         </TouchableOpacity>
         {/* Reminders Button */}
         <TouchableOpacity
-          style={styles.navButton}
+          style={styles.button}
           onPress={() => handleButtonPress('Leaving Home Reminders')}>
-          <Text style={styles.navButtonText}>Reminders</Text>
+          <Text style={styles.buttonText}>Reminders</Text>
         </TouchableOpacity>
         {/* Profile Button */}
         <TouchableOpacity
-          style={styles.navButton}
+          style={styles.button}
           onPress={() => handleButtonPress('Profile')}>
-          <Text style={styles.navButtonText}>Profile</Text>
+          <Text style={styles.buttonText}>Profile</Text>
         </TouchableOpacity>
       </View>
       {/* Speak Button */}

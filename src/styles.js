@@ -7,7 +7,7 @@ let blueColor = '#0C2340';
 let orangeColor = '#F26522';
 
 export default StyleSheet.create({
-  // Home Page Styling
+  // ============================ HOME PAGE STYLING =============================
   homeContainer: {
     flex: 1,
     flexDirection: 'column',
@@ -15,7 +15,6 @@ export default StyleSheet.create({
     alignItems: 'center',
     padding: 10,
     paddingTop: 0,
-
   },
   childHomeContainer: {
     marginTop: -50,
@@ -29,24 +28,27 @@ export default StyleSheet.create({
     left: 15,
     fontSize: 30,
     fontWeight: 'bold',
+    color: blueColor,
   },
-  // Button Styling
-  navButton: {
-    backgroundColor: orangeColor,
-    width: width * 0.7,
+  // ======================== GENERIC BUTTON STYLING ================================
+  button: {
+    backgroundColor: blueColor,
+    width: width * 0.75,
     height: 50,
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 8,
     margin: 5,
     marginVertical: 25,
+    borderColor: orangeColor,
+    borderWidth: 3
   },
-  navButtonText: {
-    color: blueColor,
+  buttonText: {
+    color: 'white',
     fontSize: 30,
     fontWeight: 'bold',
   },
-  // Listening Button Styling
+  // ============================= LISTEN BUTTON STYLING ==========================
   speakButton: {
     backgroundColor: blueColor,
     width: 100,            
@@ -67,11 +69,19 @@ export default StyleSheet.create({
     bottom: 20,
     right: 20,
   },
-  // Other
+  // ======================= TEXT ON DETAILS PAGES STYLING ====================
   headerText: {
-    fontSize: 18,
+    fontSize: 32,
     marginBottom: 10,
+    fontWeight: 'bold',
   },
+  infoText: {
+    fontSize: 24,
+    padding: 5,
+  },
+
+  // ===================== FORM STYLING ==========================================
+
   buttonContainer: {
     marginBottom: 20,
   },
@@ -81,6 +91,7 @@ export default StyleSheet.create({
     borderRadius: 4,
     padding: 10,
     marginBottom: 10,
+    fontSize: 24,
   },
   errorText: {
     color: 'red',

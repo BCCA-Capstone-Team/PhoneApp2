@@ -6,6 +6,7 @@ import Tts from 'react-native-tts';
 import TtsButtonComponent from '../components/TtsButtonComponent';
 import ProfileDatabase from '../database/ProfileDatabase';
 import SuccessModal from '../components/SuccessModal';
+import SpeechButton from '../components/SpeechButton';
 
 function ProfileScreen({navigation, route}) {
   //Phillip trying something
@@ -36,6 +37,7 @@ function ProfileScreen({navigation, route}) {
     fetchProfileData();
   }, []);
 
+
   useLayoutEffect(() => {
     navigation.setOptions({
       headerLeft: profileData
@@ -47,15 +49,13 @@ function ProfileScreen({navigation, route}) {
 
   return (
     <View style={styles.sectionContainer}>
-      <Text style={styles.sectionTitle}>Profile</Text>
       <ProfileForm
         navigation={navigation}
         route={route}
         profileData={profileData}
         onProfileCreated={handleProfileCreated}
       />
-      {/*TTS Button */}
-      <TtsButtonComponent text="This is the profile screen.  Please enter the following information:first name, last name, street address, city, state, and your zipcode.  " />
+
     </View>
   );
 }

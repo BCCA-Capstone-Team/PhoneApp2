@@ -195,9 +195,9 @@ const ProfileForm = ({navigation, route, onProfileCreated}) => {
       )}
 
       <TouchableOpacity
-        style={styles.submitButton}
+        style={styles.button}
         onPress={handleSubmit(onSubmit)}>
-        <Text style={styles.submitText}>Submit</Text>
+        <Text style={styles.buttonText}>Submit</Text>
       </TouchableOpacity>
     </View>
   );
