@@ -8,6 +8,9 @@ import ProfileDatabase from '../database/ProfileDatabase';
 import SuccessModal from '../components/SuccessModal';
 import SpeechButton from '../components/SpeechButton';
 
+let Database = require('../database/ProfileDatabase.jsx');
+let database = new Database();
+
 function ProfileScreen({navigation, route}) {
   //Phillip trying something
   const {profileData: initialProfileData} = route.params;
@@ -37,6 +40,12 @@ function ProfileScreen({navigation, route}) {
     fetchProfileData();
   }, []);
 
+  //FIX FOR HOMESCREEN USERNAME
+
+  const updateProfileData = async () => {
+    const newData = await database.getProfile(); // Fetch updated profile data
+    navigation.navigate('HomeScreen', {updatedProfileData: newData}); // Pass the updated data to HomeScreen
+  };
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -54,8 +63,8 @@ function ProfileScreen({navigation, route}) {
         route={route}
         profileData={profileData}
         onProfileCreated={handleProfileCreated}
+        updateProfileData={updateProfileData}
       />
-
     </View>
   );
 }

@@ -7,6 +7,7 @@ import {
   Button,
   StyleSheet,
   TouchableOpacity,
+  Animated,
 } from 'react-native';
 import {useForm, Controller} from 'react-hook-form';
 import styles from '../styles';
@@ -17,7 +18,7 @@ let database = new Database();
 let LocationServices = require('../location/LocationSys.jsx');
 let locationServices = new LocationServices();
 
-const ProfileForm = ({navigation, route, onProfileCreated}) => {
+const ProfileForm = ({navigation, route, updateProfileData}) => {
   const {
     control,
     handleSubmit,
@@ -44,6 +45,8 @@ const ProfileForm = ({navigation, route, onProfileCreated}) => {
     }
   }, [profileData, setValue]);
 
+  const fadeAnim = new Animated.Value(1);
+
   const onSubmit = async data => {
     // const profileDatabase = new ProfileDatabase();
     try {
@@ -53,12 +56,12 @@ const ProfileForm = ({navigation, route, onProfileCreated}) => {
 
       // geocoding inserted address for latitude and longitude:
       let homeAddress = `${data.street} ${data.city} ${data.state} ${data.zipCode}`;
-      console.log(homeAddress)
+      console.log(homeAddress);
       let homeLocation = await locationServices.getCoordsByAddress(homeAddress);
-      console.log(homeLocation)
-      let latitude = homeLocation.lat
-      let longitude = homeLocation.lon
-      console.log(latitude, longitude)
+      console.log(homeLocation);
+      let latitude = homeLocation.lat;
+      let longitude = homeLocation.lon;
+      console.log(latitude, longitude);
 
       if (profileExists) {
         database.editProfile('firstName', data.firstName);
@@ -67,8 +70,8 @@ const ProfileForm = ({navigation, route, onProfileCreated}) => {
         database.editProfile('city', data.city);
         database.editProfile('state', data.state);
         database.editProfile('zipCode', data.zipCode);
-        database.editProfile('lat', latitude);
-        database.editProfile('long', longitude);
+        database.editProfile('lat', 0o0);
+        database.editProfile('long', 0o0);
       } else {
         await database.addProfile(
           data.firstName,
@@ -87,9 +90,14 @@ const ProfileForm = ({navigation, route, onProfileCreated}) => {
         ? 'Profile successfully updated!'
         : 'New profile successfully created!';
 
+      //fix attempt
+
+      await updateProfileData();
+
       await navigation.navigate('Home', {
         profileData: data,
         message: message,
+        fadeAnim: fadeAnim,
       });
     } catch (error) {
       console.error('Error adding profile:', error);
@@ -194,9 +202,7 @@ const ProfileForm = ({navigation, route, onProfileCreated}) => {
         <Text style={styles.error}>{errors.zipCode.message}</Text>
       )}
 
-      <TouchableOpacity
-        style={styles.button}
-        onPress={handleSubmit(onSubmit)}>
+      <TouchableOpacity style={styles.button} onPress={handleSubmit(onSubmit)}>
         <Text style={styles.buttonText}>Submit</Text>
       </TouchableOpacity>
     </View>

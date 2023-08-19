@@ -1,4 +1,4 @@
-import React, {useEffect, useState, useCallback, useMemo, useRef} from 'react';
+import React, {useEffect, useState, useRef, useCallback} from 'react';
 import {Text, View, TouchableOpacity, Animated} from 'react-native';
 import {check, PERMISSIONS, request} from 'react-native-permissions';
 import Tts from 'react-native-tts';
@@ -7,56 +7,79 @@ import styles from '../styles';
 import {useFocusEffect} from '@react-navigation/native';
 import SpeechButton from '../components/SpeechButton';
 import AnimatedView from '../components/AnimatedView';
+import MinimalAnimatedView from '../components/MinimalAnimatedView';
 
 let Database = require('../database/ProfileDatabase.jsx');
 let database = new Database();
 
+
 let voiceCommands = require('../commandSystem/voiceCommands.jsx');
 
-async function testVoiceCMDS() {
-    let VoiceCommands = new voiceCommands()
-    VoiceCommands.commandKeys = ['address', 'country', 'name', 'state']
-    VoiceCommands.setReturnCallback((values) => {
-        console.log('Complete')
-        console.log(values.address)
-        console.log(values.country)
-        console.log(values.name)
-        console.log(values.state)
-    })
+//async function testVoiceCMDS() {
+//    let VoiceCommands = new voiceCommands()
+//    VoiceCommands.commandKeys = ['address', 'country', 'name', 'state']
+//    VoiceCommands.setReturnCallback((values) => {
+//        console.log('Complete')
+//        console.log(`Address: ${values.address[0]}`)
+//        console.log(`Country: ${values.country[0]}`)
+//        console.log(`Value: ${values.name[0]}`)
+//        console.log(`State: ${values.state[0]}`)
+//        console.log(`State: ${values.state[1]}`)
+//    })
 
-    let sayingWords = ['address', '60', 'Mimosa', 'Dr', 'state', 'Mississippi', 'country', 'United', 'states', 'name', 'Joseph', 'Dunn']
-
-    for (let i = 0; i < sayingWords.length; i++) {
-        await new Promise((rsolve, reject) => {
-            VoiceCommands.addString(sayingWords[i])
-            setTimeout(() => {
-                rsolve()
-            }, 300)
-        })
-    }
-    //VoiceCommands.parseString = "address 60 Mimosa Dr state Mississippi country oUnited states name Joseph Dunn"
-    //ViceCommands.commandKeys = ['address', 'country', 'name', 'state']
-    //await VoiceCommands.breakDown()
-    //let values = VoiceCommands.returnResults()
-    //console.log(values.address)
-    //console.log(values.country)
-    //console.log(values.name)
-    //console.log(values.state)
-}
+//    let sayingWords = ['address', '60', 'Mimosa', 'Dr', 'state', 'Mississippi', 'country', 'United', 'states', 'name', 'Joseph', 'Dunn', 'state', 'St Louis',]
+    
+//    for (let i = 0; i < sayingWords.length; i++) {
+//        await new Promise((rsolve, reject) => {
+//            VoiceCommands.addString(sayingWords[i])
+//            setTimeout(() => {
+//                rsolve()
+//            }, 300)
+//        })
+//    }
+//}
 
 //setTimeout(() => {
+//    console.log('Starting')
 //    testVoiceCMDS()
 //}, 2500)
 
 function HomeScreen({navigation, route}) {
+  const [refreshKey, setRefreshKey] = useState(0);
+  console.log('HomeScreen rendering');
   const {message} = route.params || '';
-  const [visible, setVisible] = useState(true);
+  //const [visible, setVisible] = useState(true);
   const [profileData, setProfileData] = useState(null);
 
+  //---------- ANIMATION LOGIC -----------//
+
   const fadeAnim = useRef(new Animated.Value(1)).current;
-  // Use useFocusEffect to run animation logic when screen gains focus
+
+  // Add a listener to the Animated value to track its changes
+  //fadeAnim.addListener(value => {
+  //  console.log('fadeAnim value:', value);
+  //});
+
+  // useEffect(() => {
+  //   triggerRefresh;
+  //   const fadeOut = Animated.timing(fadeAnim, {
+  //     toValue: 0,
+  //     duration: 6000,
+  //     useNativeDriver: true,
+  //   });
+
+  //   fadeOut.start();
+  // }, [fadeAnim, message, refreshKey]);
+
+  // const triggerRefresh = () => {
+  //   setRefreshKey(prevKey => prevKey + 1);
+  // };
+
+  //---------------------------
+  //Use useFocusEffect to run animation logic when screen gains focus
   useFocusEffect(
     useCallback(() => {
+      triggerRefresh();
       const fadeOutAnimation = () => {
         console.log(message);
         const fadeOut = Animated.timing(fadeAnim, {
@@ -65,35 +88,45 @@ function HomeScreen({navigation, route}) {
           useNativeDriver: true,
         });
 
-        console.log(message, 'inside HomeScreen');
-        console.log('Before animation start');
         fadeOut.start();
-        console.log('Animation completed');
       };
 
       fadeOutAnimation(); // Trigger the animation logic
-      // return () => {
-      //   // Cleanup logic if needed
-      // };
+      return () => {
+        // Cleanup logic if needed
+      };
     }, [fadeAnim, message]),
   );
 
+  const triggerRefresh = () => {
+    setRefreshKey(prevKey => prevKey + 1);
+  };
+  //------------------------
   // useEffect(() => {
   //   showAlertAndHide();
   // }, []);
+  //--------------------------------------//
 
   useEffect(() => {
-    // Fetch profile data asynchronously and update state
     const fetchProfileData = async () => {
       const data = await database.getProfile();
       setProfileData(data);
-      console.log(data)
+      console.log(data);
       await readInstructions(data.firstName);
     };
     console.log('fetch profile triggered');
-    fetchProfileData();
+
+    // Check if there is updatedProfileData in the route params
+    const updatedProfileData = route.params?.updatedProfileData;
+    if (updatedProfileData) {
+      // If there is updatedProfileData, set it as the new profileData
+      setProfileData(updatedProfileData);
+    } else {
+      // If there is no updatedProfileData, fetch the profile data as usual
+      fetchProfileData();
+    }
     // await readInstructions(data.firstName);
-  }, []);
+  }, [route.params]);
 
   const [isListening, setIsListening] = useState(false);
 
@@ -212,7 +245,7 @@ function HomeScreen({navigation, route}) {
     }
   };
 
-  const readInstructions = (name) => {
+  const readInstructions = name => {
     Tts.speak(
       `Hello ${name}, press on the J button to state where you would like to go: Calendar, Profile, or Reminders.`,
     );
@@ -230,7 +263,13 @@ function HomeScreen({navigation, route}) {
   return (
     <View style={styles.homeContainer}>
       {/* <AnimatedView message={message} /> */}
-      <Text style={styles.welcomeText}>Hello {profileData ? profileData.firstName : 'Loading...'}!</Text>
+      <Text style={styles.welcomeText}>
+        Hello {profileData ? profileData.firstName : 'Loading...'}!
+      </Text>
+      {/* <AnimatedView message={message} /> */}
+
+      <MinimalAnimatedView message={message} />
+
       {/* Calendar Button */}
       <View style={styles.childHomeContainer}>
         <TouchableOpacity
@@ -252,8 +291,8 @@ function HomeScreen({navigation, route}) {
         </TouchableOpacity>
       </View>
       {/* Speak Button */}
-      <View style={styles.speechButtonContainer} >
-      <SpeechButton isListening={isListening} onPress={toggleListening} />
+      <View style={styles.speechButtonContainer}>
+        <SpeechButton isListening={isListening} onPress={toggleListening} />
       </View>
     </View>
   );

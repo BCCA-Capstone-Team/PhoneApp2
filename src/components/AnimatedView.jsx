@@ -2,29 +2,22 @@
 import React, {useEffect, useMemo} from 'react';
 import {Animated, Text} from 'react-native';
 
+const fadeAnim = new Animated.Value(1);
+
 const AnimatedView = ({message}) => {
-  const fadeAnim = useMemo(() => new Animated.Value(1), []);
+  console.log('AnimatedView component rendering');
+  const fadeAnim = useMemo(() => {
+    console.log('Creating new Animated.Value');
+    return new Animated.Value(1);
+  }, []);
 
-  //   useEffect(() => {
-  //     console.log('animation effect triggered: ', message);
-  //     const fadeOut = Animated.timing(fadeAnim, {
-  //       toValue: 0,
-  //       duration: 9000, // Fade out over 3 seconds
-  //       useNativeDriver: true,
-  //     });
-
-  //     if (message !== '') {
-  //       console.log(message, 'inside AnimatedView');
-  //       fadeOut.start();
-  //     }
-  //   }, [fadeAnim, message]);
+  const animatedStyle = {
+    opacity: fadeAnim,
+    // zIndex: 1,
+  };
 
   return (
-    <Animated.View
-      style={{
-        opacity: fadeAnim,
-        zIndex: 1,
-      }}>
+    <Animated.View style={animatedStyle}>
       {/* Render the 'Text' element with 'message' */}
       {message !== '' && <Text>{message}</Text>}
     </Animated.View>
