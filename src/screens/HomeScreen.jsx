@@ -8,6 +8,20 @@ import {useFocusEffect} from '@react-navigation/native';
 import SpeechButton from '../components/SpeechButton';
 import AnimatedView from '../components/AnimatedView';
 import MinimalAnimatedView from '../components/MinimalAnimatedView';
+let allMonths = {
+    January: { value: 1 },
+    February: { value: 2 },
+    March: { value: 3 },
+    April: { value: 4 },
+    May: { value: 5 },
+    June: { value: 6 },
+    July: { value: 7 },
+    August: { value: 8 },
+    September: { value: 9 },
+    October: { value: 10 },
+    November: { value: 11 },
+    December: { value: 12 },
+};
 
 let Database = require('../database/ProfileDatabase.jsx');
 let database = new Database();
@@ -15,34 +29,34 @@ let database = new Database();
 
 let voiceCommands = require('../commandSystem/voiceCommands.jsx');
 
-//async function testVoiceCMDS() {
-//    let VoiceCommands = new voiceCommands()
-//    VoiceCommands.commandKeys = ['address', 'country', 'name', 'state']
-//    VoiceCommands.setReturnCallback((values) => {
-//        console.log('Complete')
-//        console.log(`Address: ${values.address[0]}`)
-//        console.log(`Country: ${values.country[0]}`)
-//        console.log(`Value: ${values.name[0]}`)
-//        console.log(`State: ${values.state[0]}`)
-//        console.log(`State: ${values.state[1]}`)
-//    })
+let DatabaseOld = require('../database/CalendarDatabase.jsx');
+let databaseOld = new DatabaseOld();
 
-//    let sayingWords = ['address', '60', 'Mimosa', 'Dr', 'state', 'Mississippi', 'country', 'United', 'states', 'name', 'Joseph', 'Dunn', 'state', 'St Louis',]
-    
-//    for (let i = 0; i < sayingWords.length; i++) {
-//        await new Promise((rsolve, reject) => {
-//            VoiceCommands.addString(sayingWords[i])
-//            setTimeout(() => {
-//                rsolve()
-//            }, 300)
-//        })
-//    }
-//}
+async function setupDateInterval() {
+    setInterval(async () => {
+        await databaseOld.onAppReady();
+        await databaseOld.appTable.reload();
+        let fullData = databaseOld.appTable.data;
+        fullData.forEach(event => {
+            let remindBefore = event[3][1]
+            let remindDate = event[5][1]
 
-//setTimeout(() => {
-//    console.log('Starting')
-//    testVoiceCMDS()
-//}, 2500)
+            let testDate = new Date(remindDate)
+            let testString = `${testDate.getMonth()}-${testDate.getDate()}-${testDate.getFullYear()} ${testDate.getHours()}:${testDate.getMinutes()}`
+
+            let currentDate = new Date();
+            let timeToAdd = remindBefore * 60 * 1000;
+            let newDate = new Date(currentDate.getTime() + timeToAdd);
+            let newString = `${newDate.getMonth()}-${newDate.getDate()}-${newDate.getFullYear()} ${newDate.getHours()}:${newDate.getMinutes()}`
+
+            if (testString == newString) {
+                Tts.speak(`You have a appointment in ${remindBefore} minutes`)
+                Tts.speak(`Your appointment is for ${event[1][1]}`)
+                Tts.speak(`Be sure to be there by ${event[5][1].slice(0, event[5][1].length - 8)}`)
+            }
+        });
+    }, 55000);
+}; setupDateInterval()
 
 function HomeScreen({navigation, route}) {
   const [refreshKey, setRefreshKey] = useState(0);
