@@ -19,7 +19,7 @@ startDatabase();
 
 const AppointmentForm = ({navigation, route}) => {
   const appointmentData = route.params;
-  console.log(appointmentData[0].eventTitle);
+  // console.log(appointmentData[0].eventTitle);
   const {
     control,
     handleSubmit,
@@ -99,6 +99,7 @@ const AppointmentForm = ({navigation, route}) => {
       );
       appointmentTable.reload();
     } else {
+      console.log(formData.reminder);
       await appointmentTable.add(
         formData.eventTitle,
         formData.location,
@@ -180,6 +181,12 @@ const AppointmentForm = ({navigation, route}) => {
             <Text>City: {appointmentData[0].location.city}</Text>
             <Text>State: {appointmentData[0].location.state}</Text>
             <Text>Zip Code: {appointmentData[0].location.zipCode}</Text>
+            <LocationModal
+              visible={showLocationModal}
+              onClose={() => setShowLocationModal(false)}
+              onSubmit={handleLocationSubmit}
+              locationData={appointmentData[0].location}
+            />
           </>
         ) : (
           <>
@@ -187,6 +194,11 @@ const AppointmentForm = ({navigation, route}) => {
             <Text>City: {location.city}</Text>
             <Text>State: {location.state}</Text>
             <Text>Zip Code: {location.zipCode}</Text>
+            <LocationModal
+              visible={showLocationModal}
+              onClose={() => setShowLocationModal(false)}
+              onSubmit={handleLocationSubmit}
+            />
           </>
         )}
 
@@ -195,13 +207,6 @@ const AppointmentForm = ({navigation, route}) => {
           title="Add Location"
         />
       </View>
-
-      <LocationModal
-        visible={showLocationModal}
-        onClose={() => setShowLocationModal(false)}
-        onSubmit={handleLocationSubmit}
-        locationData={appointmentData[0].location}
-      />
 
       <View>
         <Button onPress={showDatepicker} title="Select Date" />

@@ -57,7 +57,7 @@ function App(): JSX.Element {
         const profileExists = await profileDatabase.checkForProfile();
         if (!profileExists) {
           // Profile does not exist, navigate to the ProfileScreen
-          (navigationRef.current as any)?.navigate('ProfileScreen', {
+          (navigationRef.current as any)?.navigate('Profile Creation', {
             profileData: null,
           });
         }
@@ -70,20 +70,20 @@ function App(): JSX.Element {
   return (
     <NavigationContainer ref={navigationRef}>
       <Stack.Navigator>
-        <Stack.Screen name="HomeScreen" component={HomeScreen} />
-        <Stack.Screen name="CalendarScreen" component={CalendarScreen} />
-        <Stack.Screen name="RemindersScreen" component={RemindersScreen} />
-        <Stack.Screen name="ProfileScreen" component={ProfileScreen} />
+        <Stack.Screen name="Home" component={HomeScreen} />
+        <Stack.Screen name="Calendar" component={CalendarScreen} />
+        <Stack.Screen name="Leaving Home Reminders" component={RemindersScreen} />
+        <Stack.Screen name="Profile Creation" component={ProfileScreen} />
         <Stack.Screen
-          name="ProfileDetailScreen"
+          name="Profile"
           component={ProfileDetailScreen}
         />
         <Stack.Screen
-          name="AppointmentDetails"
+          name="Appointment"
           component={AppointmentDetails}
         />
         <Stack.Screen
-          name="AppointmentFormScreen"
+          name="Appointment Creation"
           component={AppointmentFormScreen}
         />
         <Stack.Screen name="TestScreen" component={TestScreen} />

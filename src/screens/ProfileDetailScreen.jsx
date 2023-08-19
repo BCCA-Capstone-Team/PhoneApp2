@@ -1,9 +1,12 @@
-import React from 'react';
-import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
+import React, {useState} from 'react';
+import {View, Text,  TouchableOpacity } from 'react-native';
+import styles from '../styles';
 import {HeaderBackButton} from '@react-navigation/stack';
+import SpeechButton from '../components/SpeechButton';
 
 const ProfileDetailScreen = ({navigation, route}) => {
   const {profileData} = route.params;
+  const [isListening, setIsListening] = useState(false);
   //console.log('Profile Data:', profileData);
 
   if (!profileData) {
@@ -11,37 +14,39 @@ const ProfileDetailScreen = ({navigation, route}) => {
     return <Text>No profile data available.</Text>;
   }
 
+  const toggleListening = () => {
+    if (isListening) {
+      Voice.stop();
+    } else {
+      Voice.start('en-US');
+    }
+    setIsListening(!isListening);
+  };
+
   const handleEditProfile = () => {
-    navigation.navigate('ProfileScreen', {profileData});
+    navigation.navigate('Profile Creation', {profileData});
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.text}>First Name: {profileData.firstName}</Text>
-      <Text style={styles.text}>Last Name: {profileData.lastName}</Text>
-      <Text style={styles.text}>Street: {profileData.street}</Text>
-      <Text style={styles.text}>City: {profileData.city}</Text>
-      <Text style={styles.text}>State: {profileData.state}</Text>
-      <Text style={styles.text}>Zip Code: {profileData.zipCode}</Text>
-      {/* <Text style={styles.text}>Latitude: {profileData.lat}</Text>
-      <Text style={styles.text}>Longitude: {profileData.long}</Text> */}
+    <View style={styles.homeContainer}>
+      <Text style={styles.headerText}>{profileData.firstName} {profileData.lastName}</Text>
+      <Text style={styles.infoText}>{profileData.street}</Text>
+      <Text style={styles.infoText}>{profileData.city}, {profileData.state} {profileData.zipCode}</Text>
 
-      <TouchableOpacity style={styles.editButton} onPress={handleEditProfile}>
+
+      <TouchableOpacity style={styles.button} onPress={handleEditProfile}>
         <Text style={styles.buttonText}>Edit</Text>
       </TouchableOpacity>
+
+      <View style={styles.speechButtonContainer} >
+      <SpeechButton isListening={isListening} onPress={toggleListening} />
+      </View>
+
+      
     </View>
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 20,
-  },
-  text: {
-    fontSize: 18,
-    marginBottom: 10,
-  },
-});
+
 
 export default ProfileDetailScreen;

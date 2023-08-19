@@ -11,7 +11,7 @@ class CalendarDatabase extends Database {
   async createCalendar() {
     this.appTable = await this.createTable('appointment', column => {
       // Auto Clear is forcing a recreation of the table every time.
-      //column.autoClear();
+      // column.autoClear();
 
       column.create('eventTitle', 'TEXT');
       column.create('location', 'TEXT');
@@ -87,6 +87,7 @@ class CalendarDatabase extends Database {
         }
 
         try {
+          console.log(element[2][1]);
           createdTable[dateParse].push({
             id: element[0][1],
             eventTitle: element[1][1],
@@ -97,8 +98,9 @@ class CalendarDatabase extends Database {
             reminder: reminderArray,
             detailReminder: detailReminderArray,
           });
-        } catch {
+        } catch (error) {
           console.error('Unable to parse data');
+          console.log(error);
         }
       });
 
