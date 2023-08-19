@@ -1,4 +1,4 @@
-import React, {useEffect, useState, useCallback, useMemo, useRef} from 'react';
+import React, {useEffect, useState, useRef, useCallback} from 'react';
 import {Text, View, TouchableOpacity, Animated} from 'react-native';
 import {check, PERMISSIONS, request} from 'react-native-permissions';
 import Tts from 'react-native-tts';
@@ -8,20 +8,49 @@ import TtsButtonComponent from '../components/TtsButtonComponent';
 import {useFocusEffect} from '@react-navigation/native';
 import SpeechButton from '../components/SpeechButton';
 import Radar from 'react-native-radar';
-import AnimatedView from '../components/AnimatedView';
+// import AnimatedView from '../components/AnimatedView';
+
+import MinimalAnimatedView from '../components/MinimalAnimatedView';
 
 let Database = require('../database/ProfileDatabase.jsx');
 let database = new Database();
 
 function HomeScreen({navigation, route}) {
+  const [refreshKey, setRefreshKey] = useState(0);
+  console.log('HomeScreen rendering');
   const {message} = route.params || '';
-  const [visible, setVisible] = useState(true);
+  //const [visible, setVisible] = useState(true);
   const [profileData, setProfileData] = useState(null);
 
+  //---------- ANIMATION LOGIC -----------//
+
   const fadeAnim = useRef(new Animated.Value(1)).current;
-  // Use useFocusEffect to run animation logic when screen gains focus
+
+  // Add a listener to the Animated value to track its changes
+  fadeAnim.addListener(value => {
+    console.log('fadeAnim value:', value);
+  });
+
+  // useEffect(() => {
+  //   triggerRefresh;
+  //   const fadeOut = Animated.timing(fadeAnim, {
+  //     toValue: 0,
+  //     duration: 6000,
+  //     useNativeDriver: true,
+  //   });
+
+  //   fadeOut.start();
+  // }, [fadeAnim, message, refreshKey]);
+
+  // const triggerRefresh = () => {
+  //   setRefreshKey(prevKey => prevKey + 1);
+  // };
+
+  //---------------------------
+  //Use useFocusEffect to run animation logic when screen gains focus
   useFocusEffect(
     useCallback(() => {
+      triggerRefresh();
       const fadeOutAnimation = () => {
         console.log(message);
         const fadeOut = Animated.timing(fadeAnim, {
@@ -30,10 +59,7 @@ function HomeScreen({navigation, route}) {
           useNativeDriver: true,
         });
 
-        console.log(message, 'inside HomeScreen');
-        console.log('Before animation start');
         fadeOut.start();
-        console.log('Animation completed');
       };
 
       fadeOutAnimation(); // Trigger the animation logic
@@ -43,9 +69,14 @@ function HomeScreen({navigation, route}) {
     }, [fadeAnim, message]),
   );
 
+  const triggerRefresh = () => {
+    setRefreshKey(prevKey => prevKey + 1);
+  };
+  //------------------------
   // useEffect(() => {
   //   showAlertAndHide();
   // }, []);
+  //--------------------------------------//
 
   useEffect(() => {
     // Fetch profile data asynchronously and update state
@@ -192,7 +223,10 @@ function HomeScreen({navigation, route}) {
   console.log(message);
   return (
     <View style={styles.homeContainer}>
-      <AnimatedView message={message} />
+      {/* <AnimatedView message={message} /> */}
+
+      <MinimalAnimatedView message={message} />
+
       {/* Calendar Button */}
       <TouchableOpacity
         style={styles.button}

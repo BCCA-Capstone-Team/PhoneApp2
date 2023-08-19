@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
 import {Text, View, ScrollView, Button} from 'react-native';
 import RemindersForm from '../forms/RemindersForm';
@@ -165,6 +166,7 @@ function RemindersScreen() {
       Tts.stop();
       Voice.destroy().then(Voice.removeAllListeners);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [toggleListening]);
 
   const readReminders = async () => {

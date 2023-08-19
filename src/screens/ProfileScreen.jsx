@@ -5,7 +5,6 @@ import styles from '../styles';
 import Tts from 'react-native-tts';
 import TtsButtonComponent from '../components/TtsButtonComponent';
 import ProfileDatabase from '../database/ProfileDatabase';
-import SuccessModal from '../components/SuccessModal';
 
 function ProfileScreen({navigation, route}) {
   //Phillip trying something

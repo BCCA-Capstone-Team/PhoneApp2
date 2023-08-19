@@ -7,6 +7,7 @@ import {
   Button,
   StyleSheet,
   TouchableOpacity,
+  Animated,
 } from 'react-native';
 import {useForm, Controller} from 'react-hook-form';
 import styles from '../styles';
@@ -41,6 +42,8 @@ const ProfileForm = ({navigation, route, onProfileCreated}) => {
     }
   }, [profileData, setValue]);
 
+  const fadeAnim = new Animated.Value(1);
+
   const onSubmit = async data => {
     // const profileDatabase = new ProfileDatabase();
     try {
@@ -58,8 +61,8 @@ const ProfileForm = ({navigation, route, onProfileCreated}) => {
         database.editProfile('city', data.city);
         database.editProfile('state', data.state);
         database.editProfile('zipCode', data.zipCode);
-        database.editProfile('lat', latitude);
-        database.editProfile('long', longitude);
+        database.editProfile('lat', 0o0);
+        database.editProfile('long', 0o0);
       } else {
         await database.addProfile(
           data.firstName,
@@ -81,6 +84,7 @@ const ProfileForm = ({navigation, route, onProfileCreated}) => {
       await navigation.navigate('HomeScreen', {
         profileData: data,
         message: message,
+        fadeAnim: fadeAnim,
       });
     } catch (error) {
       console.error('Error adding profile:', error);
