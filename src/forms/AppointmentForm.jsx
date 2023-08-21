@@ -15,7 +15,7 @@ async function startDatabase() {
   await database.onAppReady();
   appointmentTable = database.appTable;
   appointmentRemindersTable = database.appReminderTable;
-}
+};
 startDatabase();
 
 const AppointmentForm = ({navigation, route}) => {
@@ -59,7 +59,7 @@ const AppointmentForm = ({navigation, route}) => {
       setValue('zipcode', appointmentData[0].location.zipCode);
       setSelectedDate(convertedDate);
     }, [appointmentData, setValue]);
-  }
+  };
 
   // Prefilling form data //
 
@@ -114,10 +114,10 @@ const AppointmentForm = ({navigation, route}) => {
 
       for (const item of formData.thingsToBring) {
         await appointmentRemindersTable.add(newestAppointmentId, item.item);
-      }
+      };
 
       appointmentTable.reload();
-    }
+    };
     appointmentTable.reload();
     const passReload = true;
     navigation.navigate('Calendar', passReload);

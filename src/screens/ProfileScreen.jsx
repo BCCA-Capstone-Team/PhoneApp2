@@ -15,13 +15,13 @@ let database = new Database();
 //------------//------------//
 //VOICE COMMANDS FOR PROFILE
 
-let voiceCommands = require('../commandSystem/voiceCommands.jsx');
-let VoiceCommands = new voiceCommands();
-VoiceCommands.commandKeys = ['edit'];
-VoiceCommands.parseString = 'add title new event';
-await VoiceCommands.breakDown();
-let fullResult = VoiceCommands.returnResults();
-console.log(fullResult.title[0]);
+// let voiceCommands = require('../commandSystem/voiceCommands.jsx');
+// let VoiceCommands = new voiceCommands();
+// VoiceCommands.commandKeys = ['edit'];
+// VoiceCommands.parseString = 'add title new event';
+// await VoiceCommands.breakDown();   // This await needs to be in an async silly
+// let fullResult = VoiceCommands.returnResults();
+// console.log(fullResult.title[0]);
 
 //------------//------------//
 
@@ -46,10 +46,10 @@ function ProfileScreen({navigation, route}) {
         if (profileExists) {
           const data = await profileDatabase.getProfile();
           setProfileData(data);
-        }
+        };
       } catch (error) {
         console.error('Error fetching profile data:', error);
-      }
+      };
     };
     fetchProfileData();
   }, []);
@@ -81,6 +81,6 @@ function ProfileScreen({navigation, route}) {
       />
     </View>
   );
-}
+};
 
 export default ProfileScreen;

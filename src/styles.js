@@ -350,5 +350,5 @@ export default StyleSheet.create({
   fontSize: 30,
   margin: 50,
   marginTop:10,
-  }
+  },
 });

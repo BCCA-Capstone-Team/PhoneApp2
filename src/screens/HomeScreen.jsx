@@ -138,7 +138,7 @@ function HomeScreen({navigation, route}) {
     } else {
       // If there is no updatedProfileData, fetch the profile data as usual
       fetchProfileData();
-    }
+    };
     // await readInstructions(data.firstName);
   }, [route.params]);
 
@@ -150,7 +150,7 @@ function HomeScreen({navigation, route}) {
         request(PERMISSIONS.ANDROID.RECORD_AUDIO).then(newResult => {
           // Handle the permission result
         });
-      }
+      };
     });
 
     check(PERMISSIONS.IOS.MICROPHONE).then(result => {
@@ -158,7 +158,7 @@ function HomeScreen({navigation, route}) {
         request(PERMISSIONS.IOS.MICROPHONE).then(newResult => {
           // Handle the permission result
         });
-      }
+      };
     });
 
     // Request permissions and initialize voice recognition
@@ -213,7 +213,7 @@ function HomeScreen({navigation, route}) {
       default:
         Tts.speak('Sorry, I did not understand.'); //message for unknown commands
         break;
-    }
+    };
   };
 
   // Event handlers for voice recognition
@@ -256,7 +256,7 @@ function HomeScreen({navigation, route}) {
       setIsListening(false);
     } catch (error) {
       console.error('Error starting voice recognition:', error);
-    }
+    };
   };
 
   const readInstructions = name => {
@@ -270,7 +270,7 @@ function HomeScreen({navigation, route}) {
       Voice.stop();
     } else {
       Voice.start('en-US');
-    }
+    };
     setIsListening(!isListening);
   };
   console.log(message);
@@ -310,6 +310,6 @@ function HomeScreen({navigation, route}) {
       </View>
     </View>
   );
-}
+};
 
 export default HomeScreen;

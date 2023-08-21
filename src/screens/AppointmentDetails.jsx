@@ -19,7 +19,7 @@ const AppointmentDetails = ({navigation, route}) => {
   useEffect(() => {
     if (route.params.readAppointments) {
       readAppointments();
-    }
+    };
   }, [route.params.readAppointments]);
   //this is automated tts...should be at least
   const readAppointments = () => {
@@ -41,7 +41,7 @@ const AppointmentDetails = ({navigation, route}) => {
       );
     } else {
       Tts.speak('No location info saved.');
-    }
+    };
 
     // Read reminders
     if (data.reminder && data.reminder.length > 0) {
@@ -51,7 +51,7 @@ const AppointmentDetails = ({navigation, route}) => {
       });
     } else {
       Tts.speak('No reminders to bring along.');
-    }
+    };
   };
   // console.log(data);
   let editing;
@@ -75,7 +75,7 @@ const AppointmentDetails = ({navigation, route}) => {
     let allReminders = listOfData[0].detailReminder;
     for (let i = 0; i < allReminders.length; i++) {
       database.appReminderTable.removeIndex(allReminders[i].id);
-    }
+    };
   };
 
   // Getting Directions Function
@@ -90,7 +90,7 @@ const AppointmentDetails = ({navigation, route}) => {
     // For Android - using Google Maps
     else {
         Linking.openURL(`https://www.google.com/maps/search/?api=1&query=${formattedAddress}`);
-    }
+    };
 };
 
 // Listening Function
@@ -100,7 +100,7 @@ const AppointmentDetails = ({navigation, route}) => {
       Voice.stop();
     } else {
       Voice.start('en-US');
-    }
+    };
     setIsListening(!isListening);
   };
 
@@ -121,7 +121,7 @@ const AppointmentDetails = ({navigation, route}) => {
         daySuffix = 'nd';
     } else if (day % 10 === 3 && day !== 13) {
         daySuffix = 'rd';
-    }
+    };
 
     const monthName = months[dateObj.getMonth()];
     const year = dateObj.getFullYear();
@@ -138,7 +138,7 @@ function formatTime(dateObj) {
       hours -= 12;
   } else if (hours === 0) {
       hours = 12; // for midnight
-  }
+  };
 
   return `${hours}:${minutes} ${ampm}`;
 }
@@ -254,7 +254,7 @@ function formatTime(dateObj) {
         
       </View>
     );
-  }
+  };
 };
 
 export default AppointmentDetails;

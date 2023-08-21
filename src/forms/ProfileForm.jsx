@@ -42,7 +42,7 @@ const ProfileForm = ({navigation, route, updateProfileData}) => {
         'zipCode',
         profileData.zipCode ? profileData.zipCode.toString() : '',
       );
-    }
+    };
   }, [profileData, setValue]);
 
   const fadeAnim = new Animated.Value(1);
@@ -84,7 +84,7 @@ const ProfileForm = ({navigation, route, updateProfileData}) => {
           longitude,
         );
         // onProfileCreated();
-      }
+      };
 
       const message = profileExists
         ? 'Profile successfully updated!'
@@ -101,7 +101,7 @@ const ProfileForm = ({navigation, route, updateProfileData}) => {
       });
     } catch (error) {
       console.error('Error adding profile:', error);
-    }
+    };
   };
 
   return (
