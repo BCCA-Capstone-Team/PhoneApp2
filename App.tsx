@@ -61,10 +61,10 @@ function App(): JSX.Element {
           (navigationRef.current as any)?.navigate('Profile Creation', {
             profileData: null,
           });
-        }
+        };
       } catch (error) {
         console.error('Error checking for profile:', error);
-      }
+      };
     };
     checkForProfileAndNavigate();
   }, []);
@@ -91,10 +91,9 @@ function App(): JSX.Element {
           component={AppointmentFormScreen}
         />
         <Stack.Screen name="TestScreen" component={TestScreen} />
-        <Stack.Screen name="CalendarDummy" component={CalendarDummy} />
       </Stack.Navigator>
     </NavigationContainer>
   );
-}
+};
 
 export default App;

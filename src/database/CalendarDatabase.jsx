@@ -1,4 +1,4 @@
-const {StrictMode} = require('react');
+// const {StrictMode} = require('react');
 let Database = require('../database/Database.jsx');
 
 class CalendarDatabase extends Database {
@@ -6,7 +6,7 @@ class CalendarDatabase extends Database {
     super('appointmentDatabase');
     this.appDatabaseReady = false;
     this.createCalendar();
-  }
+  };
 
   async createCalendar() {
     this.appTable = await this.createTable('appointment', column => {
@@ -36,7 +36,7 @@ class CalendarDatabase extends Database {
     );
 
     this.appDatabaseReady = true;
-  }
+  };
 
   onAppReady() {
     return new Promise((resolve, reject) => {
@@ -44,10 +44,10 @@ class CalendarDatabase extends Database {
         if (this.appDatabaseReady == true) {
           clearInterval(appInterval);
           resolve();
-        }
+        };
       }, 1);
     });
-  }
+  };
 
   async getAll() {
     await this.onAppReady();
@@ -65,7 +65,7 @@ class CalendarDatabase extends Database {
         this.appReminderTable.data.forEach(reminder => {
           if (reminder[1][1] == element[0][1]) {
             reminderArray.push(reminder[2][1]);
-          }
+          };
         });
 
         this.appReminderTable.data.forEach(reminder => {
@@ -74,7 +74,7 @@ class CalendarDatabase extends Database {
               id: reminder[0][1],
               label: reminder[2][1],
             });
-          }
+          };
         });
 
         let newDate = new Date(element[4][1]);
@@ -84,7 +84,7 @@ class CalendarDatabase extends Database {
 
         if (!createdTable[dateParse]) {
           createdTable[dateParse] = [];
-        }
+        };
 
         try {
           console.log(element[2][1]);
@@ -101,12 +101,12 @@ class CalendarDatabase extends Database {
         } catch (error) {
           console.error('Unable to parse data');
           console.log(error);
-        }
+        };
       });
 
       resolve(createdTable);
     });
-  }
+  };
 
   // TESTING HOW TO CHECK FOR ROW //
   async checkForAppointment(appointmentId) {
@@ -122,10 +122,10 @@ class CalendarDatabase extends Database {
           resolve(true);
         } else if (i == this.appTable.length - 1) {
           resolve(false);
-        }
-      }
+        };
+      };
     });
-  }
+  };
   // TESTING HOW TO CHECK FOR ROW //
 
   async edit(changeDate, key, value) {
@@ -143,8 +143,8 @@ class CalendarDatabase extends Database {
         editReady = true;
         for (let i = 0; i < tempItem.length; i++) {
           allKeys.push(tempItem[i][0]);
-        }
-      }
+        };
+      };
 
       if (allKeys.includes(key) && editReady == true) {
         for (let i = 0; i < this.appTable.data.length; i++) {
@@ -156,13 +156,13 @@ class CalendarDatabase extends Database {
 
           if (givenDate == dateParse) {
             await this.appTable.update(selectedItem[0][1], key, value);
-          }
-        }
-      }
+          };
+        };
+      };
 
       resolve();
     });
-  }
+  };
 
   async remove(changeDate) {
     await this.onAppReady();
@@ -179,12 +179,12 @@ class CalendarDatabase extends Database {
 
         if (givenDate == dateParse) {
           await this.appTable.removeIndex(selectedItem[0][1]);
-        }
-      }
+        };
+      };
 
       resolve();
     });
-  }
-}
+  };
+};
 
 module.exports = CalendarDatabase;

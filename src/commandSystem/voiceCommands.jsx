@@ -43,7 +43,7 @@ class VoiceControlSystem {
         await this.breakDown();
         if (this.callbackFunc != null) {
           this.callbackFunc(this.readyDict);
-        }
+        };
         this.resetValues();
       };
     }, 1);

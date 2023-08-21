@@ -344,4 +344,12 @@ export default StyleSheet.create({
     margin: 50,
     marginTop: 10,
   },
+  deleteText:{
+  textAlign:'center',
+  textDecorationStyle:'solid',
+  fontWeight: 'bold',
+  fontSize: 30,
+  margin: 50,
+  marginTop:10,
+  },
 });

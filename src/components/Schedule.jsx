@@ -48,9 +48,9 @@ function monthAndDayFormatter(dateString) {
       splitDateString[1] +
       '-' +
       splitDateString[2];
+  }
   return combinedDateString;
-};
-};
+}
 
 async function getAppointments() {
   let Database = require('../database/CalendarDatabase.jsx');
@@ -63,7 +63,7 @@ async function getAppointments() {
   let test = database.checkForAppointment(2);
   test.then(resp => console.log(resp));
   return allData;
-}
+};
 // getAppointments();
 
 const timeToString = time => {
@@ -87,7 +87,7 @@ const Schedule = ({navigation}) => {
     } else {
       Voice.start('en-US');
       // setDoneListening(false);
-    }
+    };
     setIsListening(!isListening);
   };
   ///armando added the command to be able to stop listening via voice special command is 'finish'
@@ -96,7 +96,7 @@ const Schedule = ({navigation}) => {
 
     if (recognizedText.includes('finish')) {
       toggleListening(); // Stop listening when 'finish' is recognized
-    };
+    };;
   };
 
   useEffect(() => {
@@ -135,11 +135,11 @@ const Schedule = ({navigation}) => {
           Object.getOwnPropertyDescriptor(data, key),
         );
         delete data[key];
-      }
+      };
     });
 
     return data;
-  }
+  };
 
   const loadItems = async day => {
     let allAppointmentData = await loadAllAppointmentData();
@@ -162,8 +162,8 @@ const Schedule = ({navigation}) => {
           items[strTime] = [];
         } else {
           items[strTime] = allAppointmentData[strTime];
-        };
-      };
+        };;
+      };;
       Object.keys(items).forEach(key => {
         newItems[key] = items[key];
         // console.log(key, '===', newItems[key]);
@@ -185,21 +185,21 @@ const Schedule = ({navigation}) => {
     let hours = dateObj.getHours();
     const minutes = String(dateObj.getMinutes()).padStart(2, '0');
     const ampm = hours >= 12 ? 'PM' : 'AM';
-  
+
     if (hours > 12) {
-        hours -= 12;
+      hours -= 12;
     } else if (hours === 0) {
-        hours = 12; // for midnight
-    };
-  
+      hours = 12; // for midnight
+    };;
+
     return `${hours}:${minutes} ${ampm}`;
-  };
+  };;
 
   const renderItem = item => {
     const dateTimeStr = item.time;
 
     const dateObj = new Date(dateTimeStr);
-    const time = formatTime(dateObj); 
+    const time = formatTime(dateObj);
     return (
       <TouchableOpacity
         // eslint-disable-next-line react-native/no-inline-styles
@@ -240,13 +240,13 @@ const Schedule = ({navigation}) => {
   const onSpeechEnd = async e => {
     let VoiceCommands = new voiceCommands();
     VoiceCommands.commandKeys = [
-        'address',
-        'city',
-        'state',
-        'title',
-        'tidal',
-        'date',
-        'zip',
+      'address',
+      'city',
+      'state',
+      'title',
+      'tidal',
+      'date',
+      'zip',
     ];
     VoiceCommands.parseString = result;
     await VoiceCommands.breakDown();
@@ -422,6 +422,7 @@ const Schedule = ({navigation}) => {
     } else {
       Tts.speak("Sorry, I couldn't understand the date for deletion.");
     };
+    };
   };
 
   // readDaysAppointments(new Date());  // Both of these examples work.
@@ -482,9 +483,9 @@ const Schedule = ({navigation}) => {
           const year = currentDate.getFullYear();
           const extractedDate = new Date(year, monthIndex, day);
           return extractedDate;
-        };
-      };
-    };
+        };;
+      };;
+    };;
 
     return null; //only null if failed
   };
@@ -498,7 +499,7 @@ const Schedule = ({navigation}) => {
       const otherInfoParts = spokenWords.slice(otherInfoKeywordIndex + 1);
       const otherInfo = otherInfoParts.join(' ');
       return otherInfo;
-    }
+    };
 
     return null; // only null if failed
   };
@@ -542,22 +543,22 @@ const Schedule = ({navigation}) => {
 export default Schedule;
 
 
- //==========| ADD NEW APPT |==========\\
+//==========| ADD NEW APPT |==========\\
 async function addVoiceOption(fullResult) {
     let fullTitle = '';
     if (fullResult.title[0]) {
-        fullTitle = fullResult.title[0];
+      fullTitle = fullResult.title[0];
     } else if (fullResult.tidal[0]) {
         fullTitle = fullResult.tidal[0];
     };
 
     if (
-        fullTitle != '' &&
-        fullResult.address[0] &&
-        fullResult.city[0] &&
-        fullResult.state[0] &&
-        fullResult.date[0] &&
-        fullResult.zip[0]
+      fullTitle != '' &&
+      fullResult.address[0] &&
+      fullResult.city[0] &&
+      fullResult.state[0] &&
+      fullResult.date[0] &&
+      fullResult.zip[0]
     ) {
         let currentDate = fullResult.date[0];
         let dateTable = currentDate.split(' ');
@@ -569,20 +570,30 @@ async function addVoiceOption(fullResult) {
             allMonths[dateTable[0]].value - 1,
             dateTable[1],
         );
+      let currentDate = fullResult.date[0];
+      let dateTable = currentDate.split(' ');
+      for (let i = 0; i < dateTable.length; i++) {
+        dateTable[i] = dateTable[i].replaceAll(',', '');
+      };
+      let newDate = new Date(
+        dateTable[2],
+        allMonths[dateTable[0]].value - 1,
+        dateTable[1],
+      );
 
-        await database.appTable.add(
-            fullTitle,
-            JSON.stringify({
-                address: fullResult.address[0],
-                city: fullResult.city[0],
-                state: fullResult.state[0],
-                zipCode: fullResult.zip[0],
-            }),
-            JSON.stringify([]),
-            newDate.toString(),
-            newDate.toString(),
-        );
-        console.log('Created Event');
+      await database.appTable.add(
+        fullTitle,
+        JSON.stringify({
+          address: fullResult.address[0],
+          city: fullResult.city[0],
+          state: fullResult.state[0],
+          zipCode: fullResult.zip[0],
+        }),
+        JSON.stringify([]),
+        newDate.toString(),
+        newDate.toString(),
+      );
+      console.log('Created Event');
     } else {
         console.error('Missing Data to add event');
         console.error(VoiceCommands.parseString);
@@ -596,37 +607,61 @@ async function addVoiceOption(fullResult) {
 };
 
 
-//==========| EDIT APPT |==========\\
-async function editVoiceOptions(fullResult) {
-    if (
-        fullResult.title[0] &&
-        fullResult.date[0]
-    ) {
-        console.log('Edit Stuff');
-        await database.reload();
-        let allData = database.data;
+  //==========| EDIT APPT |==========\\
+  async function editVoiceOptions(fullResult) {
+    if (fullResult.title[0] && fullResult.date[0]) {
+      console.log('Edit Stuff');
+      await database.reload();
+      let allData = database.data;
     } else {
-        console.error('Missing Data to add event');
-        console.error(VoiceCommands.parseString);
-        console.error(`Title: ${fullResult.title[0]}`);
-        console.error(`Date: ${fullResult.date[0]}`);
+      console.error('Missing Data to add event');
+      console.error(VoiceCommands.parseString);
+      console.error(`Title: ${fullResult.title[0]}`);
+      console.error(`Date: ${fullResult.date[0]}`);
     };
+  };
+  //==========| REMOVE APPT |==========\\
+  async function removeVoiceOption(fullResult) {
+    if (fullResult.title[0] && fullResult.date[0]) {
+      console.log('Edit Stuff');
+      await database.reload();
+      let allData = database.data;
+    } else {
+      console.error('Missing Data to add event');
+      console.error(VoiceCommands.parseString);
+      console.error(`Title: ${fullResult.title[0]}`);
+      console.error(`Date: ${fullResult.date[0]}`);
+    };
+  };
+
+  return (
+    <View style={{flex: 1}}>
+      <Agenda
+        theme={{
+          dotColor: '#0C2340',
+          todayDotColor: '#0C2340',
+          selectedDotColor: '#0C2340',
+          selectedDayBackgroundColor: '#F26522',
+          todayTextColor: '#0C2340',
+          dayTextColor: '#0C2340',
+          textSectionTitleColor: '#0C2340',
+          agendaDayTextColor: '#0C2340',
+          agendaKnobColor: '#0C2340',
+          agendaTodayColor: '#F26522',
+          agendaDayNumColor: '#0C2340',
+        }}
+        items={items}
+        loadItemsForMonth={loadItems}
+        renderItem={renderItem}
+        renderEmptyDate={renderEmptyDay}
+        selected={new Date().toString()}
+      />
+
+      <View style={styles.speechButtonContainer}>
+        <SpeechButton isListening={isListening} onPress={toggleListening} />
+      </View>
+    </View>
+  );
 };
 
-
-//==========| REMOVE APPT |==========\\
-async function removeVoiceOption(fullResult) {
-    if (
-        fullResult.title[0] &&
-        fullResult.date[0]
-    ) {
-        console.log('Edit Stuff');
-        await database.reload();
-        let allData = database.data;
-    } else {
-        console.error('Missing Data to add event');
-        console.error(VoiceCommands.parseString);
-        console.error(`Title: ${fullResult.title[0]}`);
-        console.error(`Date: ${fullResult.date[0]}`);
-    };
-};
+export default Schedule;

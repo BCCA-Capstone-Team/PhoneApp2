@@ -51,8 +51,8 @@ const ProfileDetailScreen = ({navigation, route}) => {
             // Assume the word is a value
             fieldValue = nextWord;
             break;
-          }
-        }
+          };
+        };
 
         // Check if we found a valid fieldName and fieldValue
         if (fieldName && fieldValue) {
@@ -72,12 +72,12 @@ const ProfileDetailScreen = ({navigation, route}) => {
             }
           } catch (error) {
             console.error(`Failed to update ${fieldName}: ${error.message}`);
-          }
+          };
         } else {
           console.error('Invalid voice command format');
-        }
-      }
-    }
+        };
+      };
+    };
   }, []);
 
   // Toggle listening when the "Speak" button is pressed
@@ -86,7 +86,7 @@ const ProfileDetailScreen = ({navigation, route}) => {
       Voice.stop();
     } else {
       Voice.start('en-US');
-    }
+    };
     setIsListening(!isListening);
   };
 
@@ -95,7 +95,7 @@ const ProfileDetailScreen = ({navigation, route}) => {
     if (voiceCommand.trim() !== '') {
       processVoiceCommand(voiceCommand);
       setVoiceCommand(''); // Clear the voiceCommand
-    }
+    };
   }, [voiceCommand, processVoiceCommand]);
 
   const handleEditProfile = () => {
