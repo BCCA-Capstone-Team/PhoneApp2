@@ -19,7 +19,6 @@ export default StyleSheet.create({
   },
   formContainer: {
     padding: 10,
-
   },
   childHomeContainer: {
     marginTop: -50,
@@ -30,10 +29,10 @@ export default StyleSheet.create({
   container: {
     margin: 20,
   },
-  appointmentFormRemindersContainer: { 
-    flexDirection: 'row', 
-    alignItems: 'center', 
-    marginBottom: 10 
+  appointmentFormRemindersContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 10,
   },
   appointmentDetailsContainer: {
     flex: 1,
@@ -51,13 +50,13 @@ export default StyleSheet.create({
     fontWeight: 'bold',
     color: blueColor,
   },
-  headerContainer:{
+  headerContainer: {
     position: 'absolute',
     top: 15,
     left: 20,
     width: width * 0.65,
   },
-  dateContainer:{
+  dateContainer: {
     borderBottomColor: orangeColor,
     borderBottomWidth: 2,
     borderStyle: 'solid',
@@ -65,17 +64,16 @@ export default StyleSheet.create({
     padding: 5,
   },
   appointmentRemindersContainer: {
-    height: screenHeight * 0.20,
+    height: screenHeight * 0.2,
     width: width * 0.75,
-
   },
-  dateReminderContainer:{
+  dateReminderContainer: {
     borderBottomColor: orangeColor,
     borderBottomWidth: 2,
     borderStyle: 'solid',
     flex: 1,
   },
-  
+
   // ======================== GENERIC BUTTON STYLING ================================
   button: {
     backgroundColor: blueColor,
@@ -87,7 +85,7 @@ export default StyleSheet.create({
     margin: 5,
     marginVertical: 25,
     borderColor: orangeColor,
-    borderWidth: 3
+    borderWidth: 3,
   },
   buttonText: {
     color: 'white',
@@ -104,7 +102,7 @@ export default StyleSheet.create({
     margin: 5,
     marginVertical: 25,
     borderColor: blueColor,
-    borderWidth: 3
+    borderWidth: 3,
   },
   cancelButtonText: {
     color: blueColor,
@@ -126,7 +124,7 @@ export default StyleSheet.create({
     height: '100%',
     resizeMode: 'contain',
   },
-  trashButtonContainer:{
+  trashButtonContainer: {
     position: 'absolute',
     top: 15,
     right: 20,
@@ -140,7 +138,7 @@ export default StyleSheet.create({
     borderRadius: 8,
     margin: 5,
     borderColor: orangeColor,
-    borderWidth: 3
+    borderWidth: 3,
   },
   emptyDayText: {
     color: blueColor,
@@ -155,20 +153,20 @@ export default StyleSheet.create({
   // ============================= LISTEN BUTTON STYLING ==========================
   speakButton: {
     backgroundColor: blueColor,
-    width: 100,            
-    height: 100,          
-    borderRadius: 50,      
-    justifyContent: 'center', 
-    alignItems: 'center',     
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    justifyContent: 'center',
+    alignItems: 'center',
     margin: 5,
   },
   listenButtonImage: {
     width: 90,
     height: 90,
     borderRadius: 45,
-    overflow: 'hidden'
+    overflow: 'hidden',
   },
-  speechButtonContainer:{
+  speechButtonContainer: {
     position: 'absolute',
     bottom: 20,
     right: 20,
@@ -218,16 +216,15 @@ export default StyleSheet.create({
     borderRadius: 4,
     marginBottom: 10,
     fontSize: 24,
-    flex: 1, 
-    marginRight: 20
+    flex: 1,
+    marginRight: 20,
   },
-
 
   errorText: {
     color: 'red',
   },
 
-// ===================== MODAL STYLING SPECIFICALLY FOR REMINDERS SCREEN =============
+  // ===================== MODAL STYLING SPECIFICALLY FOR REMINDERS SCREEN =============
 
   modalContainer: {
     flex: 1,
@@ -242,13 +239,12 @@ export default StyleSheet.create({
   },
 
   // =============== VIEW STYLING FOR REMINDERS SCREEN ================================
-  
+
   remindersContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     marginVertical: 5,
-
   },
 
   // =============== CALENDAR STYLING =================================================
@@ -278,10 +274,7 @@ export default StyleSheet.create({
     marginTop: 5,
   },
 
-
   // ====================== AGENDA STYLING ===============
-
-
 
   sectionContainer: {
     marginTop: 32,
@@ -330,25 +323,25 @@ export default StyleSheet.create({
     fontSize: 30,
     textAlign: 'center',
   },
-  noAppointmentsText:{
-  marginTop:40,
-  fontWeight:'bold',
-  margin: 60,
-  fontSize: 30,
-  textAlign:'center',
+  noAppointmentsText: {
+    marginTop: 40,
+    fontWeight: 'bold',
+    margin: 60,
+    fontSize: 30,
+    textAlign: 'center',
   },
   addText: {
-  textAlign:'center',
-  fontSize: 30,
-  margin: 50,
-  fontWeight: 'bold',
+    textAlign: 'center',
+    fontSize: 30,
+    margin: 50,
+    fontWeight: 'bold',
   },
-  deleteText:{
-  textAlign:'center',
-  textDecorationStyle:'solid',
-  fontWeight: 'bold',
-  fontSize: 30,
-  margin: 50,
-  marginTop:10,
-  }
+  deleteText: {
+    textAlign: 'center',
+    textDecorationStyle: 'solid',
+    fontWeight: 'bold',
+    fontSize: 30,
+    margin: 50,
+    marginTop: 10,
+  },
 });

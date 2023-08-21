@@ -1,5 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-/* eslint-disable no-undef */
 import React, {useState, useEffect, useRef} from 'react';
 import {View, Text, TouchableOpacity} from 'react-native';
 import {startOfWeek, addDays} from 'date-fns';
@@ -37,11 +35,11 @@ function monthAndDayFormatter(dateString) {
   if (splitDateString[1].length === 1) {
     splitDateString[1] = '' + '0' + splitDateString[1];
     neededFixing = true;
-  }
+  };
   if (splitDateString[2].length === 1) {
     splitDateString[2] = '' + '0' + splitDateString[2];
     neededFixing = true;
-  }
+  };
   if (neededFixing) {
     combinedDateString =
       '' +
@@ -50,9 +48,9 @@ function monthAndDayFormatter(dateString) {
       splitDateString[1] +
       '-' +
       splitDateString[2];
-  }
   return combinedDateString;
-}
+};
+};
 
 async function getAppointments() {
   let Database = require('../database/CalendarDatabase.jsx');
@@ -98,7 +96,7 @@ const Schedule = ({navigation}) => {
 
     if (recognizedText.includes('finish')) {
       toggleListening(); // Stop listening when 'finish' is recognized
-    }
+    };
   };
 
   useEffect(() => {
@@ -153,7 +151,7 @@ const Schedule = ({navigation}) => {
         const strTime = timeToString(time);
         if (i == 0) {
           console.log(strTime);
-        }
+        };
 
         // Create events for different dates and add them to myItems array
         // Example:
@@ -164,8 +162,8 @@ const Schedule = ({navigation}) => {
           items[strTime] = [];
         } else {
           items[strTime] = allAppointmentData[strTime];
-        }
-      }
+        };
+      };
       Object.keys(items).forEach(key => {
         newItems[key] = items[key];
         // console.log(key, '===', newItems[key]);
@@ -192,10 +190,10 @@ const Schedule = ({navigation}) => {
         hours -= 12;
     } else if (hours === 0) {
         hours = 12; // for midnight
-    }
+    };
   
     return `${hours}:${minutes} ${ampm}`;
-  }
+  };
 
   const renderItem = item => {
     const dateTimeStr = item.time;
@@ -255,12 +253,12 @@ const Schedule = ({navigation}) => {
     let fullResult = VoiceCommands.returnResults();
 
       if (fullResult.add) {
-          addVoiceOption(fullResult)
+          addVoiceOption(fullResult);
       } else if (fullResult.edit) {
-          editVoiceOptions(fullResult)
+          editVoiceOptions(fullResult);
       } else if (fullResult.remove) {
-          removeVoiceOption(fullResult)
-      }
+          removeVoiceOption(fullResult);
+      };
 
     
     
@@ -416,14 +414,14 @@ const Schedule = ({navigation}) => {
           Tts.speak('Appointment deleted successfully.');
         } else {
           Tts.speak('Appointment deletion failed.');
-        }
+        };
       } catch (error) {
         console.error('Error deleting appointment:', error);
         Tts.speak('Sorry, an error occurred while deleting the appointment.');
-      }
+      };
     } else {
       Tts.speak("Sorry, I couldn't understand the date for deletion.");
-    }
+    };
   };
 
   // readDaysAppointments(new Date());  // Both of these examples work.
@@ -484,16 +482,16 @@ const Schedule = ({navigation}) => {
           const year = currentDate.getFullYear();
           const extractedDate = new Date(year, monthIndex, day);
           return extractedDate;
-        }
-      }
-    }
+        };
+      };
+    };
 
     return null; //only null if failed
   };
   const extractOtherInfo = spokenWords => {
     const otherInfoKeywords = ['with', 'by', 'meeting', 'appointment', 'event'];
     const otherInfoKeywordIndex = spokenWords.findIndex(word =>
-      otherInfoKeywords.includes(word.toLowerCase()),
+      otherInfoKeywords.includes(word.toLowerCase())
     );
 
     if (otherInfoKeywordIndex !== -1) {
@@ -544,14 +542,14 @@ const Schedule = ({navigation}) => {
 export default Schedule;
 
 
-//==========| ADD NEW APPT |==========\\
+ //==========| ADD NEW APPT |==========\\
 async function addVoiceOption(fullResult) {
     let fullTitle = '';
     if (fullResult.title[0]) {
         fullTitle = fullResult.title[0];
     } else if (fullResult.tidal[0]) {
         fullTitle = fullResult.tidal[0];
-    }
+    };
 
     if (
         fullTitle != '' &&
@@ -565,7 +563,7 @@ async function addVoiceOption(fullResult) {
         let dateTable = currentDate.split(' ');
         for (let i = 0; i < dateTable.length; i++) {
             dateTable[i] = dateTable[i].replaceAll(',', '');
-        }
+        };
         let newDate = new Date(
             dateTable[2],
             allMonths[dateTable[0]].value - 1,
@@ -594,8 +592,8 @@ async function addVoiceOption(fullResult) {
         console.error(`State: ${fullResult.state[0]}`);
         console.error(`Date: ${fullResult.date[0]}`);
         console.error(`Zip: ${fullResult.zip[0]}`);
-    }
-}
+    };
+};
 
 
 //==========| EDIT APPT |==========\\
@@ -604,16 +602,16 @@ async function editVoiceOptions(fullResult) {
         fullResult.title[0] &&
         fullResult.date[0]
     ) {
-        console.log('Edit Stuff')
-        await database.reload()
-        let allData = database.data
+        console.log('Edit Stuff');
+        await database.reload();
+        let allData = database.data;
     } else {
         console.error('Missing Data to add event');
         console.error(VoiceCommands.parseString);
         console.error(`Title: ${fullResult.title[0]}`);
         console.error(`Date: ${fullResult.date[0]}`);
-    }
-}
+    };
+};
 
 
 //==========| REMOVE APPT |==========\\
@@ -622,13 +620,13 @@ async function removeVoiceOption(fullResult) {
         fullResult.title[0] &&
         fullResult.date[0]
     ) {
-        console.log('Edit Stuff')
-        await database.reload()
-        let allData = database.data
+        console.log('Edit Stuff');
+        await database.reload();
+        let allData = database.data;
     } else {
         console.error('Missing Data to add event');
         console.error(VoiceCommands.parseString);
         console.error(`Title: ${fullResult.title[0]}`);
         console.error(`Date: ${fullResult.date[0]}`);
-    }
-}
+    };
+};

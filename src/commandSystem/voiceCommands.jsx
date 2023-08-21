@@ -6,22 +6,22 @@ class VoiceControlSystem {
     this.currentCoolDown = 0;
     this.callbackFunc = null;
     this.coolDownInterval = null;
-  }
+  };
 
   addString(value) {
     if (this.parseString == '') {
       this.parseString = value;
     } else {
       this.parseString = `${this.parseString} ${value}`;
-    }
+    };
 
     if (this.currentCoolDown == 0) {
       this.currentCoolDown = 200;
       this.awaitTimer();
     } else {
       this.currentCoolDown = 200;
-    }
-  }
+    };
+  };
 
   addFullString(value) {
     this.parseString = value;
@@ -31,8 +31,8 @@ class VoiceControlSystem {
       this.awaitTimer();
     } else {
       this.currentCoolDown = 200;
-    }
-  }
+    };
+  };
 
   awaitTimer() {
     this.coolDownInterval = setInterval(async () => {
@@ -45,9 +45,9 @@ class VoiceControlSystem {
           this.callbackFunc(this.readyDict);
         }
         this.resetValues();
-      }
+      };
     }, 1);
-  }
+  };
 
   resetValues() {
     this.parseString = '';
@@ -56,7 +56,7 @@ class VoiceControlSystem {
     this.currentCoolDown = 0;
     this.callbackFunc = null;
     this.coolDownInterval = null;
-  }
+  };
 
   breakDown() {
     return new Promise((resolve, reject) => {
@@ -73,43 +73,43 @@ class VoiceControlSystem {
             this.saveCommandString(currentCommand, currentData);
             currentCommand = testString;
             currentData = '';
-          }
+          };
         } else {
           if (currentData == '') {
             currentData = stringArray[i];
           } else {
             currentData = `${currentData} ${stringArray[i]}`;
-          }
-        }
+          };
+        };
 
         if (fullLength == i) {
           this.saveCommandString(currentCommand, currentData);
           currentCommand = testString;
           currentData = '';
-        }
-      }
+        };
+      };
       resolve();
     });
-  }
+  };
 
   saveCommandString(command, value) {
     if (!this.readyDict[command]) {
       this.readyDict[command] = [];
-    }
+    };
     if (value) {
       this.readyDict[command].push(value);
     } else {
       this.readyDict[command].push(true);
-    }
-  }
+    };
+  };
 
   returnResults() {
     return this.readyDict;
-  }
+  };
 
   setReturnCallback(callback) {
     this.callbackFunc = callback;
-  }
-}
+  };
+};
 
 module.exports = VoiceControlSystem;

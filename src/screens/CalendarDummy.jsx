@@ -6,7 +6,7 @@ const CalendarDummy = ({navigation}) => {
     navigation.navigate('Calendar');
   }, 200);
 
-  return <View></View>;
+  return <View />;
 };
 
 export default CalendarDummy;

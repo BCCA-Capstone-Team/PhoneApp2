@@ -54,9 +54,7 @@ const RemindersForm = ({onSubmitForm}) => {
         <Text style={styles.error}>{errors.leavingHomeReminder.message}</Text>
       )}
 
-      <TouchableOpacity
-        style={styles.button}
-        onPress={handleSubmit(onSubmit)}>
+      <TouchableOpacity style={styles.button} onPress={handleSubmit(onSubmit)}>
         <Text style={styles.buttonText}>Submit</Text>
       </TouchableOpacity>
     </View>

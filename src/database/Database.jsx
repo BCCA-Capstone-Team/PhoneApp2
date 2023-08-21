@@ -374,7 +374,7 @@ class DataController {
 
               for (let i = 0; i < results.rows.length; i++) {
                 let currentRow = [];
-                let rowData = results.rows.item(i)['ID'];
+                let rowData = results.rows.item(i).ID;
                 currentRow.push(['ID', rowData]);
 
                 for (let i2 = 0; i2 < this.columnList.length; i2++) {

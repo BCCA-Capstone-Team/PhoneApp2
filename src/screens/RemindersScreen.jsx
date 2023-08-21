@@ -1,4 +1,3 @@
-/* eslint-disable no-undef */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
 import {Text, View, ScrollView} from 'react-native';
 import RemindersForm from '../forms/RemindersForm';
@@ -290,15 +289,14 @@ function RemindersScreen() {
           <Text>Loading...</Text>
         ) : reminders.length > 0 ? (
           reminders.map((reminder, index) => (
-            <View
-              key={index}
-              style={styles.remindersContainer}>
+            <View key={index} style={styles.remindersContainer}>
               <Text style={styles.infoText}>{reminder[1][1]}</Text>
 
-              <TrashButton onPress={() => {
+              <TrashButton
+                onPress={() => {
                   deleteReminder(reminder[0][1]);
-                }} />
-
+                }}
+              />
             </View>
           ))
         ) : (
@@ -306,8 +304,8 @@ function RemindersScreen() {
         )}
       </ScrollView>
       {/* <Button title="Read Reminders" onPress={readReminders} /> */}
-      <View style={styles.speechButtonContainer} >
-      <SpeechButton isListening={isListening} onPress={toggleListening} />
+      <View style={styles.speechButtonContainer}>
+        <SpeechButton isListening={isListening} onPress={toggleListening} />
       </View>
     </View>
   );

@@ -19,9 +19,9 @@ let voiceCommands = require('../commandSystem/voiceCommands.jsx');
 let VoiceCommands = new voiceCommands();
 VoiceCommands.commandKeys = ['edit'];
 VoiceCommands.parseString = 'add title new event';
-await VoiceCommands.breakDown();
-let fullResult = VoiceCommands.returnResults();
-console.log(fullResult.title[0]);
+// await VoiceCommands.breakDown();
+// let fullResult = VoiceCommands.returnResults();
+// console.log(fullResult.title[0]);
 
 //------------//------------//
 
@@ -31,7 +31,7 @@ function ProfileScreen({navigation, route}) {
   const [profileCreated, setProfileCreated] = useState(false);
 
   // Function to handle successful profile creation
-  // eslint-disable-next-line prettier/prettier
+
   const handleProfileCreated = () => {
     setProfileCreated(true);
   };

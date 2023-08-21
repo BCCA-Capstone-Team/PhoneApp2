@@ -1,4 +1,3 @@
-/* eslint-disable react-native/no-inline-styles */
 import React, {useEffect, useMemo} from 'react';
 import {Animated, Text} from 'react-native';
 

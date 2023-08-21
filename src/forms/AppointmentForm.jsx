@@ -1,5 +1,13 @@
 import {React, useState, useEffect} from 'react';
-import {ScrollView, View, Text, Button, TextInput, Platform, TouchableOpacity} from 'react-native';
+import {
+  ScrollView,
+  View,
+  Text,
+  Button,
+  TextInput,
+  Platform,
+  TouchableOpacity,
+} from 'react-native';
 import {Controller, useForm, useFieldArray} from 'react-hook-form';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import {Picker} from '@react-native-picker/picker';
@@ -252,37 +260,35 @@ const AppointmentForm = ({navigation, route}) => {
       </View>
 
       {/* Things to Bring as Reminders with Appointment: */}
-      
-      <View>
-      <ScrollView style={{maxHeight: 200}}>
-        <Text>Things to Bring:</Text>
-        {fields.map((field, index) => (
-          <View key={field.id} style={styles.appointmentFormRemindersContainer}>
-            <Controller
-              control={control}
-              render={({field}) => (
-                <TextInput
-                  {...field}
-                  style={styles.inputReminders}
-                  placeholder={`Item ${index + 1}`}
-                  onChangeText={text => handleThingToBringChange(text, index)} // New line
-                />
-              )}
-              name={`thingsToBring[${index}].item`}
-              defaultValue=""
-            />
-            <TrashButton onPress={() => remove(index)} />
-          </View>
 
-        ))}
-        <Button onPress={() => append({item: ''})} title="Add Item" />
+      <View>
+        <ScrollView style={{maxHeight: 200}}>
+          <Text>Things to Bring:</Text>
+          {fields.map((field, index) => (
+            <View
+              key={field.id}
+              style={styles.appointmentFormRemindersContainer}>
+              <Controller
+                control={control}
+                render={({field}) => (
+                  <TextInput
+                    {...field}
+                    style={styles.inputReminders}
+                    placeholder={`Item ${index + 1}`}
+                    onChangeText={text => handleThingToBringChange(text, index)} // New line
+                  />
+                )}
+                name={`thingsToBring[${index}].item`}
+                defaultValue=""
+              />
+              <TrashButton onPress={() => remove(index)} />
+            </View>
+          ))}
+          <Button onPress={() => append({item: ''})} title="Add Item" />
         </ScrollView>
       </View>
-      
 
-      <TouchableOpacity
-        style={styles.button}
-        onPress={handleSubmit(onSubmit)}>
+      <TouchableOpacity style={styles.button} onPress={handleSubmit(onSubmit)}>
         <Text style={styles.buttonText}>Submit</Text>
       </TouchableOpacity>
     </View>

@@ -103,7 +103,7 @@ class LocationServices {
             latitude: destinationLocation.lat,
             longitude: destinationLocation.lon,
           },
-          modes: [`car`],
+          modes: ['car'],
           units: 'imperial',
         })
         .then(result => {
