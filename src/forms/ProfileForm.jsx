@@ -202,7 +202,7 @@ const ProfileForm = ({navigation, route, updateProfileData}) => {
         <Text style={styles.error}>{errors.zipCode.message}</Text>
       )}
 
-      <TouchableOpacity style={styles.button} onPress={handleSubmit(onSubmit)}>
+      <TouchableOpacity style={styles.submitButton} onPress={handleSubmit(onSubmit)}>
         <Text style={styles.buttonText}>Submit</Text>
       </TouchableOpacity>
     </View>

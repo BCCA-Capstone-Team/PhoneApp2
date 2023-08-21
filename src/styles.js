@@ -17,6 +17,10 @@ export default StyleSheet.create({
     padding: 10,
     paddingTop: 0,
   },
+  scrollViewContainer: {
+    flex: 1,
+    // padding: 10,
+  },
   formContainer: {
     padding: 10,
   },
@@ -32,13 +36,24 @@ export default StyleSheet.create({
   appointmentFormRemindersContainer: {
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'center',
     marginBottom: 10,
+    borderStyle: 'solid',
+    borderColor: orangeColor,
+    borderBottomWidth: 1,
+    width: width * 0.8,
   },
   appointmentDetailsContainer: {
     flex: 1,
     flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center',
+    padding: 20,
+    paddingTop: 0,
+  },
+  appointmentFormContainer: {
+    flex: 1,
+    flexDirection: 'column',
     padding: 20,
     paddingTop: 0,
   },
@@ -62,6 +77,7 @@ export default StyleSheet.create({
     borderStyle: 'solid',
     alignItems: 'center',
     padding: 5,
+    width: width * 0.8
   },
   appointmentRemindersContainer: {
     height: screenHeight * 0.2,
@@ -70,6 +86,7 @@ export default StyleSheet.create({
   dateReminderContainer: {
     borderBottomColor: orangeColor,
     borderBottomWidth: 2,
+    width: width * 0.8,
     borderStyle: 'solid',
     flex: 1,
   },
@@ -87,6 +104,18 @@ export default StyleSheet.create({
     borderColor: orangeColor,
     borderWidth: 3,
   },
+  submitButton: {
+    backgroundColor: blueColor,
+    width: width * 0.75,
+    height: 50,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 8,
+    margin: 5,
+    marginVertical: 5,
+    borderColor: orangeColor,
+    borderWidth: 3,
+  },
   buttonText: {
     color: 'white',
     fontSize: 30,
@@ -100,7 +129,7 @@ export default StyleSheet.create({
     alignItems: 'center',
     borderRadius: 8,
     margin: 5,
-    marginVertical: 25,
+    marginVertical: 5,
     borderColor: blueColor,
     borderWidth: 3,
   },
@@ -209,15 +238,18 @@ export default StyleSheet.create({
     padding: 10,
     marginBottom: 10,
     fontSize: 24,
+    width: width * 0.75
   },
   inputReminders: {
     borderWidth: 1,
     borderColor: '#ccc',
     borderRadius: 4,
+    marginTop: 12,
     marginBottom: 10,
     fontSize: 24,
     flex: 1,
     marginRight: 20,
+    height: 40,
   },
 
   errorText: {
@@ -236,6 +268,34 @@ export default StyleSheet.create({
     padding: 20,
     marginHorizontal: 20,
     borderRadius: 10,
+  },
+  modalButton: {
+    backgroundColor: blueColor,
+    width: width * 0.75,
+    height: 50,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 8,
+    margin: 5,
+    marginVertical: 5,
+    borderColor: orangeColor,
+    borderWidth: 3,
+  },
+  dateTimeButton: {
+    backgroundColor: blueColor,
+    width: width * 0.5,
+    height: 50,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 8,
+    margin: 5,
+    marginVertical: 5,
+    borderColor: orangeColor,
+    borderWidth: 3,
+  },
+  rowLayout: {
+    flexDirection: 'row',
+    alignItems: 'center',
   },
 
   // =============== VIEW STYLING FOR REMINDERS SCREEN ================================
@@ -276,6 +336,13 @@ export default StyleSheet.create({
 
   // ====================== AGENDA STYLING ===============
 
+  centeredView: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 3,
+  },
+
   sectionContainer: {
     marginTop: 32,
     paddingHorizontal: 24,
@@ -310,13 +377,6 @@ export default StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 20,
     textAlign: 'center',
-  },
-  submitButton: {
-    backgroundColor: '#0C2340',
-    paddingHorizontal: 20,
-    paddingVertical: 10,
-    borderRadius: 10,
-    margin: 3,
   },
   submitText: {
     color: 'white',

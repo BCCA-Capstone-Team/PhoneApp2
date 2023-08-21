@@ -1,6 +1,7 @@
 import React, {useEffect} from 'react';
-import {View, Modal, TextInput, Button} from 'react-native';
+import {View, Modal, Text, TextInput, TouchableOpacity} from 'react-native';
 import {useForm, Controller} from 'react-hook-form';
+import styles from '../styles';
 
 const LocationModal = ({visible, onClose, onSubmit, locationData}) => {
   const {
@@ -25,12 +26,13 @@ const LocationModal = ({visible, onClose, onSubmit, locationData}) => {
 
   return (
     <Modal visible={visible} animationType="slide" transparent={true}>
-      <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-        <View style={{backgroundColor: 'white', padding: 20, borderRadius: 10}}>
+      <View style={styles.modalContainer}>
+        <View style={styles.modalContent}>
           <Controller
             control={control}
             render={({field}) => (
               <TextInput
+                style={styles.input}
                 placeholder="Address"
                 value={field.value}
                 onChangeText={field.onChange}
@@ -49,6 +51,7 @@ const LocationModal = ({visible, onClose, onSubmit, locationData}) => {
             render={({field}) => (
               <TextInput
                 placeholder="City"
+                style={styles.input}
                 value={field.value}
                 onChangeText={field.onChange}
               />
@@ -66,6 +69,7 @@ const LocationModal = ({visible, onClose, onSubmit, locationData}) => {
             render={({field}) => (
               <TextInput
                 placeholder="State"
+                style={styles.input}
                 value={field.value}
                 onChangeText={field.onChange}
               />
@@ -84,6 +88,7 @@ const LocationModal = ({visible, onClose, onSubmit, locationData}) => {
               <TextInput
                 placeholder="Zip Code"
                 value={field.value}
+                style={styles.input}
                 onChangeText={field.onChange}
                 keyboardType="numeric"
               />
@@ -96,8 +101,12 @@ const LocationModal = ({visible, onClose, onSubmit, locationData}) => {
             <Text style={{color: 'red'}}>{errors.zipCode.message}</Text>
           )}
 
-          <Button title="Submit" onPress={handleSubmit(handleLocationSubmit)} />
-          <Button title="Cancel" onPress={onClose} />
+            <TouchableOpacity style={styles.submitButton} onPress={handleSubmit(onSubmit)}>
+              <Text style={styles.buttonText}>Submit</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.cancelButton} onPress={onClose}>
+              <Text style={styles.cancelButtonText}>Cancel</Text>
+            </TouchableOpacity>
         </View>
       </View>
     </Modal>
