@@ -88,7 +88,6 @@ function App(): JSX.Element {
           name="Appointment Creation"
           component={AppointmentFormScreen}
         />
-        <Stack.Screen name="TestScreen" component={TestScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );
