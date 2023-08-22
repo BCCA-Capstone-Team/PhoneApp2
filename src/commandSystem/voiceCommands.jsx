@@ -3,11 +3,23 @@ class VoiceControlSystem {
     this.parseString = '';
     this.commandKeys = [];
     this.readyDict = [];
+    this.replaceCommands = []
     this.currentCoolDown = 0;
     this.callbackFunc = null;
     this.coolDownInterval = null;
+    this.readyReplacementCommands()
   };
 
+  /**
+   * Replace certain commands with others
+   */
+  readyReplacementCommands() {
+    this.replaceCommands['tidal'] = 'title'
+  }
+
+  /**
+   * Add string to parser
+   */
   addString(value) {
     if (this.parseString == '') {
       this.parseString = value;
@@ -23,6 +35,9 @@ class VoiceControlSystem {
     };
   };
 
+  /**
+   * Send the full string
+   */
   addFullString(value) {
     this.parseString = value;
 
@@ -34,6 +49,9 @@ class VoiceControlSystem {
     };
   };
 
+  /**
+   * Setup await timer to parse
+   */
   awaitTimer() {
     this.coolDownInterval = setInterval(async () => {
       if (this.currentCoolDown > 0) {
@@ -49,6 +67,9 @@ class VoiceControlSystem {
     }, 1);
   };
 
+  /**
+   * Full reset on all values
+   */
   resetValues() {
     this.parseString = '';
     this.commandKeys = [];
@@ -58,6 +79,9 @@ class VoiceControlSystem {
     this.coolDownInterval = null;
   };
 
+  /**
+   * Break down what was said to a dictionary
+   */
   breakDown() {
     return new Promise((resolve, reject) => {
       let stringArray = this.parseString.split(' ');
@@ -92,7 +116,14 @@ class VoiceControlSystem {
     });
   };
 
+  /**
+   * Save a command to the array
+   */
   saveCommandString(command, value) {
+    if (this.replaceCommands[command]) {
+      command = this.replaceCommands[command]
+    }
+
     if (!this.readyDict[command]) {
       this.readyDict[command] = [];
     };
@@ -103,10 +134,16 @@ class VoiceControlSystem {
     };
   };
 
+  /**
+   * Get the results of the parser
+   */
   returnResults() {
     return this.readyDict;
   };
 
+  /**
+   * Set a listener to get the results
+   */
   setReturnCallback(callback) {
     this.callbackFunc = callback;
   };

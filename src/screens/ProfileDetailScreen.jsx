@@ -17,6 +17,25 @@ const ProfileDetailScreen = ({navigation, route}) => {
   // State to store the recognized voice command
   const [voiceCommand, setVoiceCommand] = useState('');
 
+  useEffect(() => {
+    Voice.onSpeechEnd = onSpeechEnd;
+    Voice.onSpeechResults = onSpeechResults;
+  
+    return () => {
+      Voice.onSpeechEnd = undefined;
+      Voice.onSpeechResults = undefined;
+      Voice.destroy().then(Voice.removeAllListeners);
+    };
+  }, []);
+
+  const onSpeechResults = e => {
+    console.log(e.value[0]);
+  }
+
+  const onSpeechEnd = e => {
+    console.log(e);
+  }
+
   // Callback function to process voice commands
   const processVoiceCommand = useCallback(async command => {
     // Split the command into words

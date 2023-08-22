@@ -1,5 +1,5 @@
 import React, {useState, useEffect, useRef} from 'react';
-import {View, Text, TouchableOpacity} from 'react-native';
+import {View, Text, TouchableOpacity, Linking} from 'react-native';
 import {startOfWeek, addDays} from 'date-fns';
 import {Calendar, WeekCalendar, Agenda, DateData} from 'react-native-calendars';
 import AppointmentForm from '../forms/AppointmentForm';
@@ -52,6 +52,7 @@ function monthAndDayFormatter(dateString) {
   return combinedDateString;
 }
 
+// == Loads appointments from database
 async function getAppointments() {
   let Database = require('../database/CalendarDatabase.jsx');
   let database = new Database();
@@ -64,8 +65,8 @@ async function getAppointments() {
   test.then(resp => console.log(resp));
   return allData;
 };
-// getAppointments();
 
+// == Converts Date object to ISOString
 const timeToString = time => {
   const date = new Date(time);
   date.setHours(date.getHours() - 5);
@@ -116,12 +117,14 @@ const Schedule = ({navigation}) => {
     };
   }, []);
 
+  // == Example of how 'items' object data should end up
   // let allAppointmentData = {
   //   '2023-07-30': [{name: 'item 1 - any js object', date: '2023-07-30'}],
   //   '2023-08-07': [{name: 'item 1 for day'}, {name: 'item 2 for day'}],
   // };
 
-  // Load appointments from database.
+  // == Fixes dates because of how database stores them
+  // == Schedule needs single digits to have 0 in front of them.
   async function loadAllAppointmentData() {
     let data = await getAppointments();
     let fixedDate = '';
@@ -137,10 +140,10 @@ const Schedule = ({navigation}) => {
         delete data[key];
       };
     });
-
     return data;
   };
 
+  // == Converts appointment data into object to be used to fill Schedule
   const loadItems = async day => {
     let allAppointmentData = await loadAllAppointmentData();
     // console.log(allAppointmentData);
@@ -166,7 +169,6 @@ const Schedule = ({navigation}) => {
       };;
       Object.keys(items).forEach(key => {
         newItems[key] = items[key];
-        // console.log(key, '===', newItems[key]);
       });
       setItems(newItems);
     }, 1000);
@@ -195,6 +197,7 @@ const Schedule = ({navigation}) => {
     return `${hours}:${minutes} ${ampm}`;
   };;
 
+  // == Handles how each appontment will be rendered
   const renderItem = item => {
     const dateTimeStr = item.time;
 
@@ -217,10 +220,12 @@ const Schedule = ({navigation}) => {
 
   // ============== Handle renderEmptyDay and it's onPress ============== //
 
+  // == Handles what happens when you click on an empty day
   const handleEmptyDayPress = day => {
     navigation.navigate('Appointment', day);
   };
 
+  // == Handles how days with no appointments shall be rendered
   const renderEmptyDay = day => {
     return (
       <TouchableOpacity
@@ -237,6 +242,7 @@ const Schedule = ({navigation}) => {
   //voice commands and TTS//
   const onSpeechError = e => {};
 
+  // == Handles what happens when speech has ended
   const onSpeechEnd = async e => {
     console.log('onSpEnd');
     let VoiceCommands = new voiceCommands();
@@ -252,6 +258,7 @@ const Schedule = ({navigation}) => {
       'edit',
       'remove',
       'read',
+      'directions'
     ];
     VoiceCommands.parseString = result;
     await VoiceCommands.breakDown();
@@ -265,48 +272,12 @@ const Schedule = ({navigation}) => {
       removeVoiceOption(fullResult, VoiceCommands);
     } else if (fullResult.read) {
       readVoiceOption(fullResult, VoiceCommands);
+    } else if (fullResult.directions) {
+      getDirections(fullResult, VoiceCommands)
     }
 
-    
-    
-
-    // console.log('Final voice input:', voiceInputRef.current);
-    let a = 'a'; // Did this for testing.
-    // const spokenWords = voiceInputRef.current.split(' ');
-    // // console.log(`spokenWords ${spokenWords}`);
-    // const command = spokenWords[0].toLowerCase();
-
-    // if (command === 'add') {
-    //   const date = extractDate(spokenWords);
-    //   const otherInfo = extractOtherInfo(spokenWords);
-
-    //   navigation.navigate('AppointmentFormScreen', {
-    //     date: date,
-    //     location: location,
-    //     time: time,
-    //   });
-    // } else if (command === 'delete') {
-    //   deleteAppointmentByVoice(spokenWords);
-    // } else if (command === 'edit') {
-    //   editAppointmentByVoice(spokenWords);
-    // } else if (command === 'read') {
-    //   navigation.navigate('AppointmentDetails', {readAppointments: true});
-    // } else if (command === 'today') {
-    //   // Logan, 'today' if statement is currently for testing
-    //   // while I'm learning to take more than single word input.
-    //   readTodaysAppointments;
-    // } else if (
-    //   command != 'delete' ||
-    //   command != 'edit' ||
-    //   command != 'read' ||
-    //   command != 'today' ||
-    //   command != 'add'
-    // ) {
-    //   Tts.speak('Sorry I did not understand.');
-    // }
   };
-  // let result;
-  // const [result, setResult] = useState('');
+  
   const onSpeechResults = e => {
     // setResult('');
     let appointmentData = {};
@@ -317,197 +288,11 @@ const Schedule = ({navigation}) => {
     handleVoiceResults(e); /////should trigger the added function to make the button stop listening..armando
   };
 
-  // ORIGINAL ONSPEECHRESULTS //
-
-  // Is now accepting speech results. Armando and I need to speak on the phone
-  // in the morning to discuss how we want to do this. If we want to handle all
-  // of the speech logic in schedule we will need to figure out how to have more
-  // than one flow of Voice commands.
 
   const onSpeechRecognized = e => {
     console.log(e.isFinal);
     // Object.keys(e).forEach(each => console.log(each));
     let a = 'a';
-  };
-
-  // // Logan, Testing some stuff to try to figure out tts and speech.
-  // // Altered this function to potentially take in a date
-  // // To make it applicable to today or a given day.
-  // const readDaysAppointments = async potentiallyADate => {
-  //   console.log('here');
-  //   const dateToBeRead = potentiallyADate
-  //     ? potentiallyADate
-  //     : timeToString(new Date());
-  //   const appointments = await loadAllAppointmentData();
-  //   if (appointments[dateToBeRead]) {
-  //     appointments[dateToBeRead].forEach(each => {
-  //       Tts.speak(each.eventTitle);
-  //     });
-  //   } else {
-  //     Tts.speak('You have no appointments for today!');
-  //   }
-  //   // offerFullAppointmentInfo(appointments[dateToBeRead]);
-  // };
-
-  // ORIGINAL ONSPEECHRESULTS //
-
-  // const editAppointmentByVoice = async () => {
-  //   Tts.speak('Please say the title of the appointment you want to edit.');
-
-  //   // Listener starts for the appointment title to edit
-  //   Voice.onSpeechResults = async e => {
-  //     const lastResult = e.value[e.value.length - 1];
-  //     const appointmentTitle = lastResult.trim();
-
-  //     // Fetch appointment data and find the correct title
-  //     const appointments = await loadAllAppointmentData();
-  //     const appointmentDate = timeToString(new Date());
-
-  //     if (appointments[appointmentDate]) {
-  //       const appointmentToEdit = appointments[appointmentDate].find(
-  //         appointment =>
-  //           appointment.eventTitle.toLowerCase() ===
-  //           appointmentTitle.toLowerCase(),
-  //       );
-  //       if (appointmentToEdit) {
-  //         // Stops listening for title
-  //         Voice.onSpeechResults = undefined;
-
-  //         Tts.speak('Please state the changes you want to make.');
-
-  //         // Listener starts for the changes to be made
-  //         Voice.onSpeechResults = async e => {
-  //           const changes = e.value.join(' ');
-
-  //           // Process and apply the changes here
-  //           const remindersPattern = /reminders:\s*(.*)/i;
-  //           const timePattern = /time:\s*(.*)/i;
-
-  //           const remindersMatch = changes.match(remindersPattern);
-  //           const timeMatch = changes.match(timePattern);
-
-  //           if (remindersMatch) {
-  //             const newReminders = remindersMatch[1];
-  //             // Handle new reminders update here
-  //           }
-
-  //           if (timeMatch) {
-  //             const newTime = timeMatch[1];
-  //             // Handle new time update here
-  //           }
-
-  //           // End the voice interaction
-  //           Voice.onSpeechResults = undefined;
-  //           Tts.speak('Appointment updated successfully.');
-  //         };
-  //       } else {
-  //         // No appointment found with the given title
-  //         Tts.speak('No appointment found with the provided title.');
-  //       }
-  //     }
-  //   };
-  // };
-
-  //HAS NOT BEEN TESTED YET
-  const deleteAppointmentByVoice = async spokenWords => {
-    const date = extractDate(spokenWords);
-    const otherInfo = extractOtherInfo(spokenWords);
-
-    if (date) {
-      try {
-        const success = await deleteAppointment(date, otherInfo);
-
-        if (success) {
-          Tts.speak('Appointment deleted successfully.');
-        } else {
-          Tts.speak('Appointment deletion failed.');
-        };
-      } catch (error) {
-        console.error('Error deleting appointment:', error);
-        Tts.speak('Sorry, an error occurred while deleting the appointment.');
-      };
-    } else {
-      Tts.speak("Sorry, I couldn't understand the date for deletion.");
-    };
-    };
-
-  // readDaysAppointments(new Date());  // Both of these examples work.
-  // readDaysAppointments('2023-08-14');// Just need to crack implementation.
-
-  // const offerFullAppointmentInfo = appointmentsForDate => {
-  //   appointmentsForDate.forEach(each => {});
-  // };
-
-  const extractDate = spokenWords => {
-    const months = [
-      'January',
-      'February',
-      'March',
-      'April',
-      'May',
-      'June',
-      'July',
-      'August',
-      'September',
-      'October',
-      'November',
-      'December',
-    ];
-    //added days of the week to help logic flow smoother...maybe
-    const daysOfWeek = [
-      'sunday',
-      'monday',
-      'tuesday',
-      'wednesday',
-      'thursday',
-      'friday',
-      'saturday',
-    ];
-
-    const dateKeywords = ['on', 'to', 'for', 'at'];
-    const dateKeywordIndex = spokenWords.findIndex(word =>
-      dateKeywords.includes(word.toLowerCase()),
-    );
-
-    if (dateKeywordIndex !== -1) {
-      const dateParts = spokenWords.slice(dateKeywordIndex + 1);
-      const dateStr = dateParts.join(' ');
-
-      const matchingMonth = months.find(month =>
-        dateStr.toLowerCase().includes(month.toLowerCase()),
-      );
-      const matchingDay = dateParts.find(part => !isNaN(part));
-      const matchingDayOfWeek = daysOfWeek.find(day =>
-        dateStr.toLowerCase().includes(day.toLowerCase()),
-      );
-
-      if (matchingMonth && (matchingDay || matchingDayOfWeek)) {
-        const monthIndex = months.indexOf(matchingMonth);
-        const day = parseInt(matchingDay, 10);
-        if (monthIndex !== -1 && day >= 1 && day <= 31) {
-          const currentDate = new Date();
-          const year = currentDate.getFullYear();
-          const extractedDate = new Date(year, monthIndex, day);
-          return extractedDate;
-        };;
-      };;
-    };;
-
-    return null; //only null if failed
-  };
-  const extractOtherInfo = spokenWords => {
-    const otherInfoKeywords = ['with', 'by', 'meeting', 'appointment', 'event'];
-    const otherInfoKeywordIndex = spokenWords.findIndex(word =>
-      otherInfoKeywords.includes(word.toLowerCase())
-    );
-
-    if (otherInfoKeywordIndex !== -1) {
-      const otherInfoParts = spokenWords.slice(otherInfoKeywordIndex + 1);
-      const otherInfo = otherInfoParts.join(' ');
-      return otherInfo;
-    };
-
-    return null; // only null if failed
   };
 
   // ============== Handle renderEmptyDay and it's onPress ============== //
@@ -648,6 +433,7 @@ async function editVoiceOptions(fullResult, VoiceCommands) {
   } else {
     console.error('Missing Data to edit event');
     console.error(VoiceCommands.parseString);
+    Tts.speak('I am sorry but I need a little more detail to create a new event');
   }
 }
 
@@ -675,13 +461,15 @@ async function removeVoiceOption(fullResult, VoiceCommands) {
       let parseDate1 = `${newDate.getMonth()}-${newDate.getDate()}-${newDate.getFullYear()}`;
       let parsedate2 = `${testDate.getMonth()}-${testDate.getDate()}-${testDate.getFullYear()}`;
 
-      if (parseDate1 == parsedate2) {
+      let currentTitle = event[1][1]
+      if (parseDate1 == parsedate2 && title.toLowerCase() == currentTitle.toLowerCase()) {
         database.appTable.removeIndex(event[0][1]);
       }
     });
   } else {
     console.error('Missing Data to remove event');
     console.error(VoiceCommands.parseString);
+    Tts.speak('I am sorry but I need a little more detail to remove a event.');
   }
 }
 
@@ -689,29 +477,40 @@ async function removeVoiceOption(fullResult, VoiceCommands) {
 async function readVoiceOption(fullResult, VoiceCommands) {
   await database.onAppReady();
   await database.appTable.reload();
-  let findDate = fullResult.read[0];
+  if (fullResult.read) {
+    let findDate = fullResult.read[0];
 
-  let dateTable = findDate.split(' ');
-  for (let i = 0; i < dateTable.length; i++) {
-    dateTable[i] = dateTable[i].replaceAll(',', '');
-  }
-  let newDate = new Date(
-    dateTable[2],
-    allMonths[dateTable[0]].value - 1,
-    dateTable[1],
-  );
-
-  Tts.speak('Your reminders are the following.');
-  database.appTable.data.forEach(event => {
-    let testDate = new Date(event[4][1]);
-
-    let parseDate1 = `${newDate.getMonth()}-${newDate.getDate()}-${newDate.getFullYear()}`;
-    let parsedate2 = `${testDate.getMonth()}-${testDate.getDate()}-${testDate.getFullYear()}`;
-
-    if (parseDate1 == parsedate2) {
-      Tts.speak(event[1][1]);
+    let dateTable = findDate.split(' ');
+    for (let i = 0; i < dateTable.length; i++) {
+      dateTable[i] = dateTable[i].replaceAll(',', '');
     }
-  });
+    let newDate = new Date(
+      dateTable[2],
+      allMonths[dateTable[0]].value - 1,
+      dateTable[1],
+    );
+  
+    let foundReminder = false
+    database.appTable.data.forEach(event => {
+      let testDate = new Date(event[4][1]);
+  
+      let parseDate1 = `${newDate.getMonth()}-${newDate.getDate()}-${newDate.getFullYear()}`;
+      let parsedate2 = `${testDate.getMonth()}-${testDate.getDate()}-${testDate.getFullYear()}`;
+  
+      if (parseDate1 == parsedate2) {
+        if (foundReminder == false) {
+          foundReminder = true
+          Tts.speak('Your reminders are the following.');
+        }
+        Tts.speak(event[1][1]);
+      }
+    });
+    if (foundReminder == false) {
+      Tts.speak('You have no reminders');
+    }
+  } else {
+    Tts.speak('I am sorry but I need a little more detail to find your event.');
+  }
 }
 
 setInterval(async () => {
@@ -722,3 +521,51 @@ setInterval(async () => {
     event;
   });
 }, 55000);
+
+
+
+//==========| Get Directions |==========\\
+async function getDirections(fullResult, VoiceCommands) {
+  await database.onAppReady();
+  await database.appTable.reload();
+  if (fullResult.directions && fullResult.title) {
+    let findDate = fullResult.directions[0];
+    let findTitle = fullResult.title[0]
+
+    let dateTable = findDate.split(' ');
+    for (let i = 0; i < dateTable.length; i++) {
+      dateTable[i] = dateTable[i].replaceAll(',', '');
+    }
+    let newDate = new Date(
+      dateTable[2],
+      allMonths[dateTable[0]].value - 1,
+      dateTable[1],
+    );
+
+    Tts.speak('Getting directions to your event');
+    database.appTable.data.forEach(event => {
+      let testDate = new Date(event[4][1]);
+
+      let parseDate1 = `${newDate.getMonth()}-${newDate.getDate()}-${newDate.getFullYear()}`;
+      let parsedate2 = `${testDate.getMonth()}-${testDate.getDate()}-${testDate.getFullYear()}`;
+
+      let currentTitle = event[1][1]
+      if (parseDate1 == parsedate2 && findTitle.toLowerCase() == currentTitle.toLowerCase()) {
+        let addressObject = JSON.parse(event[2][1])
+        let formattedAddress = `${addressObject.address}, ${addressObject.city}, ${addressObject.state}, ${addressObject.zipCode}`;
+        // For iOS - using Apple Maps
+        if (Platform.OS === 'ios') {
+          Linking.openURL(`http://maps.apple.com/?address=${formattedAddress}`);
+        }
+        // For Android - using Google Maps
+        else {
+            Linking.openURL(`https://www.google.com/maps/search/?api=1&query=${formattedAddress}`);
+        };
+      }
+    });
+  } else {
+    console.error('Not enough data to get directions')
+    console.error(VoiceCommands.parseString);
+    Tts.speak('I am sorry but I need a little more detail to get your directions.');
+  }
+}
