@@ -3,7 +3,6 @@ import {Text, View} from 'react-native';
 import ProfileForm from '../forms/ProfileForm';
 import styles from '../styles';
 import Tts from 'react-native-tts';
-import TtsButtonComponent from '../components/TtsButtonComponent';
 import ProfileDatabase from '../database/ProfileDatabase';
 import SuccessModal from '../components/SuccessModal';
 import SpeechButton from '../components/SpeechButton';
@@ -46,10 +45,10 @@ function ProfileScreen({navigation, route}) {
         if (profileExists) {
           const data = await profileDatabase.getProfile();
           setProfileData(data);
-        };
+        }
       } catch (error) {
         console.error('Error fetching profile data:', error);
-      };
+      }
     };
     fetchProfileData();
   }, []);
@@ -81,6 +80,6 @@ function ProfileScreen({navigation, route}) {
       />
     </View>
   );
-};
+}
 
 export default ProfileScreen;

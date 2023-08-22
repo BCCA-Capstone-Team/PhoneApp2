@@ -13,8 +13,6 @@ import ProfileScreen from './src/screens/ProfileScreen';
 import ProfileDetailScreen from './src/screens/ProfileDetailScreen';
 import AppointmentDetails from './src/screens/AppointmentDetails';
 import AppointmentFormScreen from './src/screens/AppointmentFormScreen';
-import TestScreen from './src/screens/TestScreen';
-import CalendarDummy from './src/screens/CalendarDummy';
 
 import ProfileDatabase from './src/database/ProfileDatabase';
 //@ts-ignore

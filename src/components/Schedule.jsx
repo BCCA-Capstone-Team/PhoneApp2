@@ -35,11 +35,11 @@ function monthAndDayFormatter(dateString) {
   if (splitDateString[1].length === 1) {
     splitDateString[1] = '' + '0' + splitDateString[1];
     neededFixing = true;
-  };
+  }
   if (splitDateString[2].length === 1) {
     splitDateString[2] = '' + '0' + splitDateString[2];
     neededFixing = true;
-  };
+  }
   if (neededFixing) {
     combinedDateString =
       '' +
@@ -64,7 +64,7 @@ async function getAppointments() {
   let test = database.checkForAppointment(2);
   test.then(resp => console.log(resp));
   return allData;
-};
+}
 
 // == Converts Date object to ISOString
 const timeToString = time => {
@@ -88,7 +88,7 @@ const Schedule = ({navigation}) => {
     } else {
       Voice.start('en-US');
       // setDoneListening(false);
-    };
+    }
     setIsListening(!isListening);
   };
   ///armando added the command to be able to stop listening via voice special command is 'finish'
@@ -97,7 +97,7 @@ const Schedule = ({navigation}) => {
 
     if (recognizedText.includes('finish')) {
       toggleListening(); // Stop listening when 'finish' is recognized
-    };;
+    }
   };
 
   useEffect(() => {
@@ -138,10 +138,10 @@ const Schedule = ({navigation}) => {
           Object.getOwnPropertyDescriptor(data, key),
         );
         delete data[key];
-      };
+      }
     });
     return data;
-  };
+  }
 
   // == Converts appointment data into object to be used to fill Schedule
   const loadItems = async day => {
@@ -154,7 +154,7 @@ const Schedule = ({navigation}) => {
         const strTime = timeToString(time);
         if (i == 0) {
           console.log(strTime);
-        };
+        }
 
         // Create events for different dates and add them to myItems array
         // Example:
@@ -165,8 +165,8 @@ const Schedule = ({navigation}) => {
           items[strTime] = [];
         } else {
           items[strTime] = allAppointmentData[strTime];
-        };;
-      };;
+        }
+      }
       Object.keys(items).forEach(key => {
         newItems[key] = items[key];
       });
@@ -192,10 +192,10 @@ const Schedule = ({navigation}) => {
       hours -= 12;
     } else if (hours === 0) {
       hours = 12; // for midnight
-    };;
+    }
 
     return `${hours}:${minutes} ${ampm}`;
-  };;
+  }
 
   // == Handles how each appontment will be rendered
   const renderItem = item => {
@@ -258,7 +258,7 @@ const Schedule = ({navigation}) => {
       'edit',
       'remove',
       'read',
-      'directions'
+      'directions',
     ];
     VoiceCommands.parseString = result;
     await VoiceCommands.breakDown();
@@ -273,11 +273,10 @@ const Schedule = ({navigation}) => {
     } else if (fullResult.read) {
       readVoiceOption(fullResult, VoiceCommands);
     } else if (fullResult.directions) {
-      getDirections(fullResult, VoiceCommands)
+      getDirections(fullResult, VoiceCommands);
     }
-
   };
-  
+
   const onSpeechResults = e => {
     // setResult('');
     let appointmentData = {};
@@ -287,7 +286,6 @@ const Schedule = ({navigation}) => {
     result = e.value[0];
     handleVoiceResults(e); /////should trigger the added function to make the button stop listening..armando
   };
-
 
   const onSpeechRecognized = e => {
     console.log(e.isFinal);
@@ -304,7 +302,7 @@ const Schedule = ({navigation}) => {
   return (
     <View style={{flex: 1}}>
       <Agenda
-        theme={{ 
+        theme={{
           dotColor: '#0C2340',
           todayDotColor: '#0C2340',
           selectedDotColor: '#0C2340',
@@ -315,7 +313,7 @@ const Schedule = ({navigation}) => {
           agendaDayTextColor: '#0C2340',
           agendaKnobColor: '#0C2340',
           agendaTodayColor: '#F26522',
-          agendaDayNumColor: '#0C2340'
+          agendaDayNumColor: '#0C2340',
         }}
         items={items}
         loadItemsForMonth={loadItems}
@@ -332,8 +330,6 @@ const Schedule = ({navigation}) => {
 };
 
 export default Schedule;
-
-
 
 //==========| ADD NEW APPT |==========\\
 async function addVoiceOption(fullResult, VoiceCommands) {
@@ -433,7 +429,9 @@ async function editVoiceOptions(fullResult, VoiceCommands) {
   } else {
     console.error('Missing Data to edit event');
     console.error(VoiceCommands.parseString);
-    Tts.speak('I am sorry but I need a little more detail to create a new event');
+    Tts.speak(
+      'I am sorry but I need a little more detail to create a new event',
+    );
   }
 }
 
@@ -461,8 +459,11 @@ async function removeVoiceOption(fullResult, VoiceCommands) {
       let parseDate1 = `${newDate.getMonth()}-${newDate.getDate()}-${newDate.getFullYear()}`;
       let parsedate2 = `${testDate.getMonth()}-${testDate.getDate()}-${testDate.getFullYear()}`;
 
-      let currentTitle = event[1][1]
-      if (parseDate1 == parsedate2 && title.toLowerCase() == currentTitle.toLowerCase()) {
+      let currentTitle = event[1][1];
+      if (
+        parseDate1 == parsedate2 &&
+        title.toLowerCase() == currentTitle.toLowerCase()
+      ) {
         database.appTable.removeIndex(event[0][1]);
       }
     });
@@ -489,17 +490,17 @@ async function readVoiceOption(fullResult, VoiceCommands) {
       allMonths[dateTable[0]].value - 1,
       dateTable[1],
     );
-  
-    let foundReminder = false
+
+    let foundReminder = false;
     database.appTable.data.forEach(event => {
       let testDate = new Date(event[4][1]);
-  
+
       let parseDate1 = `${newDate.getMonth()}-${newDate.getDate()}-${newDate.getFullYear()}`;
       let parsedate2 = `${testDate.getMonth()}-${testDate.getDate()}-${testDate.getFullYear()}`;
-  
+
       if (parseDate1 == parsedate2) {
         if (foundReminder == false) {
-          foundReminder = true
+          foundReminder = true;
           Tts.speak('Your reminders are the following.');
         }
         Tts.speak(event[1][1]);
@@ -522,15 +523,13 @@ setInterval(async () => {
   });
 }, 55000);
 
-
-
 //==========| Get Directions |==========\\
 async function getDirections(fullResult, VoiceCommands) {
   await database.onAppReady();
   await database.appTable.reload();
   if (fullResult.directions && fullResult.title) {
     let findDate = fullResult.directions[0];
-    let findTitle = fullResult.title[0]
+    let findTitle = fullResult.title[0];
 
     let dateTable = findDate.split(' ');
     for (let i = 0; i < dateTable.length; i++) {
@@ -549,9 +548,12 @@ async function getDirections(fullResult, VoiceCommands) {
       let parseDate1 = `${newDate.getMonth()}-${newDate.getDate()}-${newDate.getFullYear()}`;
       let parsedate2 = `${testDate.getMonth()}-${testDate.getDate()}-${testDate.getFullYear()}`;
 
-      let currentTitle = event[1][1]
-      if (parseDate1 == parsedate2 && findTitle.toLowerCase() == currentTitle.toLowerCase()) {
-        let addressObject = JSON.parse(event[2][1])
+      let currentTitle = event[1][1];
+      if (
+        parseDate1 == parsedate2 &&
+        findTitle.toLowerCase() == currentTitle.toLowerCase()
+      ) {
+        let addressObject = JSON.parse(event[2][1]);
         let formattedAddress = `${addressObject.address}, ${addressObject.city}, ${addressObject.state}, ${addressObject.zipCode}`;
         // For iOS - using Apple Maps
         if (Platform.OS === 'ios') {
@@ -559,13 +561,17 @@ async function getDirections(fullResult, VoiceCommands) {
         }
         // For Android - using Google Maps
         else {
-            Linking.openURL(`https://www.google.com/maps/search/?api=1&query=${formattedAddress}`);
-        };
+          Linking.openURL(
+            `https://www.google.com/maps/search/?api=1&query=${formattedAddress}`,
+          );
+        }
       }
     });
   } else {
-    console.error('Not enough data to get directions')
+    console.error('Not enough data to get directions');
     console.error(VoiceCommands.parseString);
-    Tts.speak('I am sorry but I need a little more detail to get your directions.');
+    Tts.speak(
+      'I am sorry but I need a little more detail to get your directions.',
+    );
   }
 }

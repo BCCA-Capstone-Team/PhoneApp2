@@ -23,7 +23,7 @@ async function startDatabase() {
   await database.onAppReady();
   appointmentTable = database.appTable;
   appointmentRemindersTable = database.appReminderTable;
-};
+}
 startDatabase();
 
 const AppointmentForm = ({navigation, route}) => {
@@ -41,7 +41,7 @@ const AppointmentForm = ({navigation, route}) => {
   const [selectedTime, setSelectedTime] = useState(new Date());
   const [reminder, setReminder] = useState('15'); // Default to 15 minutes reminder
   const [showReminderPicker, setShowReminderPicker] = useState(false);
-  
+
   const [location, setLocation] = useState({
     address: '',
     city: '',
@@ -68,7 +68,7 @@ const AppointmentForm = ({navigation, route}) => {
       setValue('zipcode', appointmentData[0].location.zipCode);
       setSelectedDate(convertedDate);
     }, [appointmentData, setValue]);
-  };
+  }
 
   // Prefilling form data //
 
@@ -123,10 +123,10 @@ const AppointmentForm = ({navigation, route}) => {
 
       for (const item of formData.thingsToBring) {
         await appointmentRemindersTable.add(newestAppointmentId, item.item);
-      };
+      }
 
       appointmentTable.reload();
-    };
+    }
     appointmentTable.reload();
     const passReload = true;
     navigation.navigate('Calendar', passReload);
@@ -190,95 +190,118 @@ const AppointmentForm = ({navigation, route}) => {
         </View>
 
         {/* ================== LOCATION MODAL SECTION VIEW */}
-      <View style={styles.dateContainer}>
-        {
-          (appointmentData[1] && !appointmentData[0].location.address && 
-          !appointmentData[0].location.city && 
-          !appointmentData[0].location.state && 
-          !appointmentData[0].location.zipCode) || 
-          (!location.address && !location.city && !location.state && !location.zipCode) ? 
-          (
+        <View style={styles.dateContainer}>
+          {(appointmentData[1] &&
+            !appointmentData[0].location.address &&
+            !appointmentData[0].location.city &&
+            !appointmentData[0].location.state &&
+            !appointmentData[0].location.zipCode) ||
+          (!location.address &&
+            !location.city &&
+            !location.state &&
+            !location.zipCode) ? (
             <>
-              <Text style={styles.appointmentHeaderText}>No Location Saved.</Text>
+              <Text style={styles.appointmentHeaderText}>
+                No Location Saved.
+              </Text>
             </>
           ) : (
             <>
               <Text style={styles.appointmentHeaderText}>
-                  {appointmentData[1] ? appointmentData[0].location.address : location.address}
+                {appointmentData[1]
+                  ? appointmentData[0].location.address
+                  : location.address}
               </Text>
               <Text style={styles.appointmentHeaderText}>
-                  {appointmentData[1] ? appointmentData[0].location.city : location.city},{' '}
-                  {appointmentData[1] ? appointmentData[0].location.state : location.state}
+                {appointmentData[1]
+                  ? appointmentData[0].location.city
+                  : location.city}
+                ,{' '}
+                {appointmentData[1]
+                  ? appointmentData[0].location.state
+                  : location.state}
               </Text>
             </>
-          )
-        }
-        <LocationModal
-          visible={showLocationModal}
-          onClose={() => setShowLocationModal(false)}
-          onSubmit={handleLocationSubmit}
-          locationData={appointmentData[1] ? appointmentData[0].location : location}
-        />
-
-      <TouchableOpacity style={styles.modalButton} onPress={() => setShowLocationModal(true)}>
-        <Text style={styles.buttonText}>Add Location</Text>
-      </TouchableOpacity>
-      </View>
-      {/* ======================= DATE PICKER ===================== */}
-      <View style={styles.dateContainer}>
-        <View style={styles.rowLayout}>
-        <TouchableOpacity style={styles.dateTimeButton} onPress={showDatepicker}>
-        <Text style={styles.buttonText}>Select Date:</Text>
-      </TouchableOpacity>
-        {showDatePicker && (
-          <DateTimePicker
-            value={selectedDate}
-            mode="date"
-            display="default"
-            onChange={onDateChange}
-            textColor="#0C2340"
+          )}
+          <LocationModal
+            visible={showLocationModal}
+            onClose={() => setShowLocationModal(false)}
+            onSubmit={handleLocationSubmit}
+            locationData={
+              appointmentData[1] ? appointmentData[0].location : location
+            }
           />
-        )}
-        </View>
-      </View>
-      {/* ======================= TIME PICKER ===================== */}
-      <View style={styles.dateContainer}>
-        <View style={styles.rowLayout}>
-        <TouchableOpacity style={styles.dateTimeButton} onPress={showTimepicker}>
-          <Text style={styles.buttonText}>Select Time:</Text>
-        </TouchableOpacity>
-        {showTimePicker && (
-          <DateTimePicker
-            value={selectedTime}
-            mode="time"
-            display="default"
-            onChange={onTimeChange}
-          />
-        )}
-        </View>
-      </View>
 
-      {/* ========================= REMINDER TIME ========================= */}
+          <TouchableOpacity
+            style={styles.modalButton}
+            onPress={() => setShowLocationModal(true)}>
+            <Text style={styles.buttonText}>Add Location</Text>
+          </TouchableOpacity>
+        </View>
+        {/* ======================= DATE PICKER ===================== */}
+        <View style={styles.dateContainer}>
+          <View style={styles.rowLayout}>
+            <TouchableOpacity
+              style={styles.dateTimeButton}
+              onPress={showDatepicker}>
+              <Text style={styles.buttonText}>Select Date:</Text>
+            </TouchableOpacity>
+            {showDatePicker && (
+              <DateTimePicker
+                value={selectedDate}
+                mode="date"
+                display="default"
+                onChange={onDateChange}
+                textColor="#0C2340"
+              />
+            )}
+          </View>
+        </View>
+        {/* ======================= TIME PICKER ===================== */}
+        <View style={styles.dateContainer}>
+          <View style={styles.rowLayout}>
+            <TouchableOpacity
+              style={styles.dateTimeButton}
+              onPress={showTimepicker}>
+              <Text style={styles.buttonText}>Select Time:</Text>
+            </TouchableOpacity>
+            {showTimePicker && (
+              <DateTimePicker
+                value={selectedTime}
+                mode="time"
+                display="default"
+                onChange={onTimeChange}
+              />
+            )}
+          </View>
+        </View>
+
+        {/* ========================= REMINDER TIME ========================= */}
         <View style={styles.dateReminderContainer}>
           <View style={styles.centeredView}>
-          <Text style={styles.appointmentHeaderText}>Selected Alert Time:</Text>
-          <Text style={styles.appointmentHeaderText}>{reminder} minutes before</Text>
-          <TouchableOpacity style={styles.modalButton} onPress={() => setShowReminderPicker(true)}>
-            <Text style={styles.buttonText}>Set Alert Time:</Text>
-          </TouchableOpacity>
+            <Text style={styles.appointmentHeaderText}>
+              Selected Alert Time:
+            </Text>
+            <Text style={styles.appointmentHeaderText}>
+              {reminder} minutes before
+            </Text>
+            <TouchableOpacity
+              style={styles.modalButton}
+              onPress={() => setShowReminderPicker(true)}>
+              <Text style={styles.buttonText}>Set Alert Time:</Text>
+            </TouchableOpacity>
           </View>
-          
-          <ReminderPickerModal 
-            visible={showReminderPicker} 
+
+          <ReminderPickerModal
+            visible={showReminderPicker}
             onClose={() => setShowReminderPicker(false)}
             selectedValue={reminder}
             onValueChange={itemValue => setReminder(itemValue)}
           />
-          
         </View>
 
         <View style={styles.dateContainer}>
-        <Text style={styles.appointmentHeaderText}>Add Items You Need:</Text>
+          <Text style={styles.appointmentHeaderText}>Add Items You Need:</Text>
           {fields.map((field, index) => (
             <View
               key={field.id}
@@ -299,14 +322,18 @@ const AppointmentForm = ({navigation, route}) => {
               <TrashButton onPress={() => remove(index)} />
             </View>
           ))}
-          <TouchableOpacity style={styles.modalButton} onPress={() => append({item: ''})}>
+          <TouchableOpacity
+            style={styles.modalButton}
+            onPress={() => append({item: ''})}>
             <Text style={styles.buttonText}>Add Item:</Text>
           </TouchableOpacity>
         </View>
 
-      <TouchableOpacity style={styles.button} onPress={handleSubmit(onSubmit)}>
-        <Text style={styles.buttonText}>Submit</Text>
-      </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.button}
+          onPress={handleSubmit(onSubmit)}>
+          <Text style={styles.buttonText}>Submit</Text>
+        </TouchableOpacity>
       </View>
     </ScrollView>
   );

@@ -3,18 +3,18 @@ class VoiceControlSystem {
     this.parseString = '';
     this.commandKeys = [];
     this.readyDict = [];
-    this.replaceCommands = []
+    this.replaceCommands = [];
     this.currentCoolDown = 0;
     this.callbackFunc = null;
     this.coolDownInterval = null;
-    this.readyReplacementCommands()
-  };
+    this.readyReplacementCommands();
+  }
 
   /**
    * Replace certain commands with others
    */
   readyReplacementCommands() {
-    this.replaceCommands['tidal'] = 'title'
+    this.replaceCommands['tidal'] = 'title';
   }
 
   /**
@@ -25,15 +25,15 @@ class VoiceControlSystem {
       this.parseString = value;
     } else {
       this.parseString = `${this.parseString} ${value}`;
-    };
+    }
 
     if (this.currentCoolDown == 0) {
       this.currentCoolDown = 200;
       this.awaitTimer();
     } else {
       this.currentCoolDown = 200;
-    };
-  };
+    }
+  }
 
   /**
    * Send the full string
@@ -46,8 +46,8 @@ class VoiceControlSystem {
       this.awaitTimer();
     } else {
       this.currentCoolDown = 200;
-    };
-  };
+    }
+  }
 
   /**
    * Setup await timer to parse
@@ -61,11 +61,11 @@ class VoiceControlSystem {
         await this.breakDown();
         if (this.callbackFunc != null) {
           this.callbackFunc(this.readyDict);
-        };
+        }
         this.resetValues();
-      };
+      }
     }, 1);
-  };
+  }
 
   /**
    * Full reset on all values
@@ -77,7 +77,7 @@ class VoiceControlSystem {
     this.currentCoolDown = 0;
     this.callbackFunc = null;
     this.coolDownInterval = null;
-  };
+  }
 
   /**
    * Break down what was said to a dictionary
@@ -97,56 +97,56 @@ class VoiceControlSystem {
             this.saveCommandString(currentCommand, currentData);
             currentCommand = testString;
             currentData = '';
-          };
+          }
         } else {
           if (currentData == '') {
             currentData = stringArray[i];
           } else {
             currentData = `${currentData} ${stringArray[i]}`;
-          };
-        };
+          }
+        }
 
         if (fullLength == i) {
           this.saveCommandString(currentCommand, currentData);
           currentCommand = testString;
           currentData = '';
-        };
-      };
+        }
+      }
       resolve();
     });
-  };
+  }
 
   /**
    * Save a command to the array
    */
   saveCommandString(command, value) {
     if (this.replaceCommands[command]) {
-      command = this.replaceCommands[command]
+      command = this.replaceCommands[command];
     }
 
     if (!this.readyDict[command]) {
       this.readyDict[command] = [];
-    };
+    }
     if (value) {
       this.readyDict[command].push(value);
     } else {
       this.readyDict[command].push(true);
-    };
-  };
+    }
+  }
 
   /**
    * Get the results of the parser
    */
   returnResults() {
     return this.readyDict;
-  };
+  }
 
   /**
    * Set a listener to get the results
    */
   setReturnCallback(callback) {
     this.callbackFunc = callback;
-  };
-};
+  }
+}
 
 module.exports = VoiceControlSystem;
