@@ -284,13 +284,13 @@ function RemindersScreen() {
     <View style={styles.homeContainer}>
       <AddButtonModal children={<RemindersForm />} onSubmit={onSubmit} />
 
-      <ScrollView style={{flex: 1}}>
+      <ScrollView style={{flex: 1, width: 300}}>
         {reminders === null ? (
           <Text>Loading...</Text>
         ) : reminders.length > 0 ? (
           reminders.map((reminder, index) => (
             <View key={index} style={styles.remindersContainer}>
-              <Text style={styles.infoText}>{reminder[1][1]}</Text>
+              <Text style={styles.remindersText}>{reminder[1][1]}</Text>
 
               <TrashButton
                 onPress={() => {
