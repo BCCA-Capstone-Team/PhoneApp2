@@ -169,7 +169,7 @@ function RemindersScreen() {
 
   const readReminders = async () => {
     const remindersData = await fetchRemindersFromDatabase();
-    //console.log(remindersData);
+    console.log(remindersData);
     if (remindersData.length > 0) {
       remindersData.forEach(reminder => {
         Tts.speak(reminder[1][1]);
@@ -186,9 +186,9 @@ function RemindersScreen() {
       //console.log("STOP PLEASE");
       Voice.stop();
     } else {
-      Tts.speak(
-        'Say add to add a reminder, delete to delete a reminder, or read to read your reminders aloud.',
-      );
+      // Tts.speak(
+      //   'Say add to add a reminder, delete to delete a reminder, or read to read your reminders aloud.',
+      // );
       Voice.start('en-US');
       // Tts.addEventListener('tts-finish', event => {
       //   if (!isListening) {

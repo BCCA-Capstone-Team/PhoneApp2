@@ -543,7 +543,8 @@ class DataController {
         return console.error('No row id value specified');
       }
       if (foundColumn == false) {
-        return console.error(`No Column Found with name ${columnName}`);
+        // return console.error(`No Column Found with name ${columnName}`);
+        return;
       }
       if (!newValue) {
         return console.error('No new value specified');

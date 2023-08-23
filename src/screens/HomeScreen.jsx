@@ -91,30 +91,30 @@ function HomeScreen({navigation, route}) {
 
   //---------------------------
   //Use useFocusEffect to run animation logic when screen gains focus
-  useFocusEffect(
-    useCallback(() => {
-      triggerRefresh();
-      const fadeOutAnimation = () => {
-        console.log(message);
-        const fadeOut = Animated.timing(fadeAnim, {
-          toValue: 0,
-          duration: 6000,
-          useNativeDriver: true,
-        });
+  // useFocusEffect(
+  //   useCallback(() => {
+  //     triggerRefresh();
+  //     const fadeOutAnimation = () => {
+  //       console.log(message);
+  //       const fadeOut = Animated.timing(fadeAnim, {
+  //         toValue: 0,
+  //         duration: 6000,
+  //         useNativeDriver: true,
+  //       });
 
-        fadeOut.start();
-      };
+  //       fadeOut.start();
+  //     };
 
-      fadeOutAnimation(); // Trigger the animation logic
-      return () => {
-        // Cleanup logic if needed
-      };
-    }, [fadeAnim, message]),
-  );
+  //     fadeOutAnimation(); // Trigger the animation logic
+  //     return () => {
+  //       // Cleanup logic if needed
+  //     };
+  //   }, [fadeAnim, message]),
+  // );
 
-  const triggerRefresh = () => {
-    setRefreshKey(prevKey => prevKey + 1);
-  };
+  // const triggerRefresh = () => {
+  //   setRefreshKey(prevKey => prevKey + 1);
+  // };
   //------------------------
   // useEffect(() => {
   //   showAlertAndHide();
@@ -124,9 +124,12 @@ function HomeScreen({navigation, route}) {
   useEffect(() => {
     const fetchProfileData = async () => {
       const data = await database.getProfile();
-      setProfileData(data);
-      console.log(data);
-      await readInstructions(data.firstName);
+      if (data.firstName != undefined) {
+        setProfileData(data);
+        console.log(data);
+        await readInstructions(data.firstName);
+      }
+      
     };
     console.log('fetch profile triggered');
 

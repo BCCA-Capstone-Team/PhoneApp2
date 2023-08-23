@@ -11,7 +11,7 @@ class CalendarDatabase extends Database {
   async createCalendar() {
     this.appTable = await this.createTable('appointment', column => {
       // Auto Clear is forcing a recreation of the table every time.
-       //column.autoClear();
+      //  column.autoClear();
 
       column.create('eventTitle', 'TEXT');
       column.create('location', 'TEXT');

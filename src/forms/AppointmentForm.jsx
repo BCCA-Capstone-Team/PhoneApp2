@@ -128,8 +128,7 @@ const AppointmentForm = ({navigation, route}) => {
       appointmentTable.reload();
     }
     appointmentTable.reload();
-    const passReload = true;
-    navigation.navigate('Calendar', passReload);
+    navigation.navigate('Calendar');
   };
 
   const showDatepicker = () => {
