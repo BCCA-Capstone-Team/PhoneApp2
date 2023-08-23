@@ -73,6 +73,7 @@ class trackingLocationReminder extends LocationServices {
 
   async readReminders() {
     const remindersData = await leavingHomeReminderTable.view();
+    console.log(remindersData)
     if (remindersData.length > 0) {
       Tts.speak('Your reminders are the following:');
       remindersData.forEach((reminder, index) => {
@@ -186,17 +187,7 @@ function RemindersScreen() {
       //console.log("STOP PLEASE");
       Voice.stop();
     } else {
-      Tts.speak(
-        'Say add to add a reminder, delete to delete a reminder, or read to read your reminders aloud.',
-      );
       Voice.start('en-US');
-      // Tts.addEventListener('tts-finish', event => {
-      //   if (!isListening) {
-      //     console.log("HELP")
-      //     Voice.start('en-US');
-      //   }
-      // });
-      // Removed Voice.start('en-US') from here
     }
     setIsListening(!isListening);
   }, [isListening]);
@@ -225,6 +216,9 @@ function RemindersScreen() {
 
       // Join the remaining words to form the reminder content
       const reminderContent = spokenWords.join(' ');
+      
+      console.log(reminderContent)
+
 
       // Find the reminder to be deleted
       const reminderToDelete = reminders.find(
@@ -234,10 +228,8 @@ function RemindersScreen() {
 
       if (reminderToDelete) {
         await deleteReminder(reminderToDelete[0][1]);
-        //console.log('Deleted reminder:', reminderToDelete);
       } else {
-        //console.log(reminderToDelete);
-        //console.log('Reminder not found:', spokenWords);
+
       }
     } catch (error) {
       console.error('Error deleting reminder:', error);
@@ -251,6 +243,8 @@ function RemindersScreen() {
 
     const spokenWords = voiceInputRef.current.split(' ');
     const command = spokenWords[0].toLowerCase();
+    console.log(command)
+    console.log(spokenWords)
 
     if (command === 'delete') {
       //console.log("HERE TO DELETE =================")
@@ -260,7 +254,7 @@ function RemindersScreen() {
       addReminderByVoice(spokenWords);
       return; // Skip the rest of the function
     } else if (command === 'read') {
-      //console.log("HERE TO READ ====================")
+      console.log("HERE TO READ ====================")
       readReminders();
       return;
     }

@@ -57,7 +57,7 @@ function ProfileScreen({navigation, route}) {
 
   const updateProfileData = async () => {
     const newData = await database.getProfile(); // Fetch updated profile data
-    navigation.navigate('HomeScreen', {updatedProfileData: newData}); // Pass the updated data to HomeScreen
+    navigation.navigate('Home', {updatedProfileData: newData}); // Pass the updated data to HomeScreen
   };
 
   useLayoutEffect(() => {
