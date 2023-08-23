@@ -146,7 +146,7 @@ export default StyleSheet.create({
     backgroundColor: orangeColor,
     padding: 5,
     borderRadius: 5,
-    marginLeft: 100,
+    marginLeft: 10,
   },
   trashIcon: {
     width: '100%',
@@ -224,6 +224,11 @@ export default StyleSheet.create({
     fontSize: 24,
     padding: 5,
     fontWeight: 'bold',
+  },
+  remindersText: {
+    fontSize: 24,
+    padding: 5,
+    width: 250,
   },
 
   // ===================== FORM STYLING ==========================================

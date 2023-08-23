@@ -43,32 +43,32 @@
 	<string>YOUR TEXT</string>
 	<key>NSCalendarsUsageDescription</key>
 	<string>YOUR TEXT</string>
-	<key>NSCameraUsageDescription</key>
-	<string>YOUR TEXT</string>
 	<key>NSContactsUsageDescription</key>
+	<string>YOUR TEXT</string>
+	<key>NSCameraUsageDescription</key>
 	<string>YOUR TEXT</string>
 	<key>NSFaceIDUsageDescription</key>
 	<string>YOUR TEXT</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string>YOUR TEXT</string>
+	<string>This is to help you get directions to appointments and to see if you have left your home for reminding purposes.</string>
 	<key>NSLocationAlwaysUsageDescription</key>
-	<string>YOUR TEXT</string>
+	<string>This is to help you get directions to appointments and to see if you have left your home for reminding purposes.</string>
 	<key>NSLocationTemporaryUsageDescriptionDictionary</key>
 	<dict>
 		<key>YOUR-PURPOSE-KEY</key>
 		<string>YOUR TEXT</string>
 	</dict>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string></string>
+	<string>This is to help you get directions to appointments and to see if you have left your home for reminding purposes.</string>
 	<key>NSMicrophoneUsageDescription</key>
+	<string>This is voice control purposes.</string>
+	<key>NSRemindersUsageDescription</key>
 	<string>YOUR TEXT</string>
 	<key>NSMotionUsageDescription</key>
 	<string>YOUR TEXT</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
 	<string>YOUR TEXT</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>YOUR TEXT</string>
-	<key>NSRemindersUsageDescription</key>
 	<string>YOUR TEXT</string>
 	<key>NSSiriUsageDescription</key>
 	<string>YOUR TEXT</string>
